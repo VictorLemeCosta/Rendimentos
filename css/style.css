@@ -1,0 +1,1712 @@
+/*
+==================================================
+FINANCE HUB
+CONSOLIDATED STYLE
+BASE + NAV + CARDS + RESPONSIVE
+==================================================
+*/
+
+:root {
+
+    --hughes-blue: #003B71;
+    --hughes-light-blue: #0077B6;
+    --hughes-orange: #F28C28;
+
+    --hughes-bg: #F4F7FB;
+    --hughes-dark: #1E293B;
+
+    --nubank-purple: #820AD1;
+    --nubank-light: #F3E8FF;
+
+    --caju-orange: #FF6B00;
+    --caju-pink: #FF3366;
+    --caju-light: #FFF0E6;
+
+    --white: #FFFFFF;
+    --gray: #64748B;
+    --green: #16A34A;
+    --red: #DC2626;
+    --yellow: #FACC15;
+    --border: #E2E8F0;
+}
+
+* {
+
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+html {
+
+    scroll-behavior: smooth;
+}
+
+body {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--hughes-blue),
+            var(--hughes-light-blue)
+        );
+
+    color: var(--hughes-dark);
+
+    min-height: 100vh;
+
+    padding: 32px;
+}
+
+/*
+==================================================
+CONTAINER
+==================================================
+*/
+
+.container {
+
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+/*
+==================================================
+NAVBAR
+==================================================
+*/
+
+.main-nav {
+
+    background: white;
+
+    max-width: 1320px;
+
+    margin: 0 auto 24px auto;
+
+    padding: 18px 28px;
+
+    border-radius: 24px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.12);
+}
+
+.nav-logo {
+
+    font-size: 1.5rem;
+
+    font-weight: 900;
+
+    color: var(--hughes-blue);
+}
+
+.nav-links {
+
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+
+    text-decoration: none;
+
+    padding: 12px 18px;
+
+    border-radius: 999px;
+
+    background: var(--hughes-bg);
+
+    color: var(--hughes-blue);
+
+    font-weight: 800;
+
+    transition: .2s;
+}
+
+.nav-links a:hover {
+
+    transform: translateY(-2px);
+}
+
+.nav-links a.active {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--hughes-blue),
+            var(--hughes-light-blue)
+        );
+
+    color: white;
+}
+
+/*
+==================================================
+SECTIONS
+==================================================
+*/
+
+.section,
+.hero,
+.accumulator-section,
+.clt-section,
+.history-section {
+
+    background: white;
+
+    border-radius: 28px;
+
+    padding: 34px;
+
+    margin-bottom: 32px;
+
+    box-shadow:
+        0 22px 55px rgba(0,0,0,.20);
+}
+
+.hero {
+
+    border-top:
+        8px solid var(--hughes-orange);
+}
+
+.accumulator-section {
+
+    border-top:
+        8px solid var(--hughes-orange);
+}
+
+.clt-section,
+.history-section {
+
+    border-top:
+        8px solid var(--hughes-blue);
+}
+
+/*
+==================================================
+HEADINGS
+==================================================
+*/
+
+.hero-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 24px;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+.hero h1 {
+
+    color: var(--hughes-blue);
+
+    font-size: 2.25rem;
+
+    margin-bottom: 12px;
+}
+
+.section h2,
+.section-title {
+
+    color: var(--hughes-blue);
+
+    font-size: 1.8rem;
+
+    margin-bottom: 12px;
+}
+
+.hero p,
+.section p,
+.section-description {
+
+    color: var(--gray);
+
+    line-height: 1.7;
+
+    margin-bottom: 10px;
+}
+
+/*
+==================================================
+BADGES
+==================================================
+*/
+
+.badge {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--hughes-blue),
+            var(--hughes-light-blue)
+        );
+
+    color: white;
+
+    padding: 14px 20px;
+
+    border-radius: 999px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+/*
+==================================================
+INFO BOXES
+==================================================
+*/
+
+.hero-small {
+
+    background: #F8FAFC;
+
+    border-left: 5px solid var(--hughes-orange);
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    margin-top: 16px;
+
+    color: var(--gray);
+}
+
+.note-box {
+
+    background: #FFFBEB;
+
+    border-left: 6px solid var(--yellow);
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    margin-top: 20px;
+
+    color: #78350F;
+}
+
+/*
+==================================================
+GENERIC DASHBOARD
+(USADO PELO FINANCEIRO
+E INVESTIMENTOS)
+==================================================
+*/
+
+.dashboard-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-top: 20px;
+}
+
+.card {
+
+    background: var(--hughes-bg);
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    border-left:
+        6px solid var(--hughes-orange);
+}
+
+.card h3 {
+
+    font-size: .85rem;
+
+    text-transform: uppercase;
+
+    color: var(--gray);
+
+    margin-bottom: 8px;
+}
+
+.card .value {
+
+    font-size: 1.6rem;
+
+    font-weight: 900;
+
+    color: var(--hughes-blue);
+}
+/*
+==================================================
+SUMMARY GRID
+(PAINEL RENDIMENTOS)
+==================================================
+*/
+
+.summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.summary-card {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 14px 35px rgba(0,0,0,.16);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.summary-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 7px;
+
+    background: var(--hughes-orange);
+}
+
+.summary-card h3 {
+
+    color: var(--gray);
+
+    font-size: .86rem;
+
+    margin-bottom: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .06em;
+}
+
+.summary-card .value {
+
+    color: var(--hughes-blue);
+
+    font-size: 1.65rem;
+
+    font-weight: 900;
+}
+
+/*
+==================================================
+INCOME CARDS
+==================================================
+*/
+
+.cards-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 24px;
+
+    margin-bottom: 32px;
+}
+
+.income-card {
+
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 26px;
+
+    box-shadow:
+        0 16px 38px rgba(0,0,0,.18);
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+.income-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: -50px;
+    top: -50px;
+
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    opacity: .11;
+}
+
+/*
+==================================================
+NUBANK STYLE
+==================================================
+*/
+
+.nubank {
+
+    border-top:
+        8px solid var(--nubank-purple);
+}
+
+.nubank::after {
+
+    background:
+        var(--nubank-purple);
+}
+
+.nubank .income-title {
+
+    color:
+        var(--nubank-purple);
+}
+
+.nubank .rate-box {
+
+    background:
+        var(--nubank-light);
+}
+
+/*
+==================================================
+CAJU STYLE
+==================================================
+*/
+
+.caju {
+
+    border-top:
+        8px solid var(--caju-orange);
+}
+
+.caju::after {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--caju-orange),
+            var(--caju-pink)
+        );
+}
+
+.caju .income-title {
+
+    color:
+        var(--caju-orange);
+}
+
+.caju .rate-box {
+
+    background:
+        var(--caju-light);
+}
+
+/*
+==================================================
+CARD HEADER
+==================================================
+*/
+
+.card-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.income-title {
+
+    font-size: 1.4rem;
+
+    font-weight: 900;
+
+    margin-bottom: 6px;
+}
+
+.method {
+
+    font-size: .9rem;
+
+    color: var(--gray);
+
+    font-weight: 650;
+}
+
+.monthly-value {
+
+    font-size: 1.5rem;
+
+    font-weight: 900;
+
+    color: var(--hughes-dark);
+
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+/*
+==================================================
+RATES
+==================================================
+*/
+
+.rates {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 10px;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.rate-box {
+
+    background:
+        var(--hughes-bg);
+
+    border-radius: 14px;
+
+    padding: 14px 10px;
+
+    text-align: center;
+
+    min-height: 86px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+.rate-label {
+
+    font-size: .72rem;
+
+    font-weight: 800;
+
+    color: var(--gray);
+
+    text-transform: uppercase;
+
+    margin-bottom: 8px;
+}
+
+.rate-value {
+
+    font-size: .95rem;
+
+    font-weight: 900;
+
+    color: var(--hughes-dark);
+}
+
+/*
+==================================================
+ACUMULADOR
+==================================================
+*/
+
+.accumulator-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 24px;
+}
+
+.accumulator-display {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--hughes-blue),
+            var(--hughes-light-blue)
+        );
+
+    color: white;
+
+    border-radius: 24px;
+
+    padding: 34px;
+
+    text-align: center;
+
+    margin-bottom: 26px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.accumulator-display::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.08);
+
+    right: -80px;
+    top: -120px;
+}
+
+.accumulator-label,
+.accumulator-subtitle,
+.accumulator-value {
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.accumulator-label {
+
+    font-size: 1rem;
+
+    opacity: .86;
+
+    margin-bottom: 12px;
+}
+
+.accumulator-value {
+
+    font-size: 4rem;
+
+    font-weight: 950;
+
+    letter-spacing: -.04em;
+}
+
+.accumulator-subtitle {
+
+    margin-top: 12px;
+
+    opacity: .9;
+
+    font-size: .95rem;
+}
+
+/*
+==================================================
+STATUS
+==================================================
+*/
+
+.status {
+
+    background:
+        var(--gray);
+
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 999px;
+
+    font-weight: 900;
+}
+
+.status.active {
+
+    background:
+        var(--green);
+}
+
+.status.paused {
+
+    background:
+        var(--red);
+}
+
+/*
+==================================================
+PROGRESS BAR
+==================================================
+*/
+
+.progress-area {
+
+    margin-bottom: 26px;
+}
+
+.progress-info {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+    color: var(--gray);
+
+    font-size: .9rem;
+
+    font-weight: 800;
+}
+
+.progress-bar {
+
+    width: 100%;
+
+    height: 18px;
+
+    background: #E2E8F0;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+}
+
+.progress-fill {
+
+    width: 0%;
+
+    height: 100%;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--hughes-orange),
+            #FFB703
+        );
+
+    transition:
+        width .4s ease;
+}
+
+/*
+==================================================
+BREAKDOWN GRID
+==================================================
+*/
+
+.breakdown-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+}
+
+.breakdown-card {
+
+    background:
+        var(--hughes-bg);
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    text-align: center;
+}
+
+.breakdown-title {
+
+    font-size: .82rem;
+
+    color: var(--gray);
+
+    font-weight: 900;
+
+    text-transform: uppercase;
+
+    margin-bottom: 8px;
+}
+
+.breakdown-value {
+
+    font-size: 1.15rem;
+
+    font-weight: 950;
+
+    color: var(--hughes-blue);
+}
+
+/*
+==================================================
+CLT GRID
+==================================================
+*/
+
+.clt-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+}
+
+.clt-card {
+
+    background:
+        var(--hughes-bg);
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    border-left:
+        6px solid var(--hughes-orange);
+}
+
+.clt-card h3 {
+
+    font-size: .82rem;
+
+    color: var(--gray);
+
+    text-transform: uppercase;
+
+    font-weight: 900;
+
+    margin-bottom: 8px;
+}
+
+.clt-card .clt-value {
+
+    font-size: 1.15rem;
+
+    font-weight: 950;
+
+    color: var(--hughes-blue);
+}
+
+.clt-card.discount {
+
+    border-left-color:
+        var(--red);
+}
+
+.clt-card.discount .clt-value {
+
+    color:
+        var(--red);
+}
+
+.clt-card.net {
+
+    border-left-color:
+        var(--green);
+}
+
+.clt-card.net .clt-value {
+
+    color:
+        var(--green);
+}
+
+/*
+==================================================
+MONTHLY ACCUMULATOR
+==================================================
+*/
+
+.monthly-accumulator-display {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--nubank-purple),
+            var(--hughes-blue)
+        );
+
+    color: white;
+
+    border-radius: 24px;
+
+    padding: 28px;
+
+    text-align: center;
+
+    margin-top: 22px;
+}
+
+.monthly-accumulator-display .label {
+
+    opacity: .88;
+
+    margin-bottom: 8px;
+
+    font-weight: 650;
+}
+
+.monthly-accumulator-display .value {
+
+    font-size:
+        clamp(2rem, 8vw, 3rem);
+
+    font-weight: 950;
+}
+
+/*
+==================================================
+CLT CONTROLS
+==================================================
+*/
+
+.clt-controls {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 24px;
+}
+
+.control-box {
+
+    background: #F8FAFC;
+
+    padding: 16px;
+
+    border-radius: 16px;
+
+    border: 1px solid var(--border);
+}
+
+.control-box label {
+
+    display: block;
+
+    font-weight: 850;
+
+    color: var(--hughes-dark);
+
+    font-size: .85rem;
+
+    margin-bottom: 8px;
+}
+
+.control-box input,
+.control-box select {
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 10px 12px;
+
+    border-radius: 12px;
+
+    border: 1px solid #CBD5E1;
+
+    background: white;
+
+    font-size: .95rem;
+}
+
+/*
+==================================================
+FORMULÁRIOS
+(FINANCEIRO + INVESTIMENTOS)
+==================================================
+*/
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+
+    margin-top: 20px;
+}
+
+.input-box {
+
+    background: #F8FAFC;
+
+    padding: 15px;
+
+    border-radius: 16px;
+
+    border: 1px solid var(--border);
+}
+
+.input-box label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: 700;
+
+    color: var(--hughes-dark);
+}
+
+.input-box input,
+.input-box select {
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 10px;
+
+    border: 1px solid #CBD5E1;
+
+    border-radius: 12px;
+
+    background: white;
+
+    font-size: 16px;
+}
+
+/*
+==================================================
+BOTÕES
+==================================================
+*/
+
+.btn {
+
+    border: none;
+
+    cursor: pointer;
+
+    color: white;
+
+    min-height: 48px;
+
+    padding: 12px 20px;
+
+    border-radius: 999px;
+
+    font-weight: 900;
+
+    transition: .2s;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--hughes-blue),
+            var(--hughes-light-blue)
+        );
+}
+
+.btn:hover {
+
+    transform: translateY(-2px);
+
+    filter: brightness(1.05);
+}
+
+.btn:active {
+
+    transform: scale(.98);
+}
+
+/*
+==================================================
+TABELAS
+==================================================
+*/
+
+.table-wrapper,
+.history-table-wrapper {
+
+    overflow-x: auto;
+}
+
+.table,
+.history-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 20px;
+
+    background: #F8FAFC;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+.table th,
+.history-table th {
+
+    background: var(--hughes-blue);
+
+    color: white;
+
+    padding: 14px;
+
+    text-align: left;
+
+    font-size: .82rem;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.table td,
+.history-table td {
+
+    padding: 14px;
+
+    border-bottom: 1px solid var(--border);
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.receita {
+
+    color: var(--green);
+
+    font-weight: 900;
+}
+
+.despesa {
+
+    color: var(--red);
+
+    font-weight: 900;
+}
+
+/*
+==================================================
+GRÁFICOS
+==================================================
+*/
+
+.chart-container {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 420px;
+}
+
+.chart-container canvas {
+
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+canvas {
+
+    max-width: 100%;
+}
+
+/*
+==================================================
+FINANCEIRO
+==================================================
+*/
+
+.balance-positive {
+
+    color: var(--green);
+}
+
+.balance-negative {
+
+    color: var(--red);
+}
+
+.savings-positive {
+
+    color: var(--green);
+}
+
+.savings-negative {
+
+    color: var(--red);
+}
+
+/*
+==================================================
+CARD DE GRÁFICO
+==================================================
+*/
+
+.card-chart {
+
+    min-height: 450px;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.card-chart canvas {
+
+    flex: 1;
+}
+
+/*
+==================================================
+MOBILE SCROLL
+==================================================
+*/
+
+.mobile-scroll {
+
+    display: flex;
+
+    gap: 16px;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+
+    -webkit-overflow-scrolling: touch;
+
+    padding-bottom: 10px;
+}
+
+.mobile-scroll::-webkit-scrollbar {
+
+    height: 6px;
+}
+
+.mobile-scroll::-webkit-scrollbar-thumb {
+
+    background: var(--hughes-blue);
+
+    border-radius: 999px;
+}
+
+.mobile-scroll > * {
+
+    flex-shrink: 0;
+
+    scroll-snap-align: start;
+}
+
+/*
+==================================================
+FOOTER
+==================================================
+*/
+
+footer {
+
+    text-align: center;
+
+    color: rgba(255,255,255,.85);
+
+    margin-top: 28px;
+
+    font-size: .90rem;
+}
+
+/*
+==================================================
+TABLET
+==================================================
+*/
+
+@media (max-width:1150px) {
+
+    .summary-grid,
+    .breakdown-grid,
+    .clt-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .dashboard-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .clt-controls {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .form-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .cards-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .rates {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+}
+
+/*
+==================================================
+MOBILE
+==================================================
+*/
+
+@media (max-width:768px) {
+
+    body {
+
+        padding: 18px;
+    }
+
+    .main-nav {
+
+        padding: 18px;
+    }
+
+    .nav-links {
+
+        width: 100%;
+
+        overflow-x: auto;
+
+        flex-wrap: nowrap;
+
+        padding-bottom: 8px;
+    }
+
+    .nav-links a {
+
+        white-space: nowrap;
+    }
+
+    .hero,
+    .section,
+    .accumulator-section,
+    .clt-section,
+    .history-section {
+
+        padding: 24px;
+    }
+
+    .container {
+
+        padding-bottom: 40px;
+    }
+
+    .summary-grid,
+    .form-grid,
+    .clt-controls {
+
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid {
+
+        display: flex !important;
+
+        overflow-x: auto;
+
+        gap: 16px;
+
+        scroll-snap-type: x mandatory;
+
+        padding-bottom: 12px;
+    }
+
+    .dashboard-grid .card {
+
+        min-width: 280px;
+
+        flex-shrink: 0;
+
+        scroll-snap-align: start;
+    }
+
+    .cards-grid {
+
+        display: flex !important;
+
+        overflow-x: auto;
+
+        gap: 16px;
+
+        scroll-snap-type: x mandatory;
+
+        padding-bottom: 12px;
+    }
+
+    .cards-grid .income-card {
+
+        min-width: 320px;
+
+        max-width: 320px;
+
+        flex-shrink: 0;
+
+        scroll-snap-align: start;
+    }
+
+    .breakdown-grid {
+
+        display: flex !important;
+
+        overflow-x: auto;
+
+        gap: 16px;
+
+        scroll-snap-type: x mandatory;
+
+        padding-bottom: 12px;
+    }
+
+    .breakdown-card {
+
+        min-width: 220px;
+
+        flex-shrink: 0;
+
+        scroll-snap-align: start;
+    }
+
+    .clt-grid {
+
+        display: flex !important;
+
+        overflow-x: auto;
+
+        gap: 16px;
+
+        scroll-snap-type: x mandatory;
+
+        padding-bottom: 12px;
+    }
+
+    .clt-card {
+
+        min-width: 260px;
+
+        flex-shrink: 0;
+
+        scroll-snap-align: start;
+    }
+
+    .history-table {
+
+        display: block;
+    }
+
+    .history-table thead {
+
+        display: none;
+    }
+
+    .history-table tbody {
+
+        display: block;
+    }
+
+    .history-table tr {
+
+        display: block;
+
+        background: white;
+
+        margin-bottom: 16px;
+
+        padding: 16px;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 6px 18px rgba(0,0,0,.10);
+    }
+
+    .history-table td {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        padding: 4px 0;
+
+        border: none;
+    }
+
+    .accumulator-value {
+
+        font-size:
+            clamp(2.2rem, 10vw, 4rem);
+    }
+
+    .monthly-accumulator-display .value {
+
+        font-size:
+            clamp(2rem, 8vw, 3rem);
+    }
+
+    .monthly-value {
+
+        text-align: left;
+    }
+
+    .card-top {
+
+        flex-direction: column;
+    }
+
+    .hero h1 {
+
+        font-size: 1.75rem;
+    }
+
+    button,
+    input,
+    select {
+
+        min-height: 48px;
+
+        font-size: 16px;
+    }
+}
+
+/*
+==================================================
+FINAL DO STYLE.CSS
+FINANCE HUB CONSOLIDADO
+INDEX + FINANCEIRO + INVESTIMENTOS
+==================================================
+*/
+
+/* ==========================
+   BITCOIN PRICE CARDS
+========================== */
+
+.btc-price-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+}
+
+.btc-price-row .btc-card {
+
+    flex: 1;
+
+    border-left: 5px solid #F28C28;
+}
+
+.btc-card {
+
+    position: relative;
+}
+
+.btc-card .breakdown-value {
+
+    font-size: 1.7rem;
+
+    font-weight: 900;
+
+    color: var(--hughes-blue);
+}
+
+@media (max-width:768px){
+
+    .btc-price-row{
+
+        flex-direction: column;
+    }
+}
