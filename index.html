@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Rendimentos - Hughes</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  
+<nav class="main-nav">
+
+      <div class="nav-logo">
+          FinanceHub
+      </div>
+
+      <div class="nav-links">
+
+          <a href="index.html" class="active">
+              Rendimentos
+          </a>
+
+          <a href="financeiro.html">
+              Dashboard Financeiro
+          </a>
+
+          <a href="investimentos.html">
+              Investimentos
+          </a>
+
+      </div>
+
+  </nav>
+
+
+  <div class="container">
+
+    <section class="hero">
+      <div class="hero-header">
+        <div>
+          <h1>Painel de Rendimentos Mensais</h1>
+
+          <p>
+            Este painel transforma seus rendimentos mensais em uma visão prática por segundo, minuto,
+            hora, dia útil e mês. Ele também possui um acumulador em tempo real que calcula quanto você
+            já acumulou no expediente, considerando apenas dias úteis, das 09:00 às 18:00.
+          </p>
+
+          <p>
+            O acumulador agora é calculado com base na data e hora atual, não em uma contagem salva no navegador.
+            Isso significa que, mesmo se o arquivo ficar fechado, em segundo plano ou for aberto em outro computador,
+            ele recalcula automaticamente o valor correspondente ao momento atual.
+          </p>
+
+          <div class="hero-small">
+            Para que dois computadores exibam os mesmos valores, ambos precisam estar com data e hora corretas
+            e com os mesmos inputs manuais preenchidos, como coparticipação médica, dependentes e percentual de vale-transporte.
+          </div>
+        </div>
+
+        <div class="badge">
+          Tema Hughes | Jornada 09h às 18h
+        </div>
+      </div>
+    </section>
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <h3>Total mensal bruto</h3>
+        <div class="value" id="totalMonthly">R$ 0,00</div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Total por dia útil</h3>
+        <div class="value" id="totalDaily">R$ 0,00</div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Total por hora</h3>
+        <div class="value" id="totalHourly">R$ 0,00</div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Total por segundo</h3>
+        <div class="value" id="totalSecond">R$ 0,0000</div>
+      </div>
+    </section>
+
+    <section class="cards-grid" id="incomeCards"></section>
+
+    <section class="accumulator-section">
+      <div class="accumulator-header">
+        <h2>Acumulador Diário em Tempo Real</h2>
+        <div class="status" id="workStatus">Calculando...</div>
+      </div>
+
+      <div class="accumulator-display">
+        <div class="accumulator-label">Valor bruto acumulado hoje durante o expediente</div>
+        <div class="accumulator-value" id="accumulatorValue">R$ 0,00</div>
+        <div class="accumulator-subtitle" id="currentTime">Horário atual: --:--:--</div>
+      </div>
+
+      <div class="progress-area">
+        <div class="progress-info">
+          <span>09:00</span>
+          <span id="progressPercent">0%</span>
+          <span>18:00</span>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-title">Salário acumulado</div>
+          <div class="breakdown-value" id="accSalary">R$ 0,00</div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-title">VR acumulado</div>
+          <div class="breakdown-value" id="accVR">R$ 0,00</div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-title">VA acumulado</div>
+          <div class="breakdown-value" id="accVA">R$ 0,00</div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-title">Home Office acumulado</div>
+          <div class="breakdown-value" id="accHome">R$ 0,00</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="clt-section">
+      <h2 class="section-title">Cálculo Estimado de Descontos CLT</h2>
+
+      <p class="section-description">
+        Esta seção estima os principais descontos de folha sobre o salário: INSS, IRRF,
+        vale-transporte e coparticipação médica. Por padrão, o painel considera 2 dependentes:
+        sua esposa e sua filha.
+      </p>
+
+      <div class="clt-controls">
+        <div class="control-box">
+          <label for="dependentsInput">Dependentes</label>
+          <input type="number" id="dependentsInput" value="2" min="0" />
+        </div>
+
+        <div class="control-box">
+          <label for="pensionInput">Pensão alimentícia mensal</label>
+          <input type="number" id="pensionInput" value="0" min="0" step="0.01" />
+        </div>
+
+        <div class="control-box">
+          <label for="healthCopayInput">Coparticipação médica</label>
+          <input type="number" id="healthCopayInput" value="0" min="0" step="0.01" />
+        </div>
+
+        <div class="control-box">
+          <label for="transportInput">Vale-transporte</label>
+          <select id="transportInput">
+            <option value="0">Não descontar</option>
+            <option value="0.01" selected>Sim, 1%</option>
+            <option value="0.02">Sim, 2%</option>
+            <option value="0.03">Sim, 3%</option>
+            <option value="0.04">Sim, 4%</option>
+            <option value="0.05">Sim, 5%</option>
+            <option value="0.06">Sim, 6%</option>
+          </select>
+        </div>
+
+        <div class="control-box">
+          <label for="simplifiedInput">Desconto simplificado IRRF</label>
+          <select id="simplifiedInput">
+            <option value="auto" selected>Automático, maior dedução</option>
+            <option value="no">Não usar</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="clt-grid">
+        <div class="clt-card">
+          <h3>Salário bruto</h3>
+          <div class="clt-value" id="grossSalaryValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card discount">
+          <h3>Desconto INSS</h3>
+          <div class="clt-value" id="inssValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card discount">
+          <h3>Desconto IRRF</h3>
+          <div class="clt-value" id="irrfValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card discount">
+          <h3>Vale-transporte</h3>
+          <div class="clt-value" id="transportValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card discount">
+          <h3>Coparticipação médica</h3>
+          <div class="clt-value" id="healthCopayValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card net">
+          <h3>Salário líquido estimado</h3>
+          <div class="clt-value" id="netSalaryValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card net">
+          <h3>Total líquido + benefícios</h3>
+          <div class="clt-value" id="netTotalValue">R$ 0,00</div>
+        </div>
+
+        <div class="clt-card">
+          <h3>Líquido por segundo</h3>
+          <div class="clt-value" id="netSecondValue">R$ 0,0000</div>
+        </div>
+      </div>
+
+      <div class="monthly-accumulator-display">
+        <div class="label">Acumulador líquido estimado do mês atual</div>
+        <div class="value" id="monthlyNetAccumulator">R$ 0,00</div>
+        <div class="label" id="monthlyAccumulatorInfo">Calculando mês atual...</div>
+      </div>
+
+      <div class="note-box">
+        Este cálculo é estimativo. A folha real pode variar por regras internas, benefícios, descontos sindicais,
+        coparticipação, previdência privada, adiantamentos, ajustes retroativos e tratamento tributário específico.
+      </div>
+    </section>
+
+    <section class="history-section">
+      <h2 class="section-title">Histórico Mensal Estimado</h2>
+
+      <p class="section-description">
+        O histórico abaixo é gerado automaticamente com base nos meses anteriores ao mês atual.
+        Ele não depende de o arquivo ter ficado aberto. Ao virar o mês, o mês anterior passa a aparecer
+        no histórico como fechado. Isso permite que o painel funcione de forma consistente mesmo em outro computador.
+      </p>
+
+      <div class="history-table-wrapper">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>Bruto mensal</th>
+              <th>Líquido estimado</th>
+              <th>INSS</th>
+              <th>IRRF</th>
+              <th>VT</th>
+              <th>Coparticipação</th>
+              <th>Dias úteis</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <tr>
+              <td colspan="9">Calculando histórico...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      Painel pessoal de acompanhamento financeiro estimado | Valores informados manualmente | Tema Hughes
+    </footer>
+
+  </div>
+  <script src="js/rendimentos.js"></script>
+
+</body>
+</html>

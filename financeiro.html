@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Financeiro</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<nav class="main-nav">
+
+    <div class="nav-logo">
+        FinanceHub
+    </div>
+
+    <div class="nav-links">
+
+        <a href="index.html">
+            Rendimentos
+        </a>
+
+        <a href="financeiro.html" class="active">
+            Dashboard Financeiro
+        </a>
+
+        <a href="investimentos.html">
+            Investimentos
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="container">
+
+    <section class="section">
+
+    <h2>Dashboard Financeiro</h2>
+
+    <p>
+        Controle completo de receitas,
+        despesas e saldo.
+        Futuramente esta página será
+        conectada ao Open Finance.
+    </p>
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+
+            <h3>Saldo Atual</h3>
+
+            <div class="value" id="currentBalance">
+                R$ 0,00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Receitas</h3>
+
+            <div class="value" id="totalIncome">
+                R$ 0,00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Despesas</h3>
+
+            <div class="value" id="totalExpenses">
+                R$ 0,00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Economia</h3>
+
+            <div class="value" id="savingsRate">
+                0%
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <section class="section">
+
+        <h2>
+            Saldo Inicial
+        </h2>
+
+        <div class="form-grid">
+
+            <div class="input-box">
+
+                <label>
+                    Valor Inicial
+                </label>
+
+                <input
+                    type="number"
+                    id="startingBalance"
+                    step="0.01"
+                >
+
+            </div>
+
+            <div class="input-box">
+
+    <label>&nbsp;</label>
+
+    <button
+      class="btn"
+      onclick="saveStartingBalance()">
+        Salvar
+    </button>
+
+</div>
+
+<div class="input-box">
+
+    <label>&nbsp;</label>
+
+    <button
+      class="btn"
+      onclick="resetStartingBalance()"
+      style="background:#DC2626;">
+        Resetar Saldo
+    </button>
+
+</div>
+
+        </div>
+
+    </section>
+    <section class="section">
+
+    <h2>
+        Receitas
+    </h2>
+
+    <p>
+        Futuramente esta seção será abastecida automaticamente pelo Open Finance.
+        Neste momento ela funciona manualmente.
+    </p>
+
+    <div class="form-grid">
+
+        <div class="input-box">
+
+            <label>
+                Categoria
+            </label>
+
+            <select id="incomeCategory">
+
+                <option>Salário</option>
+                <option>VR</option>
+                <option>VA</option>
+                <option>Auxílio Home Office</option>
+                <option>PIX Recebido</option>
+                <option>Presente</option>
+                <option>Reembolso</option>
+                <option>Outros</option>
+
+            </select>
+
+        </div>
+
+        <div class="input-box">
+
+            <label>
+                Valor
+            </label>
+
+            <input
+                type="number"
+                id="incomeValue"
+                step="0.01"
+            >
+
+        </div>
+
+        <div class="input-box">
+
+            <label>
+                Data
+            </label>
+
+            <input
+                type="date"
+                id="incomeDate"
+            >
+
+        </div>
+
+        <div class="input-box">
+
+            <label>
+                &nbsp;
+            </label>
+
+            <button
+                class="btn"
+                onclick="addIncome()">
+                Adicionar Receita
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Categoria
+                    </th>
+
+                    <th>
+                        Valor
+                    </th>
+
+                    <th>
+                        Data
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="incomeTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<section class="section">
+
+    <h2>
+        Despesas
+    </h2>
+
+    <p>
+        Estrutura preparada para classificação automática futura utilizando Open Finance.
+    </p>
+
+    <div class="form-grid">
+
+        <div class="input-box">
+
+            <label>
+                Categoria
+            </label>
+
+            <select id="expenseCategory">
+
+                <option>Aluguel</option>
+                <option>Água</option>
+                <option>Luz</option>
+                <option>Internet</option>
+                <option>Mercado</option>
+                <option>Farmácia</option>
+                <option>Combustível</option>
+                <option>Transporte</option>
+                <option>Lazer</option>
+                <option>Assinaturas</option>
+                <option>Restaurante</option>
+                <option>Filha</option>
+                <option>Saúde</option>
+                <option>Outros</option>
+
+            </select>
+
+        </div>
+
+        <div class="input-box">
+
+            <label>
+                Valor
+            </label>
+
+            <input
+                type="number"
+                id="expenseValue"
+                step="0.01"
+            >
+
+        </div>
+
+        <div class="input-box">
+
+            <label>
+                Data
+            </label>
+
+            <input
+                type="date"
+                id="expenseDate"
+            >
+
+        </div>
+
+        <div class="input-box">
+
+            <label>
+                &nbsp;
+            </label>
+
+            <button
+                class="btn"
+                onclick="addExpense()">
+                Adicionar Despesa
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Categoria
+                    </th>
+
+                    <th>
+                        Valor
+                    </th>
+
+                    <th>
+                        Data
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="expenseTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<section class="section">
+
+    <h2>
+        Resumo Financeiro
+    </h2>
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+
+            <h3>
+                Receitas do Mês
+            </h3>
+
+            <div
+                class="value"
+                id="monthlyIncome">
+                R$ 0,00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>
+                Despesas do Mês
+            </h3>
+
+            <div
+                class="value"
+                id="monthlyExpense">
+                R$ 0,00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>
+                Diferença
+            </h3>
+
+            <div
+                class="value"
+                id="monthlyDifference">
+                R$ 0,00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>
+                Taxa de Economia
+            </h3>
+
+            <div
+                class="value"
+                id="savingPercentage">
+                0%
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="section">
+
+    <h2>
+        Análise Financeira
+    </h2>
+
+    <p>
+        Visualização das receitas, despesas e evolução financeira.
+    </p>
+
+    <div class="dashboard-grid">
+
+        <div class="card" style="grid-column: span 2;">
+
+            <h3>
+                Despesas por Categoria
+            </h3>
+
+            <div class="chart-container">
+                <canvas id="expensePieChart"></canvas>
+            </div>
+
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+
+            <h3>
+                Receitas por Categoria
+            </h3>
+        
+            <div class="chart-container">
+                <canvas id="incomePieChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="section">
+
+    <h2>
+        Evolução Financeira
+    </h2>
+
+    <div class="card">
+        
+            <div class="chart-container">
+                <canvas id="balanceChart"></canvas>
+            </div>
+
+
+    </div>
+
+</section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/financeiro.js"></script>
+
+
+</body>
+</html>
