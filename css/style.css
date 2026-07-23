@@ -1851,7 +1851,7 @@ INDEX + FINANCEIRO + INVESTIMENTOS
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .conditional-fields {
@@ -1921,6 +1921,111 @@ INDEX + FINANCEIRO + INVESTIMENTOS
 }
 
 @media (max-width: 700px) {
+  .dynamic-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Ajuste desktop da tela de cadastro */
+.auth-body {
+  align-items: flex-start;
+  padding: 48px 24px;
+}
+
+.auth-container {
+  max-width: 1180px;
+  width: 100%;
+}
+
+.cadastro-card {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.auth-card-large {
+  max-height: none;
+  overflow: visible;
+}
+
+.auth-form {
+  width: 100%;
+}
+
+.auth-form input,
+.auth-form select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-form label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+/* Layout mais limpo para grupos */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .form-grid-2,
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-body {
+    padding: 24px 12px;
+  }
+}
+
+.dynamic-row {
+  display: grid;
+  grid-template-columns: 1fr 200px auto;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.auth-button-secondary {
+  width: auto;
+  align-self: flex-start;
+  margin-top: 14px;
+  background: #ffffff;
+  color: #005b96;
+  border: 2px solid #005b96;
+}
+
+.auth-button-secondary:hover {
+  background: #005b96;
+  color: #ffffff;
+}
+
+.remove-button {
+  border: 2px solid #d92d20;
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: #ffffff;
+  color: #d92d20;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  background: #d92d20;
+  color: #ffffff;
+}
+
+@media (max-width: 800px) {
   .dynamic-row {
     grid-template-columns: 1fr;
   }

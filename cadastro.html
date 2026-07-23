@@ -14,7 +14,7 @@
 <body class="auth-body">
 
   <div class="auth-container">
-    <div class="auth-card auth-card-large">
+    <div class="auth-card auth-card-large cadastro-card">
       <h1>Criar conta</h1>
       <p class="auth-subtitle">Preencha seus dados iniciais para configurar o FinanceHub</p>
 
@@ -41,111 +41,106 @@
         Força da senha: -
         </div>
 
-
         <h2>Tipo de contratação</h2>
 
-        <label for="tipoContratacao">Modelo de contratação</label>
-        <select id="tipoContratacao" onchange="alternarCamposContratacao()">
-        <option value="">Selecionar depois</option>
-        <option value="CLT">CLT</option>
-        <option value="PJ">PJ</option>
-        <option value="MEI">MEI</option>
-        <option value="AUTONOMO">Autônomo</option>
-        <option value="ESTAGIO">Estágio</option>
-        <option value="SERVIDOR_PUBLICO">Servidor público</option>
-        <option value="OUTRO">Outro</option>
-        </select>
+<label for="tipoContratacao">Modelo de contratação</label>
+<select id="tipoContratacao" onchange="alternarCamposContratacao()">
+  <option value="">Selecione o modelo de contratação</option>
+  <option value="CLT">CLT</option>
+  <option value="PJ">PJ</option>
+  <option value="MEI">MEI</option>
+  <option value="AUTONOMO">Autônomo</option>
+  <option value="ESTAGIO">Estágio</option>
+  <option value="SERVIDOR_PUBLICO">Servidor público</option>
+  <option value="OUTRO">Outro</option>
+</select>
 
+<div id="camposClt" class="conditional-fields hidden">
+  <h2>Dados CLT</h2>
 
-        <div id="camposClt" class="conditional-fields hidden">
-        <h2>Dados CLT</h2>
+  <div class="form-grid-2">
+    <div>
+      <label for="salarioBruto">Salário bruto</label>
+      <input type="number" id="salarioBruto" placeholder="Ex: 6000" step="0.01">
+    </div>
 
-        <label for="salarioBruto">Salário bruto</label>
-        <input type="number" id="salarioBruto" placeholder="Ex: 6000" step="0.01">
+    <div>
+      <label for="valeTransportePercentual">Desconto de vale-transporte</label>
+      <select id="valeTransportePercentual">
+        <option value="0">Não descontar</option>
+        <option value="1">1%</option>
+        <option value="2">2%</option>
+        <option value="3">3%</option>
+        <option value="4">4%</option>
+        <option value="5">5%</option>
+        <option value="6">6%</option>
+      </select>
+    </div>
+  </div>
+</div>
 
-        <label for="dependentes">Dependentes para IRRF</label>
-        <input type="number" id="dependentes" placeholder="Ex: 0" min="0">
+<div id="camposPj" class="conditional-fields hidden">
+  <h2>Dados PJ / MEI</h2>
 
-        <label for="pensaoAlimenticia">Pensão alimentícia judicial</label>
-        <input type="number" id="pensaoAlimenticia" placeholder="Ex: 0" step="0.01">
+  <div class="form-grid-3">
+    <div>
+      <label for="receitaBrutaPj">Receita bruta mensal</label>
+      <input type="number" id="receitaBrutaPj" placeholder="Ex: 8000" step="0.01">
+    </div>
 
-        <label for="coparticipacaoMedica">Coparticipação médica</label>
-        <input type="number" id="coparticipacaoMedica" placeholder="Ex: 0" step="0.01">
+    <div>
+      <label for="impostoPjPercentual">Imposto estimado</label>
+      <input type="number" id="impostoPjPercentual" placeholder="Ex: 6" step="0.01">
+    </div>
 
-        <label for="valeTransportePercentual">Vale-transporte</label>
-        <select id="valeTransportePercentual">
-            <option value="0">Não descontar</option>
-            <option value="1">Sim, 1%</option>
-            <option value="2">Sim, 2%</option>
-            <option value="3">Sim, 3%</option>
-            <option value="4">Sim, 4%</option>
-            <option value="5">Sim, 5%</option>
-            <option value="6">Sim, 6%</option>
-        </select>
-        </div>
+    <div>
+      <label for="custoContadorPj">Custo mensal com contador</label>
+      <input type="number" id="custoContadorPj" placeholder="Ex: 150" step="0.01">
+    </div>
+  </div>
+</div>
 
+<div id="camposOutros" class="conditional-fields hidden">
+  <h2>Dados de renda</h2>
 
-        <div id="camposPj" class="conditional-fields hidden">
-        <h2>Dados PJ / MEI</h2>
+  <div class="form-grid-2">
+    <div>
+      <label for="rendaMensalOutros">Renda mensal estimada</label>
+      <input type="number" id="rendaMensalOutros" placeholder="Ex: 3000" step="0.01">
+    </div>
 
-        <label for="receitaBrutaPj">Receita bruta mensal</label>
-        <input type="number" id="receitaBrutaPj" placeholder="Ex: 8000" step="0.01">
-
-        <label for="impostoPjPercentual">Imposto mensal estimado em percentual</label>
-        <input type="number" id="impostoPjPercentual" placeholder="Ex: 6" step="0.01">
-
-        <label for="custoContadorPj">Custo mensal com contador</label>
-        <input type="number" id="custoContadorPj" placeholder="Ex: 150" step="0.01">
-        </div>
-
-
-        <div id="camposOutros" class="conditional-fields hidden">
-        <h2>Dados de renda</h2>
-
-        <label for="rendaMensalOutros">Renda mensal estimada</label>
-        <input type="number" id="rendaMensalOutros" placeholder="Ex: 3000" step="0.01">
-
-        <label for="descontosOutros">Descontos mensais estimados</label>
-        <input type="number" id="descontosOutros" placeholder="Ex: 0" step="0.01">
-        </div>
+    <div>
+      <label for="descontosOutros">Descontos mensais estimados</label>
+      <input type="number" id="descontosOutros" placeholder="Ex: 0" step="0.01">
+    </div>
+  </div>
+</div>
 
 
         <h2>Benefícios</h2>
 
-        <label for="valorVr">VR</label>
-        <input type="number" id="valorVr" placeholder="Ex: 800" step="0.01">
+            <div class="form-grid-2">
+            <div>
+                <label for="valorVr">VR</label>
+                <input type="number" id="valorVr" placeholder="Ex: 800" step="0.01">
+            </div>
 
-        <label for="valorVa">VA</label>
-        <input type="number" id="valorVa" placeholder="Ex: 817" step="0.01">
+            <div>
+                <label for="valorVa">VA</label>
+                <input type="number" id="valorVa" placeholder="Ex: 817" step="0.01">
+            </div>
+            </div>
 
-        <div id="beneficiosExtras">
-        <div class="dynamic-row">
-            <input type="text" class="beneficio-nome" placeholder="Nome do benefício">
-            <input type="number" class="beneficio-valor" placeholder="Valor" step="0.01">
-        </div>
-        </div>
+            <div id="beneficiosExtras">
+            <div class="dynamic-row">
+                <input type="text" class="beneficio-nome" placeholder="Nome do benefício">
+                <input type="number" class="beneficio-valor" placeholder="Valor" step="0.01">
+            </div>
+            </div>
 
-        <button type="button" class="secondary-button" onclick="adicionarBeneficio()">
-        Adicionar mais benefícios
-        </button>
-
-
-        <h2>Despesas principais</h2>
-
-        <label for="aluguel">Aluguel</label>
-        <input type="number" id="aluguel" placeholder="Ex: 2400" step="0.01">
-
-        <label for="energia">Energia</label>
-        <input type="number" id="energia" placeholder="Ex: 150" step="0.01">
-
-        <label for="agua">Água</label>
-        <input type="number" id="agua" placeholder="Ex: 80" step="0.01">
-
-        <label for="internet">Internet</label>
-        <input type="number" id="internet" placeholder="Ex: 100" step="0.01">
-
-        <label for="cartaoCredito">Cartão de crédito</label>
-        <input type="number" id="cartaoCredito" placeholder="Ex: 350" step="0.01">
+            <button type="button" class="auth-button auth-button-secondary" onclick="adicionarBeneficio()">
+            Adicionar mais benefícios
+            </button>
 
 
         <h2>Outras despesas</h2>
@@ -157,9 +152,10 @@
         </div>
         </div>
 
-        <button type="button" class="secondary-button" onclick="adicionarDespesa()">
+        <button type="button" class="auth-button auth-button-secondary" onclick="adicionarDespesa()">
         Adicionar despesa
         </button>
+
 
 
         <h2>Metas e investimentos</h2>
@@ -331,6 +327,35 @@
   }
 
   function alternarCamposContratacao() {
+  const tipo = document.getElementById("tipoContratacao").value;
+
+  const camposClt = document.getElementById("camposClt");
+  const camposPj = document.getElementById("camposPj");
+  const camposOutros = document.getElementById("camposOutros");
+
+  camposClt.classList.add("hidden");
+  camposPj.classList.add("hidden");
+  camposOutros.classList.add("hidden");
+
+  if (tipo === "CLT") {
+    camposClt.classList.remove("hidden");
+    return;
+  }
+
+  if (tipo === "PJ" || tipo === "MEI") {
+    camposPj.classList.remove("hidden");
+    return;
+  }
+
+  if (
+    tipo === "AUTONOMO" ||
+    tipo === "ESTAGIO" ||
+    tipo === "SERVIDOR_PUBLICO" ||
+    tipo === "OUTRO"
+  ) {
+    camposOutros.classList.remove("hidden");
+  }
+}
     const tipo = document.getElementById("tipoContratacao").value;
 
     document.getElementById("camposClt").classList.add("hidden");
@@ -353,9 +378,21 @@
     ) {
       document.getElementById("camposOutros").classList.remove("hidden");
     }
-  }
 
   function adicionarBeneficio() {
+  const container = document.getElementById("beneficiosExtras");
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" class="beneficio-nome" placeholder="Nome do benefício">
+    <input type="number" class="beneficio-valor" placeholder="Valor" step="0.01">
+    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+  `;
+
+  container.appendChild(row);
+}
     const container = document.getElementById("beneficiosExtras");
 
     const row = document.createElement("div");
@@ -368,22 +405,21 @@
     `;
 
     container.appendChild(row);
-  }
 
   function adicionarDespesa() {
-    const container = document.getElementById("despesasExtras");
+  const container = document.getElementById("despesasExtras");
 
-    const row = document.createElement("div");
-    row.className = "dynamic-row";
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
 
-    row.innerHTML = `
-      <input type="text" class="despesa-nome" placeholder="Nome da despesa">
-      <input type="number" class="despesa-valor" placeholder="Valor" step="0.01">
-      <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
-    `;
+  row.innerHTML = `
+    <input type="text" class="despesa-nome" placeholder="Nome da despesa">
+    <input type="number" class="despesa-valor" placeholder="Valor" step="0.01">
+    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+  `;
 
-    container.appendChild(row);
-  }
+  container.appendChild(row);
+}
 
   function coletarBeneficiosExtras() {
     const nomes = document.querySelectorAll(".beneficio-nome");
@@ -428,30 +464,19 @@
   }
 
   function calcularSalarioLiquidoEstimadoClt() {
-    const salarioBruto = getNumberValue("salarioBruto");
-    const dependentes = getNumberValue("dependentes");
-    const pensao = getNumberValue("pensaoAlimenticia");
-    const coparticipacao = getNumberValue("coparticipacaoMedica");
-    const vtPercentual = getNumberValue("valeTransportePercentual") / 100;
+  const salarioBruto = getNumberValue("salarioBruto");
+  const vtPercentual = getNumberValue("valeTransportePercentual") / 100;
 
-    if (salarioBruto <= 0) {
-      return 0;
-    }
-
-    const inss = calcularInss2026(salarioBruto);
-    const vt = salarioBruto * vtPercentual;
-    const deducaoDependentes = dependentes * 189.59;
-
-    let baseIrrf = salarioBruto - inss - deducaoDependentes - pensao;
-
-    if (baseIrrf < 0) {
-      baseIrrf = 0;
-    }
-
-    const irrf = calcularIrrfEstimado2026(baseIrrf);
-
-    return salarioBruto - inss - irrf - vt - coparticipacao - pensao;
+  if (salarioBruto <= 0) {
+    return 0;
   }
+
+  const inss = calcularInss2026(salarioBruto);
+  const irrf = calcularIrrfEstimado2026(salarioBruto - inss);
+  const vt = salarioBruto * vtPercentual;
+
+  return salarioBruto - inss - irrf - vt;
+} 
 
   function calcularInss2026(salario) {
     const teto = 8475.55;
