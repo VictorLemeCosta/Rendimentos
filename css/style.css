@@ -2715,3 +2715,54 @@ body.login-body .auth-card {
     align-items: flex-start;
   }
 }
+
+.panel-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 24px 0;
+}
+
+.primary-pill-button,
+.secondary-pill-button {
+  border-radius: 999px;
+  padding: 13px 22px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-pill-button {
+  border: 2px solid #005b96;
+  background: #005b96;
+  color: #ffffff;
+}
+
+.primary-pill-button:hover {
+  background: #003865;
+  border-color: #003865;
+  transform: translateY(-1px);
+}
+
+.secondary-pill-button {
+  border: 2px solid #005b96;
+  background: #ffffff;
+  color: #005b96;
+}
+
+.secondary-pill-button:hover {
+  background: #005b96;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.edit-profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.hidden {
+  display: none !important;
+}

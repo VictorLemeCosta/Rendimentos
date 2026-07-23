@@ -1,35 +1,88 @@
+window.abrirEditorFinanceiro = function abrirEditorFinanceiro(campoFoco = null) {
+  const editor = document.getElementById("financialEditorSection");
+
+  if (!editor) {
+    return;
+  }
+
+  editor.classList.remove("hidden");
+
+  setTimeout(() => {
+    editor.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    if (campoFoco) {
+      const campo = document.getElementById(campoFoco);
+
+      if (campo) {
+        campo.focus();
+      }
+    }
+  }, 100);
+};
+
+window.fecharEditorFinanceiro = function fecharEditorFinanceiro() {
+  const editor = document.getElementById("financialEditorSection");
+
+  if (!editor) {
+    return;
+  }
+
+  editor.classList.add("hidden");
+};
+
+window.mostrarCampoVr = function mostrarCampoVr() {
+  document.getElementById("vrEditorBlock")?.classList.remove("hidden");
+  document.getElementById("btnAdicionarVr")?.classList.add("hidden");
+};
+
+window.mostrarCampoVa = function mostrarCampoVa() {
+  document.getElementById("vaEditorBlock")?.classList.remove("hidden");
+  document.getElementById("btnAdicionarVa")?.classList.add("hidden");
+};
+
+window.adicionarBeneficioIndex = function adicionarBeneficioIndex(nome = "", valor = "") {
+  const container = document.getElementById("outrosBeneficiosEditor");
+
+  if (!container) {
+    return;
+  }
+
+  const row = document.createElement("div");
+  row.className = "beneficio-editor-row";
+
+  row.innerHTML = `
+    <input type="text" class="beneficio-editor-nome" placeholder="Nome do benefício" value="${nome}">
+    <input type="number" class="beneficio-editor-valor" placeholder="Valor" step="0.01" value="${valor}">
+    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+  `;
+
+  container.appendChild(row);
+};
+
 function preencherEditorFinanceiro(dados) {
   const financeiro = dados.financialProfile || {};
 
-  const salarioInput = document.getElementById("editSalarioBruto");
-  const vrInput = document.getElementById("editValorVr");
-  const vaInput = document.getElementById("editValorVa");
-
-  if (salarioInput) {
-    salarioInput.value = financeiro.salario_bruto || 0;
-  }
-
-  if (vrInput) {
-    vrInput.value = financeiro.valor_vr || "";
-  }
-
-  if (vaInput) {
-    vaInput.value = financeiro.valor_va || "";
-  }
+  setValueIfExists("editSalarioBruto", financeiro.salario_bruto || 0);
+  setValueIfExists("editValorVr", financeiro.valor_vr || "");
+  setValueIfExists("editValorVa", financeiro.valor_va || "");
 
   setValueIfExists("editBancoSalario", financeiro.banco_salario || "outro");
   setValueIfExists("editFornecedorVr", financeiro.fornecedor_vr || "outro");
   setValueIfExists("editFornecedorVa", financeiro.fornecedor_va || "outro");
+
   setValueIfExists("editValeTransportePercentual", financeiro.vale_transporte_percentual || 0);
   setValueIfExists("editHoraInicio", financeiro.hora_inicio || "09:00");
   setValueIfExists("editHoraFim", financeiro.hora_fim || "18:00");
 
   if (Number(financeiro.valor_vr || 0) > 0) {
-    mostrarCampoVr();
+    window.mostrarCampoVr();
   }
 
   if (Number(financeiro.valor_va || 0) > 0) {
-    mostrarCampoVa();
+    window.mostrarCampoVa();
   }
 
   renderizarBeneficiosExtras(dados.benefits || []);
@@ -53,35 +106,6 @@ function getNumberFromInput(id) {
   return Number(element.value);
 }
 
-function mostrarCampoVr() {
-  document.getElementById("vrEditorBlock")?.classList.remove("hidden");
-  document.getElementById("btnAdicionarVr")?.classList.add("hidden");
-}
-
-function mostrarCampoVa() {
-  document.getElementById("vaEditorBlock")?.classList.remove("hidden");
-  document.getElementById("btnAdicionarVa")?.classList.add("hidden");
-}
-
-function adicionarBeneficioIndex(nome = "", valor = "") {
-  const container = document.getElementById("outrosBeneficiosEditor");
-
-  if (!container) {
-    return;
-  }
-
-  const row = document.createElement("div");
-  row.className = "dynamic-row beneficio-editor-row";
-
-  row.innerHTML = `
-    <input type="text" class="beneficio-editor-nome" placeholder="Nome do benefício" value="${nome}">
-    <input type="number" class="beneficio-editor-valor" placeholder="Valor" step="0.01" value="${valor}">
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
-  `;
-
-  container.appendChild(row);
-}
-
 function renderizarBeneficiosExtras(beneficios) {
   const container = document.getElementById("outrosBeneficiosEditor");
 
@@ -99,7 +123,7 @@ function renderizarBeneficiosExtras(beneficios) {
       return;
     }
 
-    adicionarBeneficioIndex(nome, valor);
+    window.adicionarBeneficioIndex(nome, valor);
   });
 }
 
@@ -124,7 +148,7 @@ function coletarBeneficiosExtrasIndex() {
   return beneficios;
 }
 
-async function salvarDadosFinanceirosIndex() {
+window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex() {
   const {
     data: { user },
     error: userError
@@ -184,10 +208,10 @@ async function salvarDadosFinanceirosIndex() {
 
   await carregarDadosUsuario();
 
-    fecharEditorFinanceiro();
+  window.fecharEditorFinanceiro();
 
-    alert("Dados atualizados com sucesso!");
-}
+  alert("Dados atualizados com sucesso!");
+};
 
 async function salvarBeneficiosExtrasIndex(userId) {
   const beneficiosExtras = coletarBeneficiosExtrasIndex();
@@ -253,38 +277,3 @@ function calcularSalarioLiquidoEstimadoIndex() {
 window.addEventListener("financeHubDataLoaded", function (event) {
   preencherEditorFinanceiro(event.detail);
 });
-
-function abrirEditorFinanceiro(campoFoco = null) {
-  const editor = document.getElementById("financialEditorSection");
-
-  if (!editor) {
-    return;
-  }
-
-  editor.classList.remove("hidden");
-
-  setTimeout(() => {
-    editor.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-    if (campoFoco) {
-      const campo = document.getElementById(campoFoco);
-
-      if (campo) {
-        campo.focus();
-      }
-    }
-  }, 100);
-}
-
-function fecharEditorFinanceiro() {
-  const editor = document.getElementById("financialEditorSection");
-
-  if (!editor) {
-    return;
-  }
-
-  editor.classList.add("hidden");
-}

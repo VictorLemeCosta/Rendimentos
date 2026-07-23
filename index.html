@@ -76,16 +76,6 @@
 
 <section class="edit-profile-section hidden" id="financialEditorSection">
 
-  <div class="edit-profile-actions">
-    <button type="button" class="secondary-pill-button" onclick="fecharEditorFinanceiro()">
-      Cancelar
-    </button>
-
-    <button type="button" class="primary-pill-button" onclick="salvarDadosFinanceirosIndex()">
-      Salvar alterações
-    </button>
-  </div>
-
   <div class="edit-profile-header">
     <div>
       <h2>Editar dados financeiros</h2>
@@ -94,10 +84,6 @@
         As alterações serão salvas no banco de dados.
       </p>
     </div>
-
-    <button type="button" class="edit-save-button" onclick="salvarDadosFinanceirosIndex()">
-      Salvar alterações
-    </button>
   </div>
 
   <div class="edit-block">
@@ -137,81 +123,18 @@
     </div>
   </div>
 
-  <div class="edit-block">
-    <h3>Benefícios</h3>
+  <!-- demais blocos de Benefícios, Outros benefícios e Jornada ficam aqui -->
 
-    <div id="vrEditorBlock" class="edit-grid edit-grid-2 hidden">
-      <div class="edit-field">
-        <label for="editValorVr">VR</label>
-        <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
-      </div>
-
-      <div class="edit-field">
-        <label for="editFornecedorVr">Fornecedor do VR</label>
-        <select id="editFornecedorVr">
-          <option value="caju">Caju</option>
-          <option value="sodexo">Sodexo</option>
-          <option value="alelo">Alelo</option>
-          <option value="ticket">Ticket</option>
-          <option value="vr">VR Benefícios</option>
-          <option value="outro">Outro</option>
-        </select>
-      </div>
-    </div>
-
-    <button type="button" id="btnAdicionarVr" class="secondary-pill-button" onclick="mostrarCampoVr()">
-      Adicionar VR
+  <div class="edit-profile-actions">
+    <button type="button" class="secondary-pill-button" onclick="fecharEditorFinanceiro()">
+      Cancelar
     </button>
 
-    <div id="vaEditorBlock" class="edit-grid edit-grid-2 hidden">
-      <div class="edit-field">
-        <label for="editValorVa">VA</label>
-        <input type="number" id="editValorVa" step="0.01" placeholder="Ex: 817">
-      </div>
-
-      <div class="edit-field">
-        <label for="editFornecedorVa">Fornecedor do VA</label>
-        <select id="editFornecedorVa">
-          <option value="caju">Caju</option>
-          <option value="sodexo">Sodexo</option>
-          <option value="alelo">Alelo</option>
-          <option value="ticket">Ticket</option>
-          <option value="vr">VR Benefícios</option>
-          <option value="outro">Outro</option>
-        </select>
-      </div>
-    </div>
-
-    <button type="button" id="btnAdicionarVa" class="secondary-pill-button" onclick="mostrarCampoVa()">
-      Adicionar VA
+    <button type="button" class="primary-pill-button" onclick="salvarDadosFinanceirosIndex()">
+      Salvar alterações
     </button>
   </div>
 
-  <div class="edit-block">
-    <h3>Outros benefícios</h3>
-
-    <div id="outrosBeneficiosEditor"></div>
-
-    <button type="button" class="secondary-pill-button" onclick="adicionarBeneficioIndex()">
-      Adicionar outro benefício
-    </button>
-  </div>
-
-  <div class="edit-block">
-    <h3>Jornada</h3>
-
-    <div class="edit-grid edit-grid-2">
-      <div class="edit-field">
-        <label for="editHoraInicio">Início da jornada</label>
-        <input type="time" id="editHoraInicio">
-      </div>
-
-      <div class="edit-field">
-        <label for="editHoraFim">Fim da jornada</label>
-        <input type="time" id="editHoraFim">
-      </div>
-    </div>
-  </div>
 </section>
 
   <div class="panel-actions-row">

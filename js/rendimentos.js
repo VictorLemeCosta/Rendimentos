@@ -49,6 +49,48 @@ function isWorkDay(date) {
   return diasTrabalho.includes(day);
 }
 
+function getCardClassByProvider(provider) {
+  const classes = {
+    nubank: "nubank",
+    itau: "itau",
+    santander: "santander",
+    bradesco: "bradesco",
+    bb: "bb",
+    caixa: "caixa",
+
+    caju: "caju",
+    sodexo: "sodexo",
+    alelo: "alelo",
+    ticket: "ticket",
+    vr: "vr-beneficios",
+
+    outro: "outro"
+  };
+
+  return classes[provider] || "outro";
+}
+
+function getProviderEmoji(provider, type = "default") {
+  const emojis = {
+    nubank: "💜",
+    itau: "🟧",
+    santander: "🔴",
+    bradesco: "🔺",
+    bb: "🟡",
+    caixa: "🔵",
+
+    caju: "🍊",
+    sodexo: "🍽️",
+    alelo: "🟢",
+    ticket: "🎟️",
+    vr: "🛒",
+
+    outro: type === "salary" ? "🏦" : "💳"
+  };
+
+  return emojis[provider] || emojis.outro;
+}
+
 function montarIncomeItemsFromConfig(config) {
   const items = [];
 
