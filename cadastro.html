@@ -228,6 +228,15 @@
 
       const user = data.user;
 
+      const {
+            data: { session }
+            } = await window.supabaseClient.auth.getSession();
+
+            if (!session) {
+            alert("Usuário criado, mas ainda não há sessão ativa. Desative a confirmação de e-mail no Supabase para testar o cadastro agora.");
+            return;
+            }
+
       if (!user) {
         alert("Cadastro iniciado. Verifique seu e-mail para confirmar a conta.");
         window.location.href = "login.html";
