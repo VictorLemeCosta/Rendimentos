@@ -214,9 +214,17 @@
       });
 
       if (error) {
-        alert("Erro ao criar usuário: " + error.message);
+        console.error("Erro completo do Supabase Auth:", error);
+
+        alert(
+            "Erro ao criar usuário:\n" +
+            "Mensagem: " + (error.message || "Sem mensagem") + "\n" +
+            "Status: " + (error.status || "Sem status") + "\n" +
+            "Código: " + (error.code || "Sem código")
+        );
+
         return;
-      }
+        }
 
       const user = data.user;
 
