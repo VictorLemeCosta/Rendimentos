@@ -1834,3 +1834,94 @@ INDEX + FINANCEIRO + INVESTIMENTOS
     font-size: 26px;
   }
 }
+
+.auth-form select {
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+  background: #ffffff;
+}
+
+.auth-form select:focus {
+  border-color: #005b96;
+  box-shadow: 0 0 0 3px rgba(0, 91, 150, 0.15);
+}
+
+.hidden {
+  display: none;
+}
+
+.conditional-fields {
+  margin-top: 12px;
+  padding: 18px;
+  background: #f6f8fb;
+  border: 1px solid #e1e8f0;
+  border-radius: 18px;
+}
+
+.dynamic-row {
+  display: grid;
+  grid-template-columns: 1fr 160px auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.secondary-button {
+  margin-top: 8px;
+  border: 1px solid #005b96;
+  border-radius: 999px;
+  padding: 11px 16px;
+  background: #ffffff;
+  color: #005b96;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #eef6fb;
+}
+
+.remove-button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #ffe8e8;
+  color: #a40000;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.password-strength {
+  font-size: 13px;
+  font-weight: 800;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #eef2f6;
+  color: #5a6b85;
+}
+
+.password-strength.weak {
+  background: #ffe6e6;
+  color: #b00020;
+}
+
+.password-strength.medium {
+  background: #fff4d6;
+  color: #8a5a00;
+}
+
+.password-strength.strong {
+  background: #e5f7ec;
+  color: #087a35;
+}
+
+@media (max-width: 700px) {
+  .dynamic-row {
+    grid-template-columns: 1fr;
+  }
+}

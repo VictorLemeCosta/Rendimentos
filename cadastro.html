@@ -20,30 +20,115 @@
 
       <div class="auth-form">
 
-        <h2>Dados de acesso</h2>
+        <h2>Dados obrigatórios</h2>
 
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Seu nome">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" placeholder="Digite seu nome completo" required>
 
         <label for="email">E-mail</label>
-        <input type="email" id="email" placeholder="seuemail@exemplo.com">
+        <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
 
         <label for="senha">Senha</label>
-        <input type="password" id="senha" placeholder="Crie uma senha">
+        <input 
+        type="password" 
+        id="senha" 
+        placeholder="Crie uma senha forte" 
+        required 
+        oninput="avaliarForcaSenha()"
+        >
 
-        <h2>Rendimentos</h2>
+        <div id="passwordStrength" class="password-strength">
+        Força da senha: -
+        </div>
+
+
+        <h2>Tipo de contratação</h2>
+
+        <label for="tipoContratacao">Modelo de contratação</label>
+        <select id="tipoContratacao" onchange="alternarCamposContratacao()">
+        <option value="">Selecionar depois</option>
+        <option value="CLT">CLT</option>
+        <option value="PJ">PJ</option>
+        <option value="MEI">MEI</option>
+        <option value="AUTONOMO">Autônomo</option>
+        <option value="ESTAGIO">Estágio</option>
+        <option value="SERVIDOR_PUBLICO">Servidor público</option>
+        <option value="OUTRO">Outro</option>
+        </select>
+
+
+        <div id="camposClt" class="conditional-fields hidden">
+        <h2>Dados CLT</h2>
 
         <label for="salarioBruto">Salário bruto</label>
         <input type="number" id="salarioBruto" placeholder="Ex: 6000" step="0.01">
 
-        <label for="salarioLiquido">Salário líquido estimado</label>
-        <input type="number" id="salarioLiquido" placeholder="Ex: 4800" step="0.01">
+        <label for="dependentes">Dependentes para IRRF</label>
+        <input type="number" id="dependentes" placeholder="Ex: 0" min="0">
 
-        <label for="valorVrVa">VR/VA total</label>
-        <input type="number" id="valorVrVa" placeholder="Ex: 1617" step="0.01">
+        <label for="pensaoAlimenticia">Pensão alimentícia judicial</label>
+        <input type="number" id="pensaoAlimenticia" placeholder="Ex: 0" step="0.01">
 
-        <label for="outrosBeneficios">Outros benefícios</label>
-        <input type="number" id="outrosBeneficios" placeholder="Ex: 0" step="0.01">
+        <label for="coparticipacaoMedica">Coparticipação médica</label>
+        <input type="number" id="coparticipacaoMedica" placeholder="Ex: 0" step="0.01">
+
+        <label for="valeTransportePercentual">Vale-transporte</label>
+        <select id="valeTransportePercentual">
+            <option value="0">Não descontar</option>
+            <option value="1">Sim, 1%</option>
+            <option value="2">Sim, 2%</option>
+            <option value="3">Sim, 3%</option>
+            <option value="4">Sim, 4%</option>
+            <option value="5">Sim, 5%</option>
+            <option value="6">Sim, 6%</option>
+        </select>
+        </div>
+
+
+        <div id="camposPj" class="conditional-fields hidden">
+        <h2>Dados PJ / MEI</h2>
+
+        <label for="receitaBrutaPj">Receita bruta mensal</label>
+        <input type="number" id="receitaBrutaPj" placeholder="Ex: 8000" step="0.01">
+
+        <label for="impostoPjPercentual">Imposto mensal estimado em percentual</label>
+        <input type="number" id="impostoPjPercentual" placeholder="Ex: 6" step="0.01">
+
+        <label for="custoContadorPj">Custo mensal com contador</label>
+        <input type="number" id="custoContadorPj" placeholder="Ex: 150" step="0.01">
+        </div>
+
+
+        <div id="camposOutros" class="conditional-fields hidden">
+        <h2>Dados de renda</h2>
+
+        <label for="rendaMensalOutros">Renda mensal estimada</label>
+        <input type="number" id="rendaMensalOutros" placeholder="Ex: 3000" step="0.01">
+
+        <label for="descontosOutros">Descontos mensais estimados</label>
+        <input type="number" id="descontosOutros" placeholder="Ex: 0" step="0.01">
+        </div>
+
+
+        <h2>Benefícios</h2>
+
+        <label for="valorVr">VR</label>
+        <input type="number" id="valorVr" placeholder="Ex: 800" step="0.01">
+
+        <label for="valorVa">VA</label>
+        <input type="number" id="valorVa" placeholder="Ex: 817" step="0.01">
+
+        <div id="beneficiosExtras">
+        <div class="dynamic-row">
+            <input type="text" class="beneficio-nome" placeholder="Nome do benefício">
+            <input type="number" class="beneficio-valor" placeholder="Valor" step="0.01">
+        </div>
+        </div>
+
+        <button type="button" class="secondary-button" onclick="adicionarBeneficio()">
+        Adicionar mais benefícios
+        </button>
+
 
         <h2>Despesas principais</h2>
 
@@ -62,8 +147,20 @@
         <label for="cartaoCredito">Cartão de crédito</label>
         <input type="number" id="cartaoCredito" placeholder="Ex: 350" step="0.01">
 
-        <label for="outrasDespesas">Outras despesas</label>
-        <input type="number" id="outrasDespesas" placeholder="Ex: 0" step="0.01">
+
+        <h2>Outras despesas</h2>
+
+        <div id="despesasExtras">
+        <div class="dynamic-row">
+            <input type="text" class="despesa-nome" placeholder="Nome da despesa">
+            <input type="number" class="despesa-valor" placeholder="Valor" step="0.01">
+        </div>
+        </div>
+
+        <button type="button" class="secondary-button" onclick="adicionarDespesa()">
+        Adicionar despesa
+        </button>
+
 
         <h2>Metas e investimentos</h2>
 
@@ -85,7 +182,10 @@
         <label for="metaCarro">Meta para carro</label>
         <input type="number" id="metaCarro" placeholder="Ex: 40000" step="0.01">
 
-        <button onclick="cadastrar()" class="auth-button">Criar conta</button>
+
+        <button type="button" onclick="cadastrar()" class="auth-button">
+        Criar conta
+        </button>
 
         <p class="auth-link">
           Já tem conta?
@@ -178,5 +278,434 @@
     }
   </script>
 
+  <script>
+  function getNumberValue(id) {
+    const element = document.getElementById(id);
+
+    if (!element || element.value === "") {
+      return 0;
+    }
+
+    return Number(element.value);
+  }
+
+  function avaliarForcaSenha() {
+    const senha = document.getElementById("senha").value;
+    const indicador = document.getElementById("passwordStrength");
+
+    let pontos = 0;
+
+    if (senha.length >= 8) pontos++;
+    if (/[A-Z]/.test(senha)) pontos++;
+    if (/[a-z]/.test(senha)) pontos++;
+    if (/[0-9]/.test(senha)) pontos++;
+    if (/[^A-Za-z0-9]/.test(senha)) pontos++;
+
+    indicador.classList.remove("weak", "medium", "strong");
+
+    if (!senha) {
+      indicador.textContent = "Força da senha: -";
+      return;
+    }
+
+    if (pontos <= 2) {
+      indicador.textContent = "Força da senha: fraca";
+      indicador.classList.add("weak");
+    } else if (pontos <= 4) {
+      indicador.textContent = "Força da senha: média";
+      indicador.classList.add("medium");
+    } else {
+      indicador.textContent = "Força da senha: forte";
+      indicador.classList.add("strong");
+    }
+  }
+
+  function senhaEhForte(senha) {
+    return (
+      senha.length >= 8 &&
+      /[A-Z]/.test(senha) &&
+      /[a-z]/.test(senha) &&
+      /[0-9]/.test(senha) &&
+      /[^A-Za-z0-9]/.test(senha)
+    );
+  }
+
+  function alternarCamposContratacao() {
+    const tipo = document.getElementById("tipoContratacao").value;
+
+    document.getElementById("camposClt").classList.add("hidden");
+    document.getElementById("camposPj").classList.add("hidden");
+    document.getElementById("camposOutros").classList.add("hidden");
+
+    if (tipo === "CLT") {
+      document.getElementById("camposClt").classList.remove("hidden");
+    }
+
+    if (tipo === "PJ" || tipo === "MEI") {
+      document.getElementById("camposPj").classList.remove("hidden");
+    }
+
+    if (
+      tipo === "AUTONOMO" ||
+      tipo === "ESTAGIO" ||
+      tipo === "SERVIDOR_PUBLICO" ||
+      tipo === "OUTRO"
+    ) {
+      document.getElementById("camposOutros").classList.remove("hidden");
+    }
+  }
+
+  function adicionarBeneficio() {
+    const container = document.getElementById("beneficiosExtras");
+
+    const row = document.createElement("div");
+    row.className = "dynamic-row";
+
+    row.innerHTML = `
+      <input type="text" class="beneficio-nome" placeholder="Nome do benefício">
+      <input type="number" class="beneficio-valor" placeholder="Valor" step="0.01">
+      <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+    `;
+
+    container.appendChild(row);
+  }
+
+  function adicionarDespesa() {
+    const container = document.getElementById("despesasExtras");
+
+    const row = document.createElement("div");
+    row.className = "dynamic-row";
+
+    row.innerHTML = `
+      <input type="text" class="despesa-nome" placeholder="Nome da despesa">
+      <input type="number" class="despesa-valor" placeholder="Valor" step="0.01">
+      <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+    `;
+
+    container.appendChild(row);
+  }
+
+  function coletarBeneficiosExtras() {
+    const nomes = document.querySelectorAll(".beneficio-nome");
+    const valores = document.querySelectorAll(".beneficio-valor");
+
+    const beneficios = [];
+
+    nomes.forEach((nomeInput, index) => {
+      const nome = nomeInput.value.trim();
+      const valor = valores[index].value ? Number(valores[index].value) : 0;
+
+      if (nome && valor > 0) {
+        beneficios.push({
+          nome,
+          valor
+        });
+      }
+    });
+
+    return beneficios;
+  }
+
+  function coletarDespesasExtras() {
+    const nomes = document.querySelectorAll(".despesa-nome");
+    const valores = document.querySelectorAll(".despesa-valor");
+
+    const despesas = [];
+
+    nomes.forEach((nomeInput, index) => {
+      const nome = nomeInput.value.trim();
+      const valor = valores[index].value ? Number(valores[index].value) : 0;
+
+      if (nome && valor > 0) {
+        despesas.push({
+          nome,
+          valor
+        });
+      }
+    });
+
+    return despesas;
+  }
+
+  function calcularSalarioLiquidoEstimadoClt() {
+    const salarioBruto = getNumberValue("salarioBruto");
+    const dependentes = getNumberValue("dependentes");
+    const pensao = getNumberValue("pensaoAlimenticia");
+    const coparticipacao = getNumberValue("coparticipacaoMedica");
+    const vtPercentual = getNumberValue("valeTransportePercentual") / 100;
+
+    if (salarioBruto <= 0) {
+      return 0;
+    }
+
+    const inss = calcularInss2026(salarioBruto);
+    const vt = salarioBruto * vtPercentual;
+    const deducaoDependentes = dependentes * 189.59;
+
+    let baseIrrf = salarioBruto - inss - deducaoDependentes - pensao;
+
+    if (baseIrrf < 0) {
+      baseIrrf = 0;
+    }
+
+    const irrf = calcularIrrfEstimado2026(baseIrrf);
+
+    return salarioBruto - inss - irrf - vt - coparticipacao - pensao;
+  }
+
+  function calcularInss2026(salario) {
+    const teto = 8475.55;
+
+    const base = Math.min(salario, teto);
+
+    let inss = 0;
+
+    if (base <= 1621.00) {
+      inss = base * 0.075;
+    } else if (base <= 2902.84) {
+      inss = (1621.00 * 0.075) +
+        ((base - 1621.00) * 0.09);
+    } else if (base <= 4354.27) {
+      inss = (1621.00 * 0.075) +
+        ((2902.84 - 1621.00) * 0.09) +
+        ((base - 2902.84) * 0.12);
+    } else {
+      inss = (1621.00 * 0.075) +
+        ((2902.84 - 1621.00) * 0.09) +
+        ((4354.27 - 2902.84) * 0.12) +
+        ((base - 4354.27) * 0.14);
+    }
+
+    return Math.round(inss * 100) / 100;
+  }
+
+  function calcularIrrfEstimado2026(base) {
+    let irrfTabela = 0;
+
+    if (base <= 2428.80) {
+      irrfTabela = 0;
+    } else if (base <= 2826.65) {
+      irrfTabela = base * 0.075 - 182.16;
+    } else if (base <= 3751.05) {
+      irrfTabela = base * 0.15 - 394.16;
+    } else if (base <= 4664.68) {
+      irrfTabela = base * 0.225 - 675.49;
+    } else {
+      irrfTabela = base * 0.275 - 908.73;
+    }
+
+    if (irrfTabela < 0) {
+      irrfTabela = 0;
+    }
+
+    let redutor = 0;
+
+    if (base <= 5000) {
+      redutor = irrfTabela;
+    } else if (base <= 7350) {
+      redutor = 978.62 - (0.133145 * base);
+
+      if (redutor < 0) {
+        redutor = 0;
+      }
+    }
+
+    const irrfFinal = irrfTabela - redutor;
+
+    return Math.max(0, Math.round(irrfFinal * 100) / 100);
+  }
+
+  function calcularLiquidoPjEstimado() {
+    const receita = getNumberValue("receitaBrutaPj");
+    const impostoPercentual = getNumberValue("impostoPjPercentual") / 100;
+    const contador = getNumberValue("custoContadorPj");
+
+    if (receita <= 0) {
+      return 0;
+    }
+
+    return receita - (receita * impostoPercentual) - contador;
+  }
+
+  function calcularRendaLiquidaEstimativa() {
+    const tipo = document.getElementById("tipoContratacao").value;
+
+    if (tipo === "CLT") {
+      return calcularSalarioLiquidoEstimadoClt();
+    }
+
+    if (tipo === "PJ" || tipo === "MEI") {
+      return calcularLiquidoPjEstimado();
+    }
+
+    const renda = getNumberValue("rendaMensalOutros");
+    const descontos = getNumberValue("descontosOutros");
+
+    return renda - descontos;
+  }
+
+  async function cadastrar() {
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+    const tipoContratacao = document.getElementById("tipoContratacao").value;
+
+    if (!nome || !email || !senha) {
+      alert("Preencha nome completo, e-mail e senha.");
+      return;
+    }
+
+    if (nome.split(" ").length < 2) {
+      alert("Informe seu nome completo.");
+      return;
+    }
+
+    if (!senhaEhForte(senha)) {
+      alert("A senha precisa ter no mínimo 8 caracteres, letra maiúscula, letra minúscula, número e caractere especial.");
+      return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: senha
+    });
+
+    if (error) {
+      alert("Erro ao criar usuário: " + error.message);
+      return;
+    }
+
+    const user = data.user;
+
+    if (!user) {
+      alert("Cadastro iniciado. Verifique seu e-mail para confirmar a conta.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    const { error: profileError } = await supabaseClient
+      .from("profiles")
+      .insert({
+        id: user.id,
+        nome: nome,
+        email: email
+      });
+
+    if (profileError) {
+      alert("Erro ao salvar perfil: " + profileError.message);
+      return;
+    }
+
+    const beneficioVr = getNumberValue("valorVr");
+    const beneficioVa = getNumberValue("valorVa");
+    const salarioLiquidoEstimado = calcularRendaLiquidaEstimativa();
+
+    const { error: financialError } = await supabaseClient
+      .from("financial_profile")
+      .insert({
+        user_id: user.id,
+
+        tipo_contratacao: tipoContratacao || null,
+
+        salario_bruto: getNumberValue("salarioBruto"),
+        salario_liquido: salarioLiquidoEstimado,
+
+        valor_vr_va: beneficioVr + beneficioVa,
+        outros_beneficios: 0,
+
+        dependentes: getNumberValue("dependentes"),
+        pensao_alimenticia: getNumberValue("pensaoAlimenticia"),
+        coparticipacao_medica: getNumberValue("coparticipacaoMedica"),
+        vale_transporte_percentual: getNumberValue("valeTransportePercentual"),
+
+        receita_bruta_pj: getNumberValue("receitaBrutaPj"),
+        imposto_pj_percentual: getNumberValue("impostoPjPercentual"),
+        custo_contador_pj: getNumberValue("custoContadorPj"),
+
+        renda_mensal_outros: getNumberValue("rendaMensalOutros"),
+        descontos_outros: getNumberValue("descontosOutros"),
+
+        aluguel: getNumberValue("aluguel"),
+        energia: getNumberValue("energia"),
+        agua: getNumberValue("agua"),
+        internet: getNumberValue("internet"),
+        cartao_credito: getNumberValue("cartaoCredito"),
+
+        reserva_emergencia: getNumberValue("reservaEmergencia"),
+        investimentos: getNumberValue("investimentos"),
+        rendimentos_mensais: getNumberValue("rendimentosMensais"),
+
+        meta_casa: getNumberValue("metaCasa"),
+        meta_filha: getNumberValue("metaFilha"),
+        meta_carro: getNumberValue("metaCarro")
+      });
+
+    if (financialError) {
+      alert("Erro ao salvar dados financeiros: " + financialError.message);
+      return;
+    }
+
+    const beneficiosExtras = coletarBeneficiosExtras();
+
+    const beneficiosParaSalvar = [];
+
+    if (beneficioVr > 0) {
+      beneficiosParaSalvar.push({
+        user_id: user.id,
+        nome: "VR",
+        valor: beneficioVr
+      });
+    }
+
+    if (beneficioVa > 0) {
+      beneficiosParaSalvar.push({
+        user_id: user.id,
+        nome: "VA",
+        valor: beneficioVa
+      });
+    }
+
+    beneficiosExtras.forEach((beneficio) => {
+      beneficiosParaSalvar.push({
+        user_id: user.id,
+        nome: beneficio.nome,
+        valor: beneficio.valor
+      });
+    });
+
+    if (beneficiosParaSalvar.length > 0) {
+      const { error: benefitsError } = await supabaseClient
+        .from("user_benefits")
+        .insert(beneficiosParaSalvar);
+
+      if (benefitsError) {
+        alert("Erro ao salvar benefícios: " + benefitsError.message);
+        return;
+      }
+    }
+
+    const despesasExtras = coletarDespesasExtras();
+
+    if (despesasExtras.length > 0) {
+      const despesasParaSalvar = despesasExtras.map((despesa) => ({
+        user_id: user.id,
+        nome: despesa.nome,
+        valor: despesa.valor
+      }));
+
+      const { error: expensesError } = await supabaseClient
+        .from("user_expenses")
+        .insert(despesasParaSalvar);
+
+      if (expensesError) {
+        alert("Erro ao salvar despesas extras: " + expensesError.message);
+        return;
+      }
+    }
+
+    alert("Cadastro realizado com sucesso!");
+    window.location.href = "index.html";
+  }
+</script>  
 </body>
 </html>
