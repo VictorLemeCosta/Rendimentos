@@ -55,6 +55,11 @@
   <option value="OUTRO">Outro</option>
 </select>
 
+<h2>Renda principal</h2>
+
+<label for="salarioBruto">Salário ou renda bruta mensal</label>
+<input type="number" id="salarioBruto" placeholder="Ex: 6000" step="0.01" required>s
+
 <h2>Jornada de trabalho</h2>
 
 <div class="form-grid-3">
@@ -243,147 +248,7 @@
     </div>
   </div>
 
-  <script>
-    function getNumberValue(id) {
-      const value = document.getElementById(id).value;
-      return value ? Number(value) : 0;
-    }
-
-    async function cadastrar() {
-        const btnCadastrar = document.getElementById("btnCadastrar");
-        btnCadastrar.disabled = true;
-        btnCadastrar.textContent = "Criando conta...";
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const senha = document.getElementById("senha").value;
-
-      const salarioBruto = getNumberValue("salarioBruto");
-
-        if (salarioBruto <= 0) {
-        alert("Informe o salário bruto para continuar.");
-        btnCadastrar.disabled = false;
-        btnCadastrar.textContent = "Criar conta";
-        return;
-        }
-
-      if (!nome || !email || !senha) {
-        alert("Preencha nome, e-mail e senha.");
-        return;
-      }
-
-      const { data, error } = await window.supabaseClient.auth.signUp({
-  email: email,
-  password: senha
-});
-
-if (error) {
-  if (error.code === "user_already_exists" || error.message.includes("already registered")) {
-    const { error: loginError } = await window.supabaseClient.auth.signInWithPassword({
-      email: email,
-      password: senha
-    });
-
-    if (loginError) {
-      alert(
-        "Este e-mail já está cadastrado, mas não foi possível fazer login automático. " +
-        "Verifique se a senha está correta."
-      );
-      return;
-    }
-
-    window.location.href = "index.html";
-    return;
-  }
-
-  alert(
-    "Erro ao criar usuário:\n" +
-    "Mensagem: " + (error.message || "Sem mensagem") + "\n" +
-    "Status: " + (error.status || "Sem status") + "\n" +
-    "Código: " + (error.code || "Sem código")
-  );
-
-  return;
-}
-
-      const user = data.user;
-
-      const {
-            data: { session }
-            } = await window.supabaseClient.auth.getSession();
-
-            if (!session) {
-            alert("Usuário criado, mas ainda não há sessão ativa. Desative a confirmação de e-mail no Supabase para testar o cadastro agora.");
-            return;
-            }
-
-      if (!user) {
-        alert("Cadastro iniciado. Verifique seu e-mail para confirmar a conta.");
-        window.location.href = "login.html";
-        return;
-      }
-
-      const { error: profileError } = await supabaseClient
-        .from("profiles")
-        .insert({
-          id: user.id,
-          nome: nome,
-          email: email
-        });
-
-      if (profileError) {
-        alert("Erro ao salvar perfil: " + profileError.message);
-        return;
-      }
-
-      const { error: financialError } = await supabaseClient
-        .from("financial_profile")
-        .insert({
-          user_id: user.id,
-
-          salario_bruto: getNumberValue("salarioBruto"),
-          salario_liquido: getNumberValue("salarioLiquido"),
-          valor_vr_va: getNumberValue("valorVrVa"),
-          outros_beneficios: getNumberValue("outrosBeneficios"),
-
-          valor_vr: beneficioVr,
-          valor_va: beneficioVa,
-          valor_vr_va: beneficioVr + beneficioVa,
-
-          jornada_tipo: document.getElementById("jornadaTipo").value,
-          hora_inicio: document.getElementById("horaInicio").value,
-          hora_fim: document.getElementById("horaFim").value,
-          dias_trabalho: obterDiasTrabalho(),
-          folga_semanal: document.getElementById("jornadaTipo").value === "6X1"
-          ? Number(document.getElementById("folgaSemanal").value)
-          : null,
-
-          aluguel: getNumberValue("aluguel"),
-          energia: getNumberValue("energia"),
-          agua: getNumberValue("agua"),
-          internet: getNumberValue("internet"),
-          cartao_credito: getNumberValue("cartaoCredito"),
-          outras_despesas: getNumberValue("outrasDespesas"),
-
-          reserva_emergencia: getNumberValue("reservaEmergencia"),
-          investimentos: getNumberValue("investimentos"),
-          rendimentos_mensais: getNumberValue("rendimentosMensais"),
-
-          meta_casa: getNumberValue("metaCasa"),
-          meta_filha: getNumberValue("metaFilha"),
-          meta_carro: getNumberValue("metaCarro")
-        });
-
-      if (financialError) {
-        alert("Erro ao salvar dados financeiros: " + financialError.message);
-        return;
-      }
-
-      alert("Cadastro realizado com sucesso!");
-      window.location.href = "index.html";
-    }
-  </script>
-
-  <script>
+<script>
   function getNumberValue(id) {
     const element = document.getElementById(id);
 
@@ -392,6 +257,24 @@ if (error) {
     }
 
     return Number(element.value);
+  }
+
+  function restaurarBotaoCadastro() {
+    const btnCadastrar = document.getElementById("btnCadastrar");
+
+    if (btnCadastrar) {
+      btnCadastrar.disabled = false;
+      btnCadastrar.textContent = "Criar conta";
+    }
+  }
+
+  function travarBotaoCadastro() {
+    const btnCadastrar = document.getElementById("btnCadastrar");
+
+    if (btnCadastrar) {
+      btnCadastrar.disabled = true;
+      btnCadastrar.textContent = "Criando conta...";
+    }
   }
 
   function avaliarForcaSenha() {
@@ -436,47 +319,24 @@ if (error) {
   }
 
   function alternarCamposContratacao() {
-  const tipo = document.getElementById("tipoContratacao").value;
-
-  const camposClt = document.getElementById("camposClt");
-  const camposPj = document.getElementById("camposPj");
-  const camposOutros = document.getElementById("camposOutros");
-
-  camposClt.classList.add("hidden");
-  camposPj.classList.add("hidden");
-  camposOutros.classList.add("hidden");
-
-  if (tipo === "CLT") {
-    camposClt.classList.remove("hidden");
-    return;
-  }
-
-  if (tipo === "PJ" || tipo === "MEI") {
-    camposPj.classList.remove("hidden");
-    return;
-  }
-
-  if (
-    tipo === "AUTONOMO" ||
-    tipo === "ESTAGIO" ||
-    tipo === "SERVIDOR_PUBLICO" ||
-    tipo === "OUTRO"
-  ) {
-    camposOutros.classList.remove("hidden");
-  }
-}
     const tipo = document.getElementById("tipoContratacao").value;
 
-    document.getElementById("camposClt").classList.add("hidden");
-    document.getElementById("camposPj").classList.add("hidden");
-    document.getElementById("camposOutros").classList.add("hidden");
+    const camposClt = document.getElementById("camposClt");
+    const camposPj = document.getElementById("camposPj");
+    const camposOutros = document.getElementById("camposOutros");
+
+    camposClt.classList.add("hidden");
+    camposPj.classList.add("hidden");
+    camposOutros.classList.add("hidden");
 
     if (tipo === "CLT") {
-      document.getElementById("camposClt").classList.remove("hidden");
+      camposClt.classList.remove("hidden");
+      return;
     }
 
     if (tipo === "PJ" || tipo === "MEI") {
-      document.getElementById("camposPj").classList.remove("hidden");
+      camposPj.classList.remove("hidden");
+      return;
     }
 
     if (
@@ -485,23 +345,54 @@ if (error) {
       tipo === "SERVIDOR_PUBLICO" ||
       tipo === "OUTRO"
     ) {
-      document.getElementById("camposOutros").classList.remove("hidden");
+      camposOutros.classList.remove("hidden");
+    }
+  }
+
+  function alternarCamposJornada() {
+    const tipo = document.getElementById("jornadaTipo").value;
+
+    document.getElementById("campoFolga6x1").classList.add("hidden");
+    document.getElementById("campoJornadaPersonalizada").classList.add("hidden");
+
+    if (tipo === "6X1") {
+      document.getElementById("campoFolga6x1").classList.remove("hidden");
     }
 
+    if (tipo === "PERSONALIZADO") {
+      document.getElementById("campoJornadaPersonalizada").classList.remove("hidden");
+    }
+  }
+
+  function obterDiasTrabalho() {
+    const tipo = document.getElementById("jornadaTipo").value;
+
+    if (tipo === "SEG_SEX") {
+      return [1, 2, 3, 4, 5];
+    }
+
+    if (tipo === "SEG_SAB") {
+      return [1, 2, 3, 4, 5, 6];
+    }
+
+    if (tipo === "TODOS_DIAS") {
+      return [0, 1, 2, 3, 4, 5, 6];
+    }
+
+    if (tipo === "6X1") {
+      const folga = Number(document.getElementById("folgaSemanal").value);
+      return [0, 1, 2, 3, 4, 5, 6].filter((dia) => dia !== folga);
+    }
+
+    if (tipo === "PERSONALIZADO") {
+      const checkboxes = document.querySelectorAll(".dia-trabalho:checked");
+      return Array.from(checkboxes).map((checkbox) => Number(checkbox.value));
+    }
+
+    return [1, 2, 3, 4, 5];
+  }
+
   function adicionarBeneficio() {
-  const container = document.getElementById("beneficiosExtras");
-
-  const row = document.createElement("div");
-  row.className = "dynamic-row";
-
-  row.innerHTML = `
-    <input type="text" class="beneficio-nome" placeholder="Nome do benefício">
-    <input type="number" class="beneficio-valor" placeholder="Valor" step="0.01">
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
-  `;
-
-  container.appendChild(row);
-}
     const container = document.getElementById("beneficiosExtras");
 
     const row = document.createElement("div");
@@ -514,21 +405,22 @@ if (error) {
     `;
 
     container.appendChild(row);
+  }
 
   function adicionarDespesa() {
-  const container = document.getElementById("despesasExtras");
+    const container = document.getElementById("despesasExtras");
 
-  const row = document.createElement("div");
-  row.className = "dynamic-row";
+    const row = document.createElement("div");
+    row.className = "dynamic-row";
 
-  row.innerHTML = `
-    <input type="text" class="despesa-nome" placeholder="Nome da despesa">
-    <input type="number" class="despesa-valor" placeholder="Valor" step="0.01">
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
-  `;
+    row.innerHTML = `
+      <input type="text" class="despesa-nome" placeholder="Nome da despesa">
+      <input type="number" class="despesa-valor" placeholder="Valor" step="0.01">
+      <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+    `;
 
-  container.appendChild(row);
-}
+    container.appendChild(row);
+  }
 
   function coletarBeneficiosExtras() {
     const nomes = document.querySelectorAll(".beneficio-nome");
@@ -572,24 +464,8 @@ if (error) {
     return despesas;
   }
 
-function calcularSalarioLiquidoEstimadoClt() {
-  const salarioBruto = getNumberValue("salarioBruto");
-  const vtPercentual = getNumberValue("valeTransportePercentual") / 100;
-
-  if (salarioBruto <= 0) {
-    return 0;
-  }
-
-  const inss = calcularInss2026(salarioBruto);
-  const irrf = calcularIrrfEstimado2026(salarioBruto - inss);
-  const vt = salarioBruto * vtPercentual;
-
-  return salarioBruto - inss - irrf - vt;
-}
-
   function calcularInss2026(salario) {
     const teto = 8475.55;
-
     const base = Math.min(salario, teto);
 
     let inss = 0;
@@ -597,14 +473,17 @@ function calcularSalarioLiquidoEstimadoClt() {
     if (base <= 1621.00) {
       inss = base * 0.075;
     } else if (base <= 2902.84) {
-      inss = (1621.00 * 0.075) +
+      inss =
+        (1621.00 * 0.075) +
         ((base - 1621.00) * 0.09);
     } else if (base <= 4354.27) {
-      inss = (1621.00 * 0.075) +
+      inss =
+        (1621.00 * 0.075) +
         ((2902.84 - 1621.00) * 0.09) +
         ((base - 2902.84) * 0.12);
     } else {
-      inss = (1621.00 * 0.075) +
+      inss =
+        (1621.00 * 0.075) +
         ((2902.84 - 1621.00) * 0.09) +
         ((4354.27 - 2902.84) * 0.12) +
         ((base - 4354.27) * 0.14);
@@ -649,6 +528,21 @@ function calcularSalarioLiquidoEstimadoClt() {
     return Math.max(0, Math.round(irrfFinal * 100) / 100);
   }
 
+  function calcularSalarioLiquidoEstimadoClt() {
+    const salarioBruto = getNumberValue("salarioBruto");
+    const vtPercentual = getNumberValue("valeTransportePercentual") / 100;
+
+    if (salarioBruto <= 0) {
+      return 0;
+    }
+
+    const inss = calcularInss2026(salarioBruto);
+    const irrf = calcularIrrfEstimado2026(salarioBruto - inss);
+    const vt = salarioBruto * vtPercentual;
+
+    return salarioBruto - inss - irrf - vt;
+  }
+
   function calcularLiquidoPjEstimado() {
     const receita = getNumberValue("receitaBrutaPj");
     const impostoPercentual = getNumberValue("impostoPjPercentual") / 100;
@@ -661,50 +555,6 @@ function calcularSalarioLiquidoEstimadoClt() {
     return receita - (receita * impostoPercentual) - contador;
   }
 
-  function alternarCamposJornada() {
-  const tipo = document.getElementById("jornadaTipo").value;
-
-  document.getElementById("campoFolga6x1").classList.add("hidden");
-  document.getElementById("campoJornadaPersonalizada").classList.add("hidden");
-
-  if (tipo === "6X1") {
-    document.getElementById("campoFolga6x1").classList.remove("hidden");
-  }
-
-  if (tipo === "PERSONALIZADO") {
-    document.getElementById("campoJornadaPersonalizada").classList.remove("hidden");
-  }
-}
-
-function obterDiasTrabalho() {
-  const tipo = document.getElementById("jornadaTipo").value;
-
-  if (tipo === "SEG_SEX") {
-    return [1, 2, 3, 4, 5];
-  }
-
-  if (tipo === "SEG_SAB") {
-    return [1, 2, 3, 4, 5, 6];
-  }
-
-  if (tipo === "TODOS_DIAS") {
-    return [0, 1, 2, 3, 4, 5, 6];
-  }
-
-  if (tipo === "6X1") {
-    const folga = Number(document.getElementById("folgaSemanal").value);
-    return [0, 1, 2, 3, 4, 5, 6].filter((dia) => dia !== folga);
-  }
-
-  if (tipo === "PERSONALIZADO") {
-    const checkboxes = document.querySelectorAll(".dia-trabalho:checked");
-
-    return Array.from(checkboxes).map((checkbox) => Number(checkbox.value));
-  }
-
-  return [1, 2, 3, 4, 5];
-}
-
   function calcularRendaLiquidaEstimativa() {
     const tipo = document.getElementById("tipoContratacao").value;
 
@@ -716,12 +566,263 @@ function obterDiasTrabalho() {
       return calcularLiquidoPjEstimado();
     }
 
-    const renda = getNumberValue("rendaMensalOutros");
-    const descontos = getNumberValue("descontosOutros");
+    const rendaOutros = getNumberValue("rendaMensalOutros");
+    const descontosOutros = getNumberValue("descontosOutros");
 
-    return renda - descontos;
+    const rendaPrincipal = getNumberValue("salarioBruto");
+
+    if (rendaOutros > 0) {
+      return rendaOutros - descontosOutros;
+    }
+
+    return rendaPrincipal;
   }
 
-</script>  
+  async function salvarBeneficiosExtras(userId, beneficioVr, beneficioVa) {
+    const beneficiosExtras = coletarBeneficiosExtras();
+
+    const beneficiosParaSalvar = [];
+
+    if (beneficioVr > 0) {
+      beneficiosParaSalvar.push({
+        user_id: userId,
+        nome: "VR",
+        valor: beneficioVr
+      });
+    }
+
+    if (beneficioVa > 0) {
+      beneficiosParaSalvar.push({
+        user_id: userId,
+        nome: "VA",
+        valor: beneficioVa
+      });
+    }
+
+    beneficiosExtras.forEach((beneficio) => {
+      beneficiosParaSalvar.push({
+        user_id: userId,
+        nome: beneficio.nome,
+        valor: beneficio.valor
+      });
+    });
+
+    if (beneficiosParaSalvar.length === 0) {
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+      .from("user_benefits")
+      .insert(beneficiosParaSalvar);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  async function salvarDespesasExtras(userId) {
+    const despesasExtras = coletarDespesasExtras();
+
+    if (despesasExtras.length === 0) {
+      return;
+    }
+
+    const despesasParaSalvar = despesasExtras.map((despesa) => ({
+      user_id: userId,
+      nome: despesa.nome,
+      valor: despesa.valor
+    }));
+
+    const { error } = await window.supabaseClient
+      .from("user_expenses")
+      .insert(despesasParaSalvar);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  async function cadastrar() {
+    travarBotaoCadastro();
+
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+    const tipoContratacao = document.getElementById("tipoContratacao").value;
+
+    const salarioBruto = getNumberValue("salarioBruto");
+
+    if (!nome || !email || !senha) {
+      alert("Preencha nome completo, e-mail e senha.");
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    if (nome.split(" ").length < 2) {
+      alert("Informe seu nome completo.");
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    if (!senhaEhForte(senha)) {
+      alert("A senha precisa ter no mínimo 8 caracteres, letra maiúscula, letra minúscula, número e caractere especial.");
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    if (salarioBruto <= 0) {
+      alert("Informe o salário ou renda bruta mensal para continuar.");
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    const { data, error } = await window.supabaseClient.auth.signUp({
+      email: email,
+      password: senha
+    });
+
+    if (error) {
+      if (
+        error.code === "user_already_exists" ||
+        error.message === "User already registered" ||
+        error.message.includes("already registered")
+      ) {
+        const { error: loginError } = await window.supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: senha
+        });
+
+        if (loginError) {
+          alert("Este e-mail já está cadastrado, mas a senha informada está incorreta.");
+          restaurarBotaoCadastro();
+          return;
+        }
+
+        window.location.href = "index.html";
+        return;
+      }
+
+      alert(
+        "Erro ao criar usuário:\n" +
+        "Mensagem: " + (error.message || "Sem mensagem") + "\n" +
+        "Status: " + (error.status || "Sem status") + "\n" +
+        "Código: " + (error.code || "Sem código")
+      );
+
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    const user = data.user;
+
+    if (!user) {
+      alert("Cadastro iniciado. Verifique seu e-mail para confirmar a conta.");
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    const {
+      data: { session }
+    } = await window.supabaseClient.auth.getSession();
+
+    if (!session) {
+      alert("Usuário criado, mas ainda não há sessão ativa. Desative a confirmação de e-mail no Supabase para testar o cadastro agora.");
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    const beneficioVr = getNumberValue("valorVr");
+    const beneficioVa = getNumberValue("valorVa");
+    const salarioLiquidoEstimado = calcularRendaLiquidaEstimativa();
+
+    const { error: profileError } = await window.supabaseClient
+      .from("profiles")
+      .insert({
+        id: user.id,
+        nome: nome,
+        email: email
+      });
+
+    if (profileError) {
+      alert("Erro ao salvar perfil: " + profileError.message);
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    const { error: financialError } = await window.supabaseClient
+      .from("financial_profile")
+      .insert({
+        user_id: user.id,
+
+        tipo_contratacao: tipoContratacao || null,
+
+        salario_bruto: salarioBruto,
+        salario_liquido: salarioLiquidoEstimado,
+
+        valor_vr: beneficioVr,
+        valor_va: beneficioVa,
+        valor_vr_va: beneficioVr + beneficioVa,
+
+        outros_beneficios: 0,
+
+        banco_salario: "outro",
+        fornecedor_vr: "outro",
+        fornecedor_va: "outro",
+
+        dependentes: 0,
+        pensao_alimenticia: 0,
+        coparticipacao_medica: 0,
+        vale_transporte_percentual: getNumberValue("valeTransportePercentual"),
+
+        receita_bruta_pj: getNumberValue("receitaBrutaPj"),
+        imposto_pj_percentual: getNumberValue("impostoPjPercentual"),
+        custo_contador_pj: getNumberValue("custoContadorPj"),
+
+        renda_mensal_outros: getNumberValue("rendaMensalOutros"),
+        descontos_outros: getNumberValue("descontosOutros"),
+
+        jornada_tipo: document.getElementById("jornadaTipo").value,
+        hora_inicio: document.getElementById("horaInicio").value,
+        hora_fim: document.getElementById("horaFim").value,
+        dias_trabalho: obterDiasTrabalho(),
+        folga_semanal: document.getElementById("jornadaTipo").value === "6X1"
+          ? Number(document.getElementById("folgaSemanal").value)
+          : null,
+
+        aluguel: 0,
+        energia: 0,
+        agua: 0,
+        internet: 0,
+        cartao_credito: 0,
+        outras_despesas: 0,
+
+        reserva_emergencia: getNumberValue("reservaEmergencia"),
+        investimentos: getNumberValue("investimentos"),
+        rendimentos_mensais: getNumberValue("rendimentosMensais"),
+
+        meta_casa: getNumberValue("metaCasa"),
+        meta_filha: getNumberValue("metaFilha"),
+        meta_carro: getNumberValue("metaCarro")
+      });
+
+    if (financialError) {
+      alert("Erro ao salvar dados financeiros: " + financialError.message);
+      restaurarBotaoCadastro();
+      return;
+    }
+
+    try {
+      await salvarBeneficiosExtras(user.id, beneficioVr, beneficioVa);
+      await salvarDespesasExtras(user.id);
+    } catch (extraError) {
+      alert("Cadastro criado, mas houve erro ao salvar benefícios/despesas: " + extraError.message);
+      window.location.href = "index.html";
+      return;
+    }
+
+    alert("Cadastro realizado com sucesso!");
+    window.location.href = "index.html";
+  }
+</script>
 </body>
 </html>

@@ -2291,3 +2291,186 @@ body.login-body .auth-card {
 .hidden {
   display: none !important;
 }
+
+/* ============================
+   EDITOR FINANCEIRO DO INDEX
+============================ */
+
+.edit-profile-section {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 32px;
+  margin: 32px 0;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  border-top: 6px solid #ff8200;
+}
+
+.edit-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.edit-profile-header h2 {
+  margin: 0;
+  color: #003865;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.edit-profile-header p {
+  margin: 8px 0 0;
+  color: #5a6b85;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.edit-save-button {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  background: #005b96;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  min-width: 180px;
+  transition: 0.2s ease;
+}
+
+.edit-save-button:hover {
+  background: #003865;
+  transform: translateY(-1px);
+}
+
+.edit-block {
+  margin-top: 26px;
+}
+
+.edit-block h3 {
+  color: #003865;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e3eaf2;
+}
+
+.edit-grid {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.edit-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.edit-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-field label {
+  color: #003865;
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.edit-field input,
+.edit-field select {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  background: #ffffff;
+  color: #001b36;
+}
+
+.edit-field input:focus,
+.edit-field select:focus {
+  border-color: #005b96;
+  box-shadow: 0 0 0 3px rgba(0, 91, 150, 0.15);
+}
+
+.edit-secondary-button {
+  border: 2px solid #005b96;
+  border-radius: 999px;
+  padding: 12px 20px;
+  background: #ffffff;
+  color: #005b96;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  margin: 8px 12px 12px 0;
+  transition: 0.2s ease;
+}
+
+.edit-secondary-button:hover {
+  background: #005b96;
+  color: #ffffff;
+}
+
+.beneficio-editor-row {
+  display: grid;
+  grid-template-columns: 1fr 180px auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.beneficio-editor-row input {
+  height: 48px;
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.remove-button {
+  height: 48px;
+  border: 2px solid #d92d20;
+  border-radius: 999px;
+  padding: 0 18px;
+  background: #ffffff;
+  color: #d92d20;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  background: #d92d20;
+  color: #ffffff;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .edit-profile-header {
+    flex-direction: column;
+  }
+
+  .edit-save-button {
+    width: 100%;
+  }
+
+  .edit-grid-2,
+  .edit-grid-3,
+  .beneficio-editor-row {
+    grid-template-columns: 1fr;
+  }
+}
