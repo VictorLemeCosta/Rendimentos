@@ -208,9 +208,15 @@ window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex(
 
   await carregarDadosUsuario();
 
-  window.fecharEditorFinanceiro();
+    const configAtualizada = obterConfiguracaoFinanceiraUsuario();
 
-  alert("Dados atualizados com sucesso!");
+    if (configAtualizada && window.aplicarDadosUsuarioNoPainel) {
+    window.aplicarDadosUsuarioNoPainel(configAtualizada);
+    }
+
+window.fecharEditorFinanceiro();
+
+alert("Dados atualizados com sucesso!");
 };
 
 async function salvarBeneficiosExtrasIndex(userId) {

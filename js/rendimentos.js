@@ -91,19 +91,59 @@ function getProviderEmoji(provider, type = "default") {
   return emojis[provider] || emojis.outro;
 }
 
+function getCardClassByProvider(provider) {
+  const classes = {
+    nubank: "nubank",
+    itau: "itau",
+    santander: "santander",
+    bradesco: "bradesco",
+    bb: "bb",
+    caixa: "caixa",
+
+    caju: "caju",
+    sodexo: "sodexo",
+    alelo: "alelo",
+    ticket: "ticket",
+    vr: "vr-beneficios",
+
+    outro: "outro"
+  };
+
+  return classes[provider] || "outro";
+}
+
+function getProviderEmoji(provider, type = "default") {
+  const emojis = {
+    nubank: "💜",
+    itau: "🟧",
+    santander: "🔴",
+    bradesco: "🔺",
+    bb: "🟡",
+    caixa: "🔵",
+
+    caju: "🍊",
+    sodexo: "🍽️",
+    alelo: "🟢",
+    ticket: "🎟️",
+    vr: "🛒",
+
+    outro: type === "salary" ? "🏦" : "💳"
+  };
+
+  return emojis[provider] || emojis.outro;
+}
+
 function montarIncomeItemsFromConfig(config) {
   const items = [];
 
-  if (toNumber(config.salarioBruto) > 0) {
-    items.push({
-      id: "salary",
-      name: "Salário",
-      amount: toNumber(config.salarioBruto),
-      method: "Rendimento cadastrado",
-      className: getCardClassByProvider(config.bancoSalario),
-      emoji: getProviderEmoji(config.bancoSalario, "salary")
-    });
-  }
+  items.push({
+    id: "salary",
+    name: "Salário",
+    amount: toNumber(config.salarioBruto),
+    method: "Rendimento cadastrado",
+    className: getCardClassByProvider(config.bancoSalario),
+    emoji: getProviderEmoji(config.bancoSalario, "salary")
+  });
 
   if (toNumber(config.valorVr) > 0) {
     items.push({
@@ -139,7 +179,7 @@ function montarIncomeItemsFromConfig(config) {
         name: nome,
         amount: valor,
         method: "Benefício adicional",
-        className: "nubank",
+        className: "outro",
         emoji: "➕"
       });
     }
@@ -169,7 +209,12 @@ function getProviderEmoji(provider, type = "default") {
   return emojis[provider] || emojis.outro;
 }
 
-function aplicarDadosUsuarioNoPainel(config) {
+window.aplicarDadosUsuarioNoPainel = function aplicarDadosUsuarioNoPainel(config) {
+  if (!config) {
+    console.warn("Nenhuma configuração financeira recebida.");
+    return;
+  }
+
   financeRuntimeConfig = {
     ...financeRuntimeConfig,
     ...config,
@@ -177,6 +222,9 @@ function aplicarDadosUsuarioNoPainel(config) {
     salarioLiquido: toNumber(config.salarioLiquido),
     valorVr: toNumber(config.valorVr),
     valorVa: toNumber(config.valorVa),
+    bancoSalario: config.bancoSalario || "outro",
+    fornecedorVr: config.fornecedorVr || "outro",
+    fornecedorVa: config.fornecedorVa || "outro",
     diasTrabalho: config.diasTrabalho || [1, 2, 3, 4, 5],
     horaInicio: config.horaInicio || "09:00",
     horaFim: config.horaFim || "18:00"
@@ -186,8 +234,11 @@ function aplicarDadosUsuarioNoPainel(config) {
 
   incomeItems = montarIncomeItemsFromConfig(financeRuntimeConfig);
 
+  console.log("Income items montados:", incomeItems);
+
   refreshAll();
-}
+};
+
 
     const INSS_TABLE_2026 = [
       { limit: 1621.00, rate: 0.075 },
@@ -772,3 +823,31 @@ function editarItemFinanceiro(itemId) {
 
   abrirEditorFinanceiro();
 }
+
+setupCLTListeners();
+
+window.addEventListener("financeHubDataLoaded", function () {
+  const config = obterConfiguracaoFinanceiraUsuario();
+
+  if (!config) {
+    console.warn("Configuração financeira ainda não disponível.");
+    return;
+  }
+
+  console.log("Dados financeiros aplicados no painel:", config);
+
+  window.aplicarDadosUsuarioNoPainel(config);
+});
+
+if (window.financeHubUserData) {
+  const config = obterConfiguracaoFinanceiraUsuario();
+
+  if (config) {
+    window.aplicarDadosUsuarioNoPainel(config);
+  }
+}
+
+setInterval(() => {
+  updateDailyAccumulator();
+  updateMonthlyAccumulator();
+}, 1000);

@@ -92,13 +92,21 @@ function obterConfiguracaoFinanceiraUsuario() {
 
   return {
     nome: dados.profile?.nome || "",
+
     salarioBruto: Number(financeiro.salario_bruto || 0),
     salarioLiquido: Number(financeiro.salario_liquido || 0),
+
     valorVr: Number(financeiro.valor_vr || 0),
     valorVa: Number(financeiro.valor_va || 0),
     valorVrVa: Number(financeiro.valor_vr_va || 0),
+
+    bancoSalario: financeiro.banco_salario || "outro",
+    fornecedorVr: financeiro.fornecedor_vr || "outro",
+    fornecedorVa: financeiro.fornecedor_va || "outro",
+
     outrosBeneficios: dados.benefits || [],
     despesasExtras: dados.expenses || [],
+
     jornadaTipo: financeiro.jornada_tipo || "SEG_SEX",
     horaInicio: financeiro.hora_inicio || "09:00",
     horaFim: financeiro.hora_fim || "18:00",
