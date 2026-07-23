@@ -5,48 +5,41 @@ function preencherEditorFinanceiro(dados) {
   const vrInput = document.getElementById("editValorVr");
   const vaInput = document.getElementById("editValorVa");
 
-  const bancoSalarioSelect = document.getElementById("editBancoSalario");
-  const fornecedorVrSelect = document.getElementById("editFornecedorVr");
-  const fornecedorVaSelect = document.getElementById("editFornecedorVa");
-
-  const valeTransporteSelect = document.getElementById("editValeTransportePercentual");
-  const horaInicioInput = document.getElementById("editHoraInicio");
-  const horaFimInput = document.getElementById("editHoraFim");
-
   if (salarioInput) {
     salarioInput.value = financeiro.salario_bruto || 0;
   }
 
   if (vrInput) {
-    vrInput.value = financeiro.valor_vr || 0;
+    vrInput.value = financeiro.valor_vr || "";
   }
 
   if (vaInput) {
-    vaInput.value = financeiro.valor_va || 0;
+    vaInput.value = financeiro.valor_va || "";
   }
 
-  if (bancoSalarioSelect) {
-    bancoSalarioSelect.value = financeiro.banco_salario || "outro";
+  setValueIfExists("editBancoSalario", financeiro.banco_salario || "outro");
+  setValueIfExists("editFornecedorVr", financeiro.fornecedor_vr || "outro");
+  setValueIfExists("editFornecedorVa", financeiro.fornecedor_va || "outro");
+  setValueIfExists("editValeTransportePercentual", financeiro.vale_transporte_percentual || 0);
+  setValueIfExists("editHoraInicio", financeiro.hora_inicio || "09:00");
+  setValueIfExists("editHoraFim", financeiro.hora_fim || "18:00");
+
+  if (Number(financeiro.valor_vr || 0) > 0) {
+    mostrarCampoVr();
   }
 
-  if (fornecedorVrSelect) {
-    fornecedorVrSelect.value = financeiro.fornecedor_vr || "outro";
+  if (Number(financeiro.valor_va || 0) > 0) {
+    mostrarCampoVa();
   }
 
-  if (fornecedorVaSelect) {
-    fornecedorVaSelect.value = financeiro.fornecedor_va || "outro";
-  }
+  renderizarBeneficiosExtras(dados.benefits || []);
+}
 
-  if (valeTransporteSelect) {
-    valeTransporteSelect.value = financeiro.vale_transporte_percentual || 0;
-  }
+function setValueIfExists(id, value) {
+  const element = document.getElementById(id);
 
-  if (horaInicioInput) {
-    horaInicioInput.value = financeiro.hora_inicio || "09:00";
-  }
-
-  if (horaFimInput) {
-    horaFimInput.value = financeiro.hora_fim || "18:00";
+  if (element) {
+    element.value = value;
   }
 }
 
@@ -58,6 +51,77 @@ function getNumberFromInput(id) {
   }
 
   return Number(element.value);
+}
+
+function mostrarCampoVr() {
+  document.getElementById("vrEditorBlock")?.classList.remove("hidden");
+  document.getElementById("btnAdicionarVr")?.classList.add("hidden");
+}
+
+function mostrarCampoVa() {
+  document.getElementById("vaEditorBlock")?.classList.remove("hidden");
+  document.getElementById("btnAdicionarVa")?.classList.add("hidden");
+}
+
+function adicionarBeneficioIndex(nome = "", valor = "") {
+  const container = document.getElementById("outrosBeneficiosEditor");
+
+  if (!container) {
+    return;
+  }
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row beneficio-editor-row";
+
+  row.innerHTML = `
+    <input type="text" class="beneficio-editor-nome" placeholder="Nome do benefício" value="${nome}">
+    <input type="number" class="beneficio-editor-valor" placeholder="Valor" step="0.01" value="${valor}">
+    <button type="button" class="remove-button" onclick="this.parentElement.remove()">Remover</button>
+  `;
+
+  container.appendChild(row);
+}
+
+function renderizarBeneficiosExtras(beneficios) {
+  const container = document.getElementById("outrosBeneficiosEditor");
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  beneficios.forEach((beneficio) => {
+    const nome = beneficio.nome || "";
+    const valor = Number(beneficio.valor || 0);
+
+    if (nome === "VR" || nome === "VA") {
+      return;
+    }
+
+    adicionarBeneficioIndex(nome, valor);
+  });
+}
+
+function coletarBeneficiosExtrasIndex() {
+  const nomes = document.querySelectorAll(".beneficio-editor-nome");
+  const valores = document.querySelectorAll(".beneficio-editor-valor");
+
+  const beneficios = [];
+
+  nomes.forEach((nomeInput, index) => {
+    const nome = nomeInput.value.trim();
+    const valor = valores[index].value ? Number(valores[index].value) : 0;
+
+    if (nome && valor > 0) {
+      beneficios.push({
+        nome,
+        valor
+      });
+    }
+  });
+
+  return beneficios;
 }
 
 async function salvarDadosFinanceirosIndex() {
@@ -83,6 +147,8 @@ async function salvarDadosFinanceirosIndex() {
   const valorVa = getNumberFromInput("editValorVa");
 
   const payload = {
+    user_id: user.id,
+
     salario_bruto: salarioBruto,
     salario_liquido: calcularSalarioLiquidoEstimadoIndex(),
 
@@ -104,8 +170,9 @@ async function salvarDadosFinanceirosIndex() {
 
   const { error } = await window.supabaseClient
     .from("financial_profile")
-    .update(payload)
-    .eq("user_id", user.id);
+    .upsert(payload, {
+      onConflict: "user_id"
+    });
 
   if (error) {
     console.error("Erro ao atualizar financial_profile:", error);
@@ -113,9 +180,47 @@ async function salvarDadosFinanceirosIndex() {
     return;
   }
 
+  await salvarBeneficiosExtrasIndex(user.id);
+
   alert("Dados atualizados com sucesso!");
 
   await carregarDadosUsuario();
+}
+
+async function salvarBeneficiosExtrasIndex(userId) {
+  const beneficiosExtras = coletarBeneficiosExtrasIndex();
+
+  const { error: deleteError } = await window.supabaseClient
+    .from("user_benefits")
+    .delete()
+    .eq("user_id", userId)
+    .neq("nome", "VR")
+    .neq("nome", "VA");
+
+  if (deleteError) {
+    console.error("Erro ao remover benefícios antigos:", deleteError);
+    alert("Erro ao atualizar benefícios: " + deleteError.message);
+    return;
+  }
+
+  if (beneficiosExtras.length === 0) {
+    return;
+  }
+
+  const payload = beneficiosExtras.map((beneficio) => ({
+    user_id: userId,
+    nome: beneficio.nome,
+    valor: beneficio.valor
+  }));
+
+  const { error: insertError } = await window.supabaseClient
+    .from("user_benefits")
+    .insert(payload);
+
+  if (insertError) {
+    console.error("Erro ao inserir benefícios:", insertError);
+    alert("Erro ao salvar benefícios: " + insertError.message);
+  }
 }
 
 function calcularSalarioLiquidoEstimadoIndex() {

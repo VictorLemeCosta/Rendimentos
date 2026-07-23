@@ -2213,3 +2213,81 @@ body.login-body .auth-card {
   font-weight: 800;
   color: #003865;
 }
+
+.edit-profile-section {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+  border-top: 6px solid #ff8200;
+}
+
+.edit-profile-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.edit-profile-header h2 {
+  margin: 0;
+  color: #003865;
+}
+
+.edit-profile-header p {
+  margin: 8px 0 0;
+  color: #5a6b85;
+}
+
+.edit-subtitle {
+  margin-top: 26px;
+  margin-bottom: 14px;
+  color: #003865;
+  font-size: 18px;
+}
+
+.edit-save-button {
+  width: auto;
+  min-width: 180px;
+  margin-top: 0;
+}
+
+.edit-profile-section label {
+  color: #003865;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.edit-profile-section input,
+.edit-profile-section select {
+  width: 100%;
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.auth-button-secondary {
+  width: auto;
+  align-self: flex-start;
+  margin-top: 12px;
+  margin-right: 12px;
+  background: #ffffff;
+  color: #005b96;
+  border: 2px solid #005b96;
+}
+
+.auth-button-secondary:hover {
+  background: #005b96;
+  color: #ffffff;
+}
+
+.hidden {
+  display: none !important;
+}

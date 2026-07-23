@@ -74,6 +74,26 @@
       </div>
     </section>
 
+    <section class="edit-profile-section">
+  <div class="edit-profile-header">
+    <div>
+      <h2>Editar dados financeiros</h2>
+      <p>Atualize salário, benefícios, banco, fornecedores e jornada. As alterações serão salvas no banco de dados.</p>
+    </div>
+
+    <button type="button" class="auth-button edit-save-button" onclick="salvarDadosFinanceirosIndex()">
+      Salvar alterações
+    </button>
+  </div>
+
+  <h3 class="edit-subtitle">Renda principal</h3>
+
+  <div class="form-grid-3">
+    <div>
+      <label for="editSalarioBruto">Salário ou renda bruta mensal</label>
+      <input type="number" id="editSalarioBruto" step="0.01" placeholder="Ex: 6000">
+    </div>
+
     <div>
       <label for="editBancoSalario">Banco do salário</label>
       <select id="editBancoSalario">
@@ -88,6 +108,28 @@
     </div>
 
     <div>
+      <label for="editValeTransportePercentual">Vale-transporte</label>
+      <select id="editValeTransportePercentual">
+        <option value="0">Não descontar</option>
+        <option value="1">1%</option>
+        <option value="2">2%</option>
+        <option value="3">3%</option>
+        <option value="4">4%</option>
+        <option value="5">5%</option>
+        <option value="6">6%</option>
+      </select>
+    </div>
+  </div>
+
+  <h3 class="edit-subtitle">Benefícios</h3>
+
+  <div id="vrEditorBlock" class="form-grid-2 hidden">
+    <div>
+      <label for="editValorVr">VR</label>
+      <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
+    </div>
+
+    <div>
       <label for="editFornecedorVr">Fornecedor do VR</label>
       <select id="editFornecedorVr">
         <option value="caju">Caju</option>
@@ -97,6 +139,17 @@
         <option value="vr">VR Benefícios</option>
         <option value="outro">Outro</option>
       </select>
+    </div>
+  </div>
+
+  <button type="button" id="btnAdicionarVr" class="auth-button auth-button-secondary" onclick="mostrarCampoVr()">
+    Adicionar VR
+  </button>
+
+  <div id="vaEditorBlock" class="form-grid-2 hidden">
+    <div>
+      <label for="editValorVa">VA</label>
+      <input type="number" id="editValorVa" step="0.01" placeholder="Ex: 817">
     </div>
 
     <div>
@@ -110,6 +163,34 @@
         <option value="outro">Outro</option>
       </select>
     </div>
+  </div>
+
+  <button type="button" id="btnAdicionarVa" class="auth-button auth-button-secondary" onclick="mostrarCampoVa()">
+    Adicionar VA
+  </button>
+
+  <h3 class="edit-subtitle">Outros benefícios</h3>
+
+  <div id="outrosBeneficiosEditor"></div>
+
+  <button type="button" class="auth-button auth-button-secondary" onclick="adicionarBeneficioIndex()">
+    Adicionar outro benefício
+  </button>
+
+  <h3 class="edit-subtitle">Jornada</h3>
+
+  <div class="form-grid-2">
+    <div>
+      <label for="editHoraInicio">Início da jornada</label>
+      <input type="time" id="editHoraInicio">
+    </div>
+
+    <div>
+      <label for="editHoraFim">Fim da jornada</label>
+      <input type="time" id="editHoraFim">
+    </div>
+  </div>
+</section>
 
     <section class="summary-grid">
       <div class="summary-card">

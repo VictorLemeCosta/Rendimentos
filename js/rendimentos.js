@@ -58,8 +58,8 @@ function montarIncomeItemsFromConfig(config) {
       name: "Salário",
       amount: toNumber(config.salarioBruto),
       method: "Rendimento cadastrado",
-      className: "nubank",
-      emoji: "💜"
+      className: getCardClassByProvider(config.bancoSalario),
+      emoji: getProviderEmoji(config.bancoSalario, "salary")
     });
   }
 
@@ -69,8 +69,8 @@ function montarIncomeItemsFromConfig(config) {
       name: "VR",
       amount: toNumber(config.valorVr),
       method: "Benefício cadastrado",
-      className: "caju",
-      emoji: "🍊"
+      className: getCardClassByProvider(config.fornecedorVr),
+      emoji: getProviderEmoji(config.fornecedorVr, "benefit")
     });
   }
 
@@ -80,8 +80,8 @@ function montarIncomeItemsFromConfig(config) {
       name: "VA",
       amount: toNumber(config.valorVa),
       method: "Benefício cadastrado",
-      className: "caju",
-      emoji: "🛒"
+      className: getCardClassByProvider(config.fornecedorVa),
+      emoji: getProviderEmoji(config.fornecedorVa, "benefit")
     });
   }
 
@@ -104,6 +104,27 @@ function montarIncomeItemsFromConfig(config) {
   });
 
   return items;
+}
+
+function getProviderEmoji(provider, type = "default") {
+  const emojis = {
+    nubank: "💜",
+    itau: "🟧",
+    santander: "🔴",
+    bradesco: "🔺",
+    bb: "🟡",
+    caixa: "🔵",
+
+    caju: "🍊",
+    sodexo: "🍽️",
+    alelo: "🟢",
+    ticket: "🎟️",
+    vr: "🛒",
+
+    outro: type === "salary" ? "🏦" : "💳"
+  };
+
+  return emojis[provider] || emojis.outro;
 }
 
 function aplicarDadosUsuarioNoPainel(config) {
