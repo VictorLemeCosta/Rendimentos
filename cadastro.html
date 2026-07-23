@@ -13,7 +13,7 @@
 
 <body class="auth-body">
 
-  <div class="auth-container">
+  <div class="auth-container cadastro-container">
     <div class="auth-card auth-card-large cadastro-card">
       <h1>Criar conta</h1>
       <p class="auth-subtitle">Preencha seus dados iniciais para configurar o FinanceHub</p>
@@ -65,19 +65,20 @@
     </div>
 
     <div>
-      <label for="valeTransportePercentual">Desconto de vale-transporte</label>
+      <label for="valeTransportePercentual">Vale-transporte</label>
       <select id="valeTransportePercentual">
         <option value="0">Não descontar</option>
-        <option value="1">1%</option>
-        <option value="2">2%</option>
-        <option value="3">3%</option>
-        <option value="4">4%</option>
-        <option value="5">5%</option>
-        <option value="6">6%</option>
+        <option value="1">Sim, 1%</option>
+        <option value="2">Sim, 2%</option>
+        <option value="3">Sim, 3%</option>
+        <option value="4">Sim, 4%</option>
+        <option value="5">Sim, 5%</option>
+        <option value="6">Sim, 6%</option>
       </select>
     </div>
   </div>
 </div>
+
 
 <div id="camposPj" class="conditional-fields hidden">
   <h2>Dados PJ / MEI</h2>
@@ -463,7 +464,7 @@
     return despesas;
   }
 
-  function calcularSalarioLiquidoEstimadoClt() {
+function calcularSalarioLiquidoEstimadoClt() {
   const salarioBruto = getNumberValue("salarioBruto");
   const vtPercentual = getNumberValue("valeTransportePercentual") / 100;
 
@@ -476,7 +477,7 @@
   const vt = salarioBruto * vtPercentual;
 
   return salarioBruto - inss - irrf - vt;
-} 
+}
 
   function calcularInss2026(salario) {
     const teto = 8475.55;
@@ -638,9 +639,9 @@
         valor_vr_va: beneficioVr + beneficioVa,
         outros_beneficios: 0,
 
-        dependentes: getNumberValue("dependentes"),
-        pensao_alimenticia: getNumberValue("pensaoAlimenticia"),
-        coparticipacao_medica: getNumberValue("coparticipacaoMedica"),
+        dependentes: 0,
+        pensao_alimenticia: 0,
+        coparticipacao_medica: 0,
         vale_transporte_percentual: getNumberValue("valeTransportePercentual"),
 
         receita_bruta_pj: getNumberValue("receitaBrutaPj"),
