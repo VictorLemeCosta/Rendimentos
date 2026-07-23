@@ -180,7 +180,7 @@
         <input type="number" id="metaCarro" placeholder="Ex: 40000" step="0.01">
 
 
-        <button type="button" onclick="cadastrar()" class="auth-button">
+        <button type="button" onclick="cadastrar()" class="auth-button" id="btnCadastrar">
         Criar conta
         </button>
 
@@ -199,6 +199,9 @@
     }
 
     async function cadastrar() {
+        const btnCadastrar = document.getElementById("btnCadastrar");
+        btnCadastrar.disabled = true;
+        btnCadastrar.textContent = "Criando conta...";
       const nome = document.getElementById("nome").value.trim();
       const email = document.getElementById("email").value.trim();
       const senha = document.getElementById("senha").value;
@@ -222,6 +225,9 @@
             "Status: " + (error.status || "Sem status") + "\n" +
             "Código: " + (error.code || "Sem código")
         );
+
+        btnCadastrar.disabled = false;
+        btnCadastrar.textContent = "Criar conta";
 
         return;
         }
@@ -587,168 +593,6 @@ function calcularSalarioLiquidoEstimadoClt() {
     return renda - descontos;
   }
 
-  async function cadastrar() {
-    const nome = document.getElementById("nome").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const senha = document.getElementById("senha").value;
-    const tipoContratacao = document.getElementById("tipoContratacao").value;
-
-    if (!nome || !email || !senha) {
-      alert("Preencha nome completo, e-mail e senha.");
-      return;
-    }
-
-    if (nome.split(" ").length < 2) {
-      alert("Informe seu nome completo.");
-      return;
-    }
-
-    if (!senhaEhForte(senha)) {
-      alert("A senha precisa ter no mínimo 8 caracteres, letra maiúscula, letra minúscula, número e caractere especial.");
-      return;
-    }
-
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: email,
-      password: senha
-    });
-
-    if (error) {
-      alert("Erro ao criar usuário: " + error.message);
-      return;
-    }
-
-    const user = data.user;
-
-    if (!user) {
-      alert("Cadastro iniciado. Verifique seu e-mail para confirmar a conta.");
-      window.location.href = "login.html";
-      return;
-    }
-
-    const { error: profileError } = await supabaseClient
-      .from("profiles")
-      .insert({
-        id: user.id,
-        nome: nome,
-        email: email
-      });
-
-    if (profileError) {
-      alert("Erro ao salvar perfil: " + profileError.message);
-      return;
-    }
-
-    const beneficioVr = getNumberValue("valorVr");
-    const beneficioVa = getNumberValue("valorVa");
-    const salarioLiquidoEstimado = calcularRendaLiquidaEstimativa();
-
-    const { error: financialError } = await supabaseClient
-      .from("financial_profile")
-      .insert({
-        user_id: user.id,
-
-        tipo_contratacao: tipoContratacao || null,
-
-        salario_bruto: getNumberValue("salarioBruto"),
-        salario_liquido: salarioLiquidoEstimado,
-
-        valor_vr_va: beneficioVr + beneficioVa,
-        outros_beneficios: 0,
-
-        dependentes: 0,
-        pensao_alimenticia: 0,
-        coparticipacao_medica: 0,
-        vale_transporte_percentual: getNumberValue("valeTransportePercentual"),
-
-        receita_bruta_pj: getNumberValue("receitaBrutaPj"),
-        imposto_pj_percentual: getNumberValue("impostoPjPercentual"),
-        custo_contador_pj: getNumberValue("custoContadorPj"),
-
-        renda_mensal_outros: getNumberValue("rendaMensalOutros"),
-        descontos_outros: getNumberValue("descontosOutros"),
-
-        aluguel: getNumberValue("aluguel"),
-        energia: getNumberValue("energia"),
-        agua: getNumberValue("agua"),
-        internet: getNumberValue("internet"),
-        cartao_credito: getNumberValue("cartaoCredito"),
-
-        reserva_emergencia: getNumberValue("reservaEmergencia"),
-        investimentos: getNumberValue("investimentos"),
-        rendimentos_mensais: getNumberValue("rendimentosMensais"),
-
-        meta_casa: getNumberValue("metaCasa"),
-        meta_filha: getNumberValue("metaFilha"),
-        meta_carro: getNumberValue("metaCarro")
-      });
-
-    if (financialError) {
-      alert("Erro ao salvar dados financeiros: " + financialError.message);
-      return;
-    }
-
-    const beneficiosExtras = coletarBeneficiosExtras();
-
-    const beneficiosParaSalvar = [];
-
-    if (beneficioVr > 0) {
-      beneficiosParaSalvar.push({
-        user_id: user.id,
-        nome: "VR",
-        valor: beneficioVr
-      });
-    }
-
-    if (beneficioVa > 0) {
-      beneficiosParaSalvar.push({
-        user_id: user.id,
-        nome: "VA",
-        valor: beneficioVa
-      });
-    }
-
-    beneficiosExtras.forEach((beneficio) => {
-      beneficiosParaSalvar.push({
-        user_id: user.id,
-        nome: beneficio.nome,
-        valor: beneficio.valor
-      });
-    });
-
-    if (beneficiosParaSalvar.length > 0) {
-      const { error: benefitsError } = await supabaseClient
-        .from("user_benefits")
-        .insert(beneficiosParaSalvar);
-
-      if (benefitsError) {
-        alert("Erro ao salvar benefícios: " + benefitsError.message);
-        return;
-      }
-    }
-
-    const despesasExtras = coletarDespesasExtras();
-
-    if (despesasExtras.length > 0) {
-      const despesasParaSalvar = despesasExtras.map((despesa) => ({
-        user_id: user.id,
-        nome: despesa.nome,
-        valor: despesa.valor
-      }));
-
-      const { error: expensesError } = await supabaseClient
-        .from("user_expenses")
-        .insert(despesasParaSalvar);
-
-      if (expensesError) {
-        alert("Erro ao salvar despesas extras: " + expensesError.message);
-        return;
-      }
-    }
-
-    alert("Cadastro realizado com sucesso!");
-    window.location.href = "index.html";
-  }
 </script>  
 </body>
 </html>
