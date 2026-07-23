@@ -211,13 +211,12 @@ window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex(
     const configAtualizada = obterConfiguracaoFinanceiraUsuario();
 
     if (configAtualizada && window.aplicarDadosUsuarioNoPainel) {
-    window.aplicarDadosUsuarioNoPainel(configAtualizada);
+      window.aplicarDadosUsuarioNoPainel(configAtualizada);
     }
 
-window.fecharEditorFinanceiro();
+    window.fecharEditorFinanceiro();
 
-alert("Dados atualizados com sucesso!");
-};
+    alert("Dados atualizados com sucesso!");
 
 async function salvarBeneficiosExtrasIndex(userId) {
   const beneficiosExtras = coletarBeneficiosExtrasIndex();

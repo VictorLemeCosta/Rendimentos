@@ -439,15 +439,38 @@ INCOME CARDS
 */
 
 .cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
 
-    display: grid;
+.cards-grid:has(.income-card:only-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
 
-    grid-template-columns:
-        repeat(2, 1fr);
+.cards-grid:has(.income-card:only-child) .income-card {
+  max-width: 100%;
+}
 
-    gap: 24px;
+@media (max-width: 700px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
-    margin-bottom: 32px;
+.income-card {
+  min-height: 220px;
+}
+
+.cards-grid:has(.income-card:only-child) .income-card .rates {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}
+
+@media (max-width: 900px) {
+  .cards-grid:has(.income-card:only-child) .income-card .rates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .income-card {
@@ -2765,4 +2788,234 @@ body.login-body .auth-card {
 
 .hidden {
   display: none !important;
+}
+
+/* ============================
+   CORES DINAMICAS DOS CARDS
+============================ */
+
+.income-card.provider-nubank {
+  border-top-color: #820ad1;
+}
+
+.income-card.provider-nubank .income-title {
+  color: #820ad1;
+}
+
+.income-card.provider-nubank .rate-box {
+  background: #f1e4fb;
+}
+
+.income-card.provider-nubank::after {
+  background: rgba(130, 10, 209, 0.12);
+}
+
+
+.income-card.provider-itau {
+  border-top-color: #ff7900;
+}
+
+.income-card.provider-itau .income-title {
+  color: #ff7900;
+}
+
+.income-card.provider-itau .rate-box {
+  background: #fff0e0;
+}
+
+.income-card.provider-itau::after {
+  background: rgba(255, 121, 0, 0.13);
+}
+
+
+.income-card.provider-santander {
+  border-top-color: #e30613;
+}
+
+.income-card.provider-santander .income-title {
+  color: #e30613;
+}
+
+.income-card.provider-santander .rate-box {
+  background: #ffe8ea;
+}
+
+.income-card.provider-santander::after {
+  background: rgba(227, 6, 19, 0.12);
+}
+
+
+.income-card.provider-bradesco {
+  border-top-color: #cc092f;
+}
+
+.income-card.provider-bradesco .income-title {
+  color: #cc092f;
+}
+
+.income-card.provider-bradesco .rate-box {
+  background: #ffe8ee;
+}
+
+.income-card.provider-bradesco::after {
+  background: rgba(204, 9, 47, 0.12);
+}
+
+
+.income-card.provider-bb {
+  border-top-color: #f7d117;
+}
+
+.income-card.provider-bb .income-title {
+  color: #0038a8;
+}
+
+.income-card.provider-bb .rate-box {
+  background: #fff8cc;
+}
+
+.income-card.provider-bb::after {
+  background: rgba(247, 209, 23, 0.18);
+}
+
+
+.income-card.provider-caixa {
+  border-top-color: #005ca9;
+}
+
+.income-card.provider-caixa .income-title {
+  color: #005ca9;
+}
+
+.income-card.provider-caixa .rate-box {
+  background: #e3f1ff;
+}
+
+.income-card.provider-caixa::after {
+  background: rgba(0, 92, 169, 0.13);
+}
+
+
+.income-card.provider-caju {
+  border-top-color: #ff6b00;
+}
+
+.income-card.provider-caju .income-title {
+  color: #ff6b00;
+}
+
+.income-card.provider-caju .rate-box {
+  background: #fff0e6;
+}
+
+.income-card.provider-caju::after {
+  background: rgba(255, 107, 0, 0.12);
+}
+
+
+.income-card.provider-sodexo {
+  border-top-color: #2a52be;
+}
+
+.income-card.provider-sodexo .income-title {
+  color: #2a52be;
+}
+
+.income-card.provider-sodexo .rate-box {
+  background: #e8eeff;
+}
+
+.income-card.provider-sodexo::after {
+  background: rgba(42, 82, 190, 0.12);
+}
+
+
+.income-card.provider-alelo {
+  border-top-color: #79c000;
+}
+
+.income-card.provider-alelo .income-title {
+  color: #5d9400;
+}
+
+.income-card.provider-alelo .rate-box {
+  background: #effadb;
+}
+
+.income-card.provider-alelo::after {
+  background: rgba(121, 192, 0, 0.14);
+}
+
+
+.income-card.provider-ticket {
+  border-top-color: #e60012;
+}
+
+.income-card.provider-ticket .income-title {
+  color: #e60012;
+}
+
+.income-card.provider-ticket .rate-box {
+  background: #ffe7e9;
+}
+
+.income-card.provider-ticket::after {
+  background: rgba(230, 0, 18, 0.12);
+}
+
+
+.income-card.provider-vr {
+  border-top-color: #00a859;
+}
+
+.income-card.provider-vr .income-title {
+  color: #008746;
+}
+
+.income-card.provider-vr .rate-box {
+  background: #e3f8ee;
+}
+
+.income-card.provider-vr::after {
+  background: rgba(0, 168, 89, 0.12);
+}
+
+
+.income-card.provider-outro {
+  border-top-color: #7a869a;
+}
+
+.income-card.provider-outro .income-title {
+  color: #003865;
+}
+
+.income-card.provider-outro .rate-box {
+  background: #f2f5f8;
+}
+
+.income-card.provider-outro::after {
+  background: rgba(122, 134, 154, 0.12);
+}
+
+.beneficio-editor-row {
+  display: grid;
+  grid-template-columns: 1fr 180px auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.beneficio-editor-row input {
+  height: 48px;
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .beneficio-editor-row {
+    grid-template-columns: 1fr;
+  }
 }

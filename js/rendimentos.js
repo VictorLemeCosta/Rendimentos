@@ -93,23 +93,23 @@ function getProviderEmoji(provider, type = "default") {
 
 function getCardClassByProvider(provider) {
   const classes = {
-    nubank: "nubank",
-    itau: "itau",
-    santander: "santander",
-    bradesco: "bradesco",
-    bb: "bb",
-    caixa: "caixa",
+    nubank: "provider-nubank",
+    itau: "provider-itau",
+    santander: "provider-santander",
+    bradesco: "provider-bradesco",
+    bb: "provider-bb",
+    caixa: "provider-caixa",
 
-    caju: "caju",
-    sodexo: "sodexo",
-    alelo: "alelo",
-    ticket: "ticket",
-    vr: "vr-beneficios",
+    caju: "provider-caju",
+    sodexo: "provider-sodexo",
+    alelo: "provider-alelo",
+    ticket: "provider-ticket",
+    vr: "provider-vr",
 
-    outro: "outro"
+    outro: "provider-outro"
   };
 
-  return classes[provider] || "outro";
+  return classes[provider] || "provider-outro";
 }
 
 function getProviderEmoji(provider, type = "default") {
@@ -179,7 +179,7 @@ function montarIncomeItemsFromConfig(config) {
         name: nome,
         amount: valor,
         method: "Benefício adicional",
-        className: "outro",
+        className: "provider-outro",
         emoji: "➕"
       });
     }
