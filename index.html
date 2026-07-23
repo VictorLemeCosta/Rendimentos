@@ -46,6 +46,10 @@
         <div>
           <h1>Painel de Rendimentos Mensais</h1>
 
+          <div id="userGreeting" class="user-greeting">
+            Olá
+          </div>
+
           <p>
             Este painel transforma seus rendimentos mensais em uma visão prática por segundo, minuto,
             hora, dia útil e mês. Ele também possui um acumulador em tempo real que calcula quanto você
@@ -281,9 +285,11 @@
 
   </div>
   <script src="js/rendimentos.js"></script>
+  <script src="js/userData.js"></script>
 
   <script>
     verificarLogin();
+    carregarDadosUsuario();
   </script>
 </body>
 </html>

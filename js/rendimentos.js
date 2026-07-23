@@ -1,49 +1,130 @@
-const incomeItems = [
-      {
-        id: "salary",
-        name: "Salário",
-        amount: 6000.00,
-        method: "Pago em conta Nubank",
-        className: "nubank",
-        emoji: "💜"
-      },
-      {
-        id: "vr",
-        name: "VR",
-        amount: 1617.00,
-        method: "Pago no cartão Caju",
-        className: "caju",
-        emoji: "🍊"
-      },
-      {
-        id: "va",
-        name: "VA",
-        amount: 174.10,
-        method: "Depositado no Nubank",
-        className: "nubank",
-        emoji: "💜"
-      },
-      {
-        id: "home",
-        name: "Auxílio Home Office",
-        amount: 150.00,
-        method: "Pago em conta Nubank",
-        className: "nubank",
-        emoji: "🏠"
-      }
-    ];
+let incomeItems = [];
 
-    const WORK_START_HOUR = 9;
-    const WORK_END_HOUR = 18;
-    const WORK_HOURS_PER_DAY = WORK_END_HOUR - WORK_START_HOUR;
-    const SECONDS_PER_WORK_DAY = WORK_HOURS_PER_DAY * 60 * 60;
+let financeRuntimeConfig = {
+  salarioBruto: 0,
+  salarioLiquido: 0,
+  valorVr: 0,
+  valorVa: 0,
+  outrosBeneficios: [],
+  jornadaTipo: "SEG_SEX",
+  horaInicio: "09:00",
+  horaFim: "18:00",
+  diasTrabalho: [1, 2, 3, 4, 5]
+};
 
-    const CLT_CONFIG = {
-      salary: 6000.00,
-      defaultDependents: 2,
-      dependentDeduction: 189.59,
-      simplifiedDeductionLimit: 607.20
-    };
+const CLT_CONFIG = {
+  salary: 0,
+  defaultDependents: 0,
+  dependentDeduction: 189.59,
+  simplifiedDeductionLimit: 607.20
+};
+
+function toNumber(value) {
+  return Number(value || 0);
+}
+
+function getWorkStartMinutes() {
+  return horarioParaMinutos(financeRuntimeConfig.horaInicio || "09:00");
+}
+
+function getWorkEndMinutes() {
+  return horarioParaMinutos(financeRuntimeConfig.horaFim || "18:00");
+}
+
+function getWorkSecondsPerDay() {
+  const start = getWorkStartMinutes();
+  const end = getWorkEndMinutes();
+
+  return Math.max(0, (end - start) * 60);
+}
+
+function getWorkHoursPerDay() {
+  return getWorkSecondsPerDay() / 3600;
+}
+
+function isWorkDay(date) {
+  const day = date.getDay();
+  const diasTrabalho = financeRuntimeConfig.diasTrabalho || [1, 2, 3, 4, 5];
+
+  return diasTrabalho.includes(day);
+}
+
+function montarIncomeItemsFromConfig(config) {
+  const items = [];
+
+  if (toNumber(config.salarioBruto) > 0) {
+    items.push({
+      id: "salary",
+      name: "Salário",
+      amount: toNumber(config.salarioBruto),
+      method: "Rendimento cadastrado",
+      className: "nubank",
+      emoji: "💜"
+    });
+  }
+
+  if (toNumber(config.valorVr) > 0) {
+    items.push({
+      id: "vr",
+      name: "VR",
+      amount: toNumber(config.valorVr),
+      method: "Benefício cadastrado",
+      className: "caju",
+      emoji: "🍊"
+    });
+  }
+
+  if (toNumber(config.valorVa) > 0) {
+    items.push({
+      id: "va",
+      name: "VA",
+      amount: toNumber(config.valorVa),
+      method: "Benefício cadastrado",
+      className: "caju",
+      emoji: "🛒"
+    });
+  }
+
+  const outrosBeneficios = config.outrosBeneficios || [];
+
+  outrosBeneficios.forEach((beneficio, index) => {
+    const nome = beneficio.nome || `Benefício ${index + 1}`;
+    const valor = toNumber(beneficio.valor);
+
+    if (valor > 0 && nome !== "VR" && nome !== "VA") {
+      items.push({
+        id: `beneficio_${index}`,
+        name: nome,
+        amount: valor,
+        method: "Benefício adicional",
+        className: "nubank",
+        emoji: "➕"
+      });
+    }
+  });
+
+  return items;
+}
+
+function aplicarDadosUsuarioNoPainel(config) {
+  financeRuntimeConfig = {
+    ...financeRuntimeConfig,
+    ...config,
+    salarioBruto: toNumber(config.salarioBruto),
+    salarioLiquido: toNumber(config.salarioLiquido),
+    valorVr: toNumber(config.valorVr),
+    valorVa: toNumber(config.valorVa),
+    diasTrabalho: config.diasTrabalho || [1, 2, 3, 4, 5],
+    horaInicio: config.horaInicio || "09:00",
+    horaFim: config.horaFim || "18:00"
+  };
+
+  CLT_CONFIG.salary = financeRuntimeConfig.salarioBruto;
+
+  incomeItems = montarIncomeItemsFromConfig(financeRuntimeConfig);
+
+  refreshAll();
+}
 
     const INSS_TABLE_2026 = [
       { limit: 1621.00, rate: 0.075 },
@@ -77,9 +158,8 @@ const incomeItems = [
     }
 
     function isBusinessDay(date) {
-      const day = date.getDay();
-      return day !== 0 && day !== 6;
-    }
+  return isWorkDay(date);
+}
 
     function getBusinessDaysInMonth(year, month) {
       const lastDay = new Date(year, month + 1, 0).getDate();
@@ -102,20 +182,32 @@ const incomeItems = [
     }
 
     function getRates(amount, year = new Date().getFullYear(), month = new Date().getMonth()) {
-      const businessDays = getBusinessDaysInMonth(year, month);
-      const perDay = amount / businessDays;
-      const perHour = perDay / WORK_HOURS_PER_DAY;
-      const perMinute = perHour / 60;
-      const perSecond = perMinute / 60;
+  const businessDays = getBusinessDaysInMonth(year, month);
+  const workHoursPerDay = getWorkHoursPerDay();
 
-      return {
-        second: perSecond,
-        minute: perMinute,
-        hour: perHour,
-        day: perDay,
-        month: amount
-      };
-    }
+  if (businessDays <= 0 || workHoursPerDay <= 0) {
+    return {
+      second: 0,
+      minute: 0,
+      hour: 0,
+      day: 0,
+      month: amount
+    };
+  }
+
+  const perDay = amount / businessDays;
+  const perHour = perDay / workHoursPerDay;
+  const perMinute = perHour / 60;
+  const perSecond = perMinute / 60;
+
+  return {
+    second: perSecond,
+    minute: perMinute,
+    hour: perHour,
+    day: perDay,
+    month: amount
+  };
+}
 
     function renderSummary() {
       const total = incomeItems.reduce((sum, item) => sum + item.amount, 0);
@@ -183,26 +275,30 @@ const incomeItems = [
     }
 
     function getSecondsWorkedToday(now) {
-      if (!isBusinessDay(now)) {
-        return 0;
-      }
+  if (!isBusinessDay(now)) {
+    return 0;
+  }
 
-      const start = new Date(now);
-      start.setHours(WORK_START_HOUR, 0, 0, 0);
+  const startMinutes = getWorkStartMinutes();
+  const endMinutes = getWorkEndMinutes();
 
-      const end = new Date(now);
-      end.setHours(WORK_END_HOUR, 0, 0, 0);
+  const currentMinutes =
+    now.getHours() * 60 +
+    now.getMinutes() +
+    now.getSeconds() / 60;
 
-      if (now < start) {
-        return 0;
-      }
+  const totalSecondsDay = getWorkSecondsPerDay();
 
-      if (now >= end) {
-        return SECONDS_PER_WORK_DAY;
-      }
+  if (currentMinutes < startMinutes) {
+    return 0;
+  }
 
-      return Math.floor((now - start) / 1000);
-    }
+  if (currentMinutes >= endMinutes) {
+    return totalSecondsDay;
+  }
+
+  return Math.floor((currentMinutes - startMinutes) * 60);
+}
 
     function getCompletedBusinessDaysBeforeToday(now) {
       const year = now.getFullYear();
@@ -223,31 +319,40 @@ const incomeItems = [
     }
 
     function getSecondsWorkedInCurrentMonth(now) {
-      const completedBusinessDays = getCompletedBusinessDaysBeforeToday(now);
-      const todaySeconds = getSecondsWorkedToday(now);
+  const completedBusinessDays = getCompletedBusinessDaysBeforeToday(now);
+  const todaySeconds = getSecondsWorkedToday(now);
 
-      return completedBusinessDays * SECONDS_PER_WORK_DAY + todaySeconds;
-    }
+  return completedBusinessDays * getWorkSecondsPerDay() + todaySeconds;
+}
 
     function getWorkStatus(now) {
-      const status = document.getElementById("workStatus");
+  const status = document.getElementById("workStatus");
 
-      if (!isBusinessDay(now)) {
-        status.textContent = "Fora de dia útil";
-        status.className = "status paused";
-        return;
-      }
+  if (!status) {
+    return;
+  }
 
-      const hour = now.getHours();
+  if (!isBusinessDay(now)) {
+    status.textContent = "Fora da jornada cadastrada";
+    status.className = "status paused";
+    return;
+  }
 
-      if (hour >= WORK_START_HOUR && hour < WORK_END_HOUR) {
-        status.textContent = "Acumulando agora";
-        status.className = "status active";
-      } else {
-        status.textContent = "Fora do expediente";
-        status.className = "status paused";
-      }
-    }
+  const currentMinutes =
+    now.getHours() * 60 +
+    now.getMinutes();
+
+  const startMinutes = getWorkStartMinutes();
+  const endMinutes = getWorkEndMinutes();
+
+  if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+    status.textContent = "Acumulando agora";
+    status.className = "status active";
+  } else {
+    status.textContent = "Fora do expediente";
+    status.className = "status paused";
+  }
+}
 
     function calculateINSS(salary) {
       let contribution = 0;
@@ -360,52 +465,64 @@ const incomeItems = [
     }
 
     function updateDailyAccumulator() {
-      const now = new Date();
-      const secondsWorked = getSecondsWorkedToday(now);
-      const progress = Math.min((secondsWorked / SECONDS_PER_WORK_DAY) * 100, 100);
+  const now = new Date();
+  const secondsWorked = getSecondsWorkedToday(now);
+  const secondsPerWorkDay = getWorkSecondsPerDay();
 
-      let totalAccumulated = 0;
-      let accumulatedByItem = {};
+  const progress = secondsPerWorkDay > 0
+    ? Math.min((secondsWorked / secondsPerWorkDay) * 100, 100)
+    : 0;
 
-      incomeItems.forEach(item => {
-        const rates = getRates(item.amount, now.getFullYear(), now.getMonth());
-        const accumulated = rates.second * secondsWorked;
+  let totalAccumulated = 0;
+  let accumulatedByItem = {};
 
-        accumulatedByItem[item.id] = accumulated;
-        totalAccumulated += accumulated;
-      });
+  incomeItems.forEach(item => {
+    const rates = getRates(item.amount, now.getFullYear(), now.getMonth());
+    const accumulated = rates.second * secondsWorked;
 
-      document.getElementById("accumulatorValue").textContent = formatBRL(totalAccumulated);
-      document.getElementById("accSalary").textContent = formatBRL(accumulatedByItem.salary || 0);
-      document.getElementById("accVR").textContent = formatBRL(accumulatedByItem.vr || 0);
-      document.getElementById("accVA").textContent = formatBRL(accumulatedByItem.va || 0);
-      document.getElementById("accHome").textContent = formatBRL(accumulatedByItem.home || 0);
+    accumulatedByItem[item.id] = accumulated;
+    totalAccumulated += accumulated;
+  });
 
-      document.getElementById("progressFill").style.width = `${progress}%`;
-      document.getElementById("progressPercent").textContent = `${progress.toFixed(1)}%`;
+  document.getElementById("accumulatorValue").textContent = formatBRL(totalAccumulated);
+  document.getElementById("accSalary").textContent = formatBRL(accumulatedByItem.salary || 0);
+  document.getElementById("accVR").textContent = formatBRL(accumulatedByItem.vr || 0);
+  document.getElementById("accVA").textContent = formatBRL(accumulatedByItem.va || 0);
 
-      document.getElementById("currentTime").textContent =
-        `Horário atual: ${now.toLocaleTimeString("pt-BR")} | Dias úteis no mês: ${getBusinessDaysInCurrentMonth()}`;
+  const accHomeElement = document.getElementById("accHome");
 
-      getWorkStatus(now);
-    }
+  if (accHomeElement) {
+    accHomeElement.textContent = formatBRL(accumulatedByItem.home || 0);
+  }
+
+  document.getElementById("progressFill").style.width = `${progress}%`;
+  document.getElementById("progressPercent").textContent = `${progress.toFixed(1)}%`;
+
+  document.getElementById("currentTime").textContent =
+    `Horário atual: ${now.toLocaleTimeString("pt-BR")} | Dias de trabalho no mês: ${getBusinessDaysInCurrentMonth()} | Jornada: ${financeRuntimeConfig.horaInicio} às ${financeRuntimeConfig.horaFim}`;
+
+  getWorkStatus(now);
+}
 
     function updateMonthlyAccumulator() {
-      const now = new Date();
-      const clt = calculateCLT(now.getFullYear(), now.getMonth());
+  const now = new Date();
+  const clt = calculateCLT(now.getFullYear(), now.getMonth());
 
-      const secondsWorkedInMonth = getSecondsWorkedInCurrentMonth(now);
-      const totalBusinessDaysMonth = getBusinessDaysInMonth(now.getFullYear(), now.getMonth());
-      const totalSecondsMonth = totalBusinessDaysMonth * SECONDS_PER_WORK_DAY;
+  const secondsWorkedInMonth = getSecondsWorkedInCurrentMonth(now);
+  const totalBusinessDaysMonth = getBusinessDaysInMonth(now.getFullYear(), now.getMonth());
+  const totalSecondsMonth = totalBusinessDaysMonth * getWorkSecondsPerDay();
 
-      const monthlyProgress = Math.min(secondsWorkedInMonth / totalSecondsMonth, 1);
-      const estimatedMonthlyNetAccumulated = clt.netTotal * monthlyProgress;
+  const monthlyProgress = totalSecondsMonth > 0
+    ? Math.min(secondsWorkedInMonth / totalSecondsMonth, 1)
+    : 0;
 
-      document.getElementById("monthlyNetAccumulator").textContent = formatBRL(estimatedMonthlyNetAccumulated);
+  const estimatedMonthlyNetAccumulated = clt.netTotal * monthlyProgress;
 
-      document.getElementById("monthlyAccumulatorInfo").textContent =
-        `Progresso estimado do mês: ${(monthlyProgress * 100).toFixed(1)}% | ${totalBusinessDaysMonth} dias úteis | Reset automático no próximo mês`;
-    }
+  document.getElementById("monthlyNetAccumulator").textContent = formatBRL(estimatedMonthlyNetAccumulated);
+
+  document.getElementById("monthlyAccumulatorInfo").textContent =
+    `Progresso estimado do mês: ${(monthlyProgress * 100).toFixed(1)}% | ${totalBusinessDaysMonth} dias de trabalho | Jornada ${financeRuntimeConfig.horaInicio} às ${financeRuntimeConfig.horaFim}`;
+}
 
     function getMonthLabel(year, month) {
       const date = new Date(year, month, 1);
@@ -497,9 +614,71 @@ const incomeItems = [
     }
 
     setupCLTListeners();
-    refreshAll();
 
-    setInterval(() => {
-      updateDailyAccumulator();
-      updateMonthlyAccumulator();
-    }, 1000);
+window.addEventListener("financeHubDataLoaded", function () {
+  const config = obterConfiguracaoFinanceiraUsuario();
+
+  if (!config) {
+    return;
+  }
+
+  console.log("Dados financeiros carregados no painel:", config);
+
+  aplicarDadosUsuarioNoPainel(config);
+});
+
+setInterval(() => {
+  updateDailyAccumulator();
+  updateMonthlyAccumulator();
+}, 1000);
+
+function horarioParaMinutos(horario) {
+  const partes = horario.split(":");
+  return Number(partes[0]) * 60 + Number(partes[1]);
+}
+
+function usuarioTrabalhaHoje(dataAtual, config) {
+  const diaSemana = dataAtual.getDay();
+  return config.diasTrabalho.includes(diaSemana);
+}
+
+function calcularProgressoJornadaHoje(config) {
+  const agora = new Date();
+
+  if (!usuarioTrabalhaHoje(agora, config)) {
+    return {
+      trabalhandoHoje: false,
+      percentual: 0,
+      minutosTrabalhados: 0,
+      minutosTotais: 0
+    };
+  }
+
+  const minutosInicio = horarioParaMinutos(config.horaInicio);
+  const minutosFim = horarioParaMinutos(config.horaFim);
+
+  const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+
+  const minutosTotais = Math.max(0, minutosFim - minutosInicio);
+
+  let minutosTrabalhados = minutosAgora - minutosInicio;
+
+  if (minutosTrabalhados < 0) {
+    minutosTrabalhados = 0;
+  }
+
+  if (minutosTrabalhados > minutosTotais) {
+    minutosTrabalhados = minutosTotais;
+  }
+
+  const percentual = minutosTotais > 0
+    ? minutosTrabalhados / minutosTotais
+    : 0;
+
+  return {
+    trabalhandoHoje: true,
+    percentual,
+    minutosTrabalhados,
+    minutosTotais
+  };
+}

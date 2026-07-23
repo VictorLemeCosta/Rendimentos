@@ -55,6 +55,60 @@
   <option value="OUTRO">Outro</option>
 </select>
 
+<h2>Jornada de trabalho</h2>
+
+<div class="form-grid-3">
+  <div>
+    <label for="jornadaTipo">Modelo de jornada</label>
+    <select id="jornadaTipo" onchange="alternarCamposJornada()">
+      <option value="SEG_SEX">Segunda a sexta</option>
+      <option value="SEG_SAB">Segunda a sábado</option>
+      <option value="6X1">Escala 6x1</option>
+      <option value="TODOS_DIAS">Todos os dias</option>
+      <option value="PERSONALIZADO">Personalizado</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="horaInicio">Hora de início</label>
+    <input type="time" id="horaInicio" value="09:00">
+  </div>
+
+  <div>
+    <label for="horaFim">Hora de fim</label>
+    <input type="time" id="horaFim" value="18:00">
+  </div>
+</div>
+
+<div id="campoFolga6x1" class="conditional-fields hidden">
+  <h2>Folga da escala 6x1</h2>
+
+  <label for="folgaSemanal">Dia de folga semanal</label>
+  <select id="folgaSemanal">
+    <option value="0">Domingo</option>
+    <option value="1">Segunda-feira</option>
+    <option value="2">Terça-feira</option>
+    <option value="3">Quarta-feira</option>
+    <option value="4">Quinta-feira</option>
+    <option value="5">Sexta-feira</option>
+    <option value="6">Sábado</option>
+  </select>
+</div>
+
+<div id="campoJornadaPersonalizada" class="conditional-fields hidden">
+  <h2>Dias de trabalho</h2>
+
+  <div class="checkbox-grid">
+    <label><input type="checkbox" class="dia-trabalho" value="1"> Segunda</label>
+    <label><input type="checkbox" class="dia-trabalho" value="2"> Terça</label>
+    <label><input type="checkbox" class="dia-trabalho" value="3"> Quarta</label>
+    <label><input type="checkbox" class="dia-trabalho" value="4"> Quinta</label>
+    <label><input type="checkbox" class="dia-trabalho" value="5"> Sexta</label>
+    <label><input type="checkbox" class="dia-trabalho" value="6"> Sábado</label>
+    <label><input type="checkbox" class="dia-trabalho" value="0"> Domingo</label>
+  </div>
+</div>
+
 <div id="camposClt" class="conditional-fields hidden">
   <h2>Dados CLT</h2>
 
@@ -271,6 +325,18 @@
           salario_liquido: getNumberValue("salarioLiquido"),
           valor_vr_va: getNumberValue("valorVrVa"),
           outros_beneficios: getNumberValue("outrosBeneficios"),
+
+          valor_vr: beneficioVr,
+          valor_va: beneficioVa,
+          valor_vr_va: beneficioVr + beneficioVa,
+
+          jornada_tipo: document.getElementById("jornadaTipo").value,
+          hora_inicio: document.getElementById("horaInicio").value,
+          hora_fim: document.getElementById("horaFim").value,
+          dias_trabalho: obterDiasTrabalho(),
+          folga_semanal: document.getElementById("jornadaTipo").value === "6X1"
+          ? Number(document.getElementById("folgaSemanal").value)
+          : null,
 
           aluguel: getNumberValue("aluguel"),
           energia: getNumberValue("energia"),
@@ -575,6 +641,50 @@ function calcularSalarioLiquidoEstimadoClt() {
 
     return receita - (receita * impostoPercentual) - contador;
   }
+
+  function alternarCamposJornada() {
+  const tipo = document.getElementById("jornadaTipo").value;
+
+  document.getElementById("campoFolga6x1").classList.add("hidden");
+  document.getElementById("campoJornadaPersonalizada").classList.add("hidden");
+
+  if (tipo === "6X1") {
+    document.getElementById("campoFolga6x1").classList.remove("hidden");
+  }
+
+  if (tipo === "PERSONALIZADO") {
+    document.getElementById("campoJornadaPersonalizada").classList.remove("hidden");
+  }
+}
+
+function obterDiasTrabalho() {
+  const tipo = document.getElementById("jornadaTipo").value;
+
+  if (tipo === "SEG_SEX") {
+    return [1, 2, 3, 4, 5];
+  }
+
+  if (tipo === "SEG_SAB") {
+    return [1, 2, 3, 4, 5, 6];
+  }
+
+  if (tipo === "TODOS_DIAS") {
+    return [0, 1, 2, 3, 4, 5, 6];
+  }
+
+  if (tipo === "6X1") {
+    const folga = Number(document.getElementById("folgaSemanal").value);
+    return [0, 1, 2, 3, 4, 5, 6].filter((dia) => dia !== folga);
+  }
+
+  if (tipo === "PERSONALIZADO") {
+    const checkboxes = document.querySelectorAll(".dia-trabalho:checked");
+
+    return Array.from(checkboxes).map((checkbox) => Number(checkbox.value));
+  }
+
+  return [1, 2, 3, 4, 5];
+}
 
   function calcularRendaLiquidaEstimativa() {
     const tipo = document.getElementById("tipoContratacao").value;

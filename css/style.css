@@ -2149,3 +2149,67 @@ body.auth-body {
     max-width: 100%;
   }
 }
+
+/* ============================
+   CORRECAO CENTRALIZACAO LOGIN
+============================ */
+
+body.login-body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #003865, #005b96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.login-body .auth-container {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+body.login-body .auth-card {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.checkbox-grid label {
+  background: #ffffff;
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 700;
+  color: #003865;
+  cursor: pointer;
+}
+
+.checkbox-grid input {
+  width: auto;
+  margin-right: 8px;
+}
+
+@media (max-width: 800px) {
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.user-greeting {
+  margin-top: 8px;
+  margin-bottom: 18px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #003865;
+}
