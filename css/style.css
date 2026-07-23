@@ -1710,3 +1710,127 @@ INDEX + FINANCEIRO + INVESTIMENTOS
         flex-direction: column;
     }
 }
+
+.auth-body {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #003865, #005b96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  border-top: 6px solid #ff8200;
+}
+
+.auth-card-large {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.auth-card h1 {
+  margin: 0;
+  color: #003865;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.auth-card h2 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+  color: #003865;
+  font-size: 18px;
+  border-bottom: 1px solid #e5eaf0;
+  padding-bottom: 8px;
+}
+
+.auth-subtitle {
+  margin-top: 8px;
+  margin-bottom: 28px;
+  color: #5a6b85;
+  font-size: 15px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-form label {
+  color: #003865;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.auth-form input {
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.auth-form input:focus {
+  border-color: #005b96;
+  box-shadow: 0 0 0 3px rgba(0, 91, 150, 0.15);
+}
+
+.auth-button {
+  margin-top: 24px;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 18px;
+  background: #005b96;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.auth-button:hover {
+  background: #003865;
+  transform: translateY(-1px);
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 18px;
+  color: #5a6b85;
+}
+
+.auth-link a {
+  color: #005b96;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 26px;
+    border-radius: 20px;
+  }
+
+  .auth-card h1 {
+    font-size: 26px;
+  }
+}

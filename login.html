@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - FinanceHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>FinanceHub</h1>
+      <p class="auth-subtitle">Acesse sua conta para continuar</p>
+
+      <div class="auth-form">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seuemail@exemplo.com">
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="Digite sua senha">
+
+        <button onclick="login()" class="auth-button">Entrar</button>
+
+        <p class="auth-link">
+          Ainda não tem conta?
+          cadastro.htmlCriar cadastro</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
+
+      if (!email || !senha) {
+        alert("Preencha e-mail e senha.");
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: senha
+      });
+
+      if (error) {
+        alert("Erro ao fazer login: " + error.message);
+        return;
+      }
+
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>

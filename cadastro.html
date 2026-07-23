@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro - FinanceHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-container">
+    <div class="auth-card auth-card-large">
+      <h1>Criar conta</h1>
+      <p class="auth-subtitle">Preencha seus dados iniciais para configurar o FinanceHub</p>
+
+      <div class="auth-form">
+
+        <h2>Dados de acesso</h2>
+
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Seu nome">
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seuemail@exemplo.com">
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="Crie uma senha">
+
+        <h2>Rendimentos</h2>
+
+        <label for="salarioBruto">Salário bruto</label>
+        <input type="number" id="salarioBruto" placeholder="Ex: 6000" step="0.01">
+
+        <label for="salarioLiquido">Salário líquido estimado</label>
+        <input type="number" id="salarioLiquido" placeholder="Ex: 4800" step="0.01">
+
+        <label for="valorVrVa">VR/VA total</label>
+        <input type="number" id="valorVrVa" placeholder="Ex: 1617" step="0.01">
+
+        <label for="outrosBeneficios">Outros benefícios</label>
+        <input type="number" id="outrosBeneficios" placeholder="Ex: 0" step="0.01">
+
+        <h2>Despesas principais</h2>
+
+        <label for="aluguel">Aluguel</label>
+        <input type="number" id="aluguel" placeholder="Ex: 2400" step="0.01">
+
+        <label for="energia">Energia</label>
+        <input type="number" id="energia" placeholder="Ex: 150" step="0.01">
+
+        <label for="agua">Água</label>
+        <input type="number" id="agua" placeholder="Ex: 80" step="0.01">
+
+        <label for="internet">Internet</label>
+        <input type="number" id="internet" placeholder="Ex: 100" step="0.01">
+
+        <label for="cartaoCredito">Cartão de crédito</label>
+        <input type="number" id="cartaoCredito" placeholder="Ex: 350" step="0.01">
+
+        <label for="outrasDespesas">Outras despesas</label>
+        <input type="number" id="outrasDespesas" placeholder="Ex: 0" step="0.01">
+
+        <h2>Metas e investimentos</h2>
+
+        <label for="reservaEmergencia">Reserva de emergência atual</label>
+        <input type="number" id="reservaEmergencia" placeholder="Ex: 0" step="0.01">
+
+        <label for="investimentos">Investimentos atuais</label>
+        <input type="number" id="investimentos" placeholder="Ex: 0" step="0.01">
+
+        <label for="rendimentosMensais">Rendimentos mensais estimados</label>
+        <input type="number" id="rendimentosMensais" placeholder="Ex: 0" step="0.01">
+
+        <label for="metaCasa">Meta para casa</label>
+        <input type="number" id="metaCasa" placeholder="Ex: 100000" step="0.01">
+
+        <label for="metaFilha">Meta para filha</label>
+        <input type="number" id="metaFilha" placeholder="Ex: 50000" step="0.01">
+
+        <label for="metaCarro">Meta para carro</label>
+        <input type="number" id="metaCarro" placeholder="Ex: 40000" step="0.01">
+
+        <button onclick="cadastrar()" class="auth-button">Criar conta</button>
+
+        <p class="auth-link">
+          Já tem conta?
+          login.htmlEntrar</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getNumberValue(id) {
+      const value = document.getElementById(id).value;
+      return value ? Number(value) : 0;
+    }
+
+    async function cadastrar() {
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
+
+      if (!nome || !email || !senha) {
+        alert("Preencha nome, e-mail e senha.");
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: senha
+      });
+
+      if (error) {
+        alert("Erro ao criar usuário: " + error.message);
+        return;
+      }
+
+      const user = data.user;
+
+      if (!user) {
+        alert("Cadastro iniciado. Verifique seu e-mail para confirmar a conta.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const { error: profileError } = await supabaseClient
+        .from("profiles")
+        .insert({
+          id: user.id,
+          nome: nome,
+          email: email
+        });
+
+      if (profileError) {
+        alert("Erro ao salvar perfil: " + profileError.message);
+        return;
+      }
+
+      const { error: financialError } = await supabaseClient
+        .from("financial_profile")
+        .insert({
+          user_id: user.id,
+
+          salario_bruto: getNumberValue("salarioBruto"),
+          salario_liquido: getNumberValue("salarioLiquido"),
+          valor_vr_va: getNumberValue("valorVrVa"),
+          outros_beneficios: getNumberValue("outrosBeneficios"),
+
+          aluguel: getNumberValue("aluguel"),
+          energia: getNumberValue("energia"),
+          agua: getNumberValue("agua"),
+          internet: getNumberValue("internet"),
+          cartao_credito: getNumberValue("cartaoCredito"),
+          outras_despesas: getNumberValue("outrasDespesas"),
+
+          reserva_emergencia: getNumberValue("reservaEmergencia"),
+          investimentos: getNumberValue("investimentos"),
+          rendimentos_mensais: getNumberValue("rendimentosMensais"),
+
+          meta_casa: getNumberValue("metaCasa"),
+          meta_filha: getNumberValue("metaFilha"),
+          meta_carro: getNumberValue("metaCarro")
+        });
+
+      if (financialError) {
+        alert("Erro ao salvar dados financeiros: " + financialError.message);
+        return;
+      }
+
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
