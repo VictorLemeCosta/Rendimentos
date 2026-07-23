@@ -74,7 +74,18 @@
       </div>
     </section>
 
-<section class="edit-profile-section">
+<section class="edit-profile-section hidden" id="financialEditorSection">
+
+  <div class="edit-profile-actions">
+    <button type="button" class="secondary-pill-button" onclick="fecharEditorFinanceiro()">
+      Cancelar
+    </button>
+
+    <button type="button" class="primary-pill-button" onclick="salvarDadosFinanceirosIndex()">
+      Salvar alterações
+    </button>
+  </div>
+
   <div class="edit-profile-header">
     <div>
       <h2>Editar dados financeiros</h2>
@@ -148,7 +159,7 @@
       </div>
     </div>
 
-    <button type="button" id="btnAdicionarVr" class="edit-secondary-button" onclick="mostrarCampoVr()">
+    <button type="button" id="btnAdicionarVr" class="secondary-pill-button" onclick="mostrarCampoVr()">
       Adicionar VR
     </button>
 
@@ -171,7 +182,7 @@
       </div>
     </div>
 
-    <button type="button" id="btnAdicionarVa" class="edit-secondary-button" onclick="mostrarCampoVa()">
+    <button type="button" id="btnAdicionarVa" class="secondary-pill-button" onclick="mostrarCampoVa()">
       Adicionar VA
     </button>
   </div>
@@ -181,7 +192,7 @@
 
     <div id="outrosBeneficiosEditor"></div>
 
-    <button type="button" class="edit-secondary-button" onclick="adicionarBeneficioIndex()">
+    <button type="button" class="secondary-pill-button" onclick="adicionarBeneficioIndex()">
       Adicionar outro benefício
     </button>
   </div>
@@ -202,6 +213,12 @@
     </div>
   </div>
 </section>
+
+  <div class="panel-actions-row">
+    <button type="button" class="primary-pill-button" onclick="abrirEditorFinanceiro()">
+      Editar dados financeiros
+    </button>
+  </div>
 
     <section class="summary-grid">
       <div class="summary-card">

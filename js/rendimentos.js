@@ -260,7 +260,13 @@ function aplicarDadosUsuarioNoPainel(config) {
               <div class="method">${item.method}</div>
             </div>
 
-            <div class="monthly-value">${formatBRL(item.amount)}</div>
+            <div class="card-actions">
+              <button type="button" class="card-edit-button" onclick="editarItemFinanceiro('${item.id}')">
+                Editar
+              </button>
+
+              <div class="monthly-value">${formatBRL(item.amount)}</div>
+            </div>
           </div>
 
           <div class="rates">
@@ -702,4 +708,25 @@ function calcularProgressoJornadaHoje(config) {
     minutosTrabalhados,
     minutosTotais
   };
+}
+
+function editarItemFinanceiro(itemId) {
+  if (itemId === "salary") {
+    abrirEditorFinanceiro("editSalarioBruto");
+    return;
+  }
+
+  if (itemId === "vr") {
+    mostrarCampoVr();
+    abrirEditorFinanceiro("editValorVr");
+    return;
+  }
+
+  if (itemId === "va") {
+    mostrarCampoVa();
+    abrirEditorFinanceiro("editValorVa");
+    return;
+  }
+
+  abrirEditorFinanceiro();
 }

@@ -676,42 +676,49 @@
       return;
     }
 
-    const { data, error } = await window.supabaseClient.auth.signUp({
+    let data;
+let error;
+
+const signupResponse = await window.supabaseClient.auth.signUp({
+  email: email,
+  password: senha
+});
+
+data = signupResponse.data;
+error = signupResponse.error;
+
+if (error) {
+  const userAlreadyExists =
+    error.code === "user_already_exists" ||
+    error.message === "User already registered" ||
+    error.message.toLowerCase().includes("already registered");
+
+  if (userAlreadyExists) {
+    const loginResponse = await window.supabaseClient.auth.signInWithPassword({
       email: email,
       password: senha
     });
 
-    if (error) {
-      if (
-        error.code === "user_already_exists" ||
-        error.message === "User already registered" ||
-        error.message.includes("already registered")
-      ) {
-        const { error: loginError } = await window.supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: senha
-        });
-
-        if (loginError) {
-          alert("Este e-mail já está cadastrado, mas a senha informada está incorreta.");
-          restaurarBotaoCadastro();
-          return;
-        }
-
-        window.location.href = "index.html";
-        return;
-      }
-
-      alert(
-        "Erro ao criar usuário:\n" +
-        "Mensagem: " + (error.message || "Sem mensagem") + "\n" +
-        "Status: " + (error.status || "Sem status") + "\n" +
-        "Código: " + (error.code || "Sem código")
-      );
-
+    if (loginResponse.error) {
+      alert("Este e-mail já está cadastrado, mas a senha informada está incorreta.");
       restaurarBotaoCadastro();
       return;
     }
+
+    window.location.href = "index.html";
+    return;
+  }
+
+  alert(
+    "Erro ao criar usuário:\n" +
+    "Mensagem: " + (error.message || "Sem mensagem") + "\n" +
+    "Status: " + (error.status || "Sem status") + "\n" +
+    "Código: " + (error.code || "Sem código")
+  );
+
+  restaurarBotaoCadastro();
+  return;
+}
 
     const user = data.user;
 

@@ -182,9 +182,11 @@ async function salvarDadosFinanceirosIndex() {
 
   await salvarBeneficiosExtrasIndex(user.id);
 
-  alert("Dados atualizados com sucesso!");
-
   await carregarDadosUsuario();
+
+    fecharEditorFinanceiro();
+
+    alert("Dados atualizados com sucesso!");
 }
 
 async function salvarBeneficiosExtrasIndex(userId) {
@@ -251,3 +253,38 @@ function calcularSalarioLiquidoEstimadoIndex() {
 window.addEventListener("financeHubDataLoaded", function (event) {
   preencherEditorFinanceiro(event.detail);
 });
+
+function abrirEditorFinanceiro(campoFoco = null) {
+  const editor = document.getElementById("financialEditorSection");
+
+  if (!editor) {
+    return;
+  }
+
+  editor.classList.remove("hidden");
+
+  setTimeout(() => {
+    editor.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    if (campoFoco) {
+      const campo = document.getElementById(campoFoco);
+
+      if (campo) {
+        campo.focus();
+      }
+    }
+  }, 100);
+}
+
+function fecharEditorFinanceiro() {
+  const editor = document.getElementById("financialEditorSection");
+
+  if (!editor) {
+    return;
+  }
+
+  editor.classList.add("hidden");
+}
