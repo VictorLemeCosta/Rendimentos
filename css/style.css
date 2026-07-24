@@ -3108,3 +3108,54 @@ body.login-body .auth-card {
   align-items: center;
   justify-content: center;
 }
+
+/* ============================
+   ALINHAMENTO DOS BOTOES REMOVER BENEFICIOS
+============================ */
+
+.benefit-removable-block {
+  margin-top: 16px;
+  margin-bottom: 22px;
+}
+
+.benefit-grid-with-action {
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
+}
+
+.benefit-grid-vt-action {
+  grid-template-columns: 1fr auto;
+  align-items: end;
+}
+
+.benefit-action-column {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  min-width: 150px;
+}
+
+.benefit-remove-button {
+  height: 48px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .benefit-grid-with-action,
+  .benefit-grid-vt-action {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-action-column {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .benefit-remove-button {
+    width: 100%;
+  }
+}

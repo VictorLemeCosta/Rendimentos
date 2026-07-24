@@ -143,7 +143,7 @@
   </div>
 
   <div id="vrEditorBlock" class="benefit-removable-block hidden">
-    <div class="edit-grid edit-grid-2">
+    <div class="edit-grid benefit-grid-with-action">
       <div class="edit-field">
         <label for="editValorVr">VR</label>
         <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
@@ -160,15 +160,17 @@
           <option value="outro">Outro</option>
         </select>
       </div>
-    </div>
 
-    <button type="button" class="remove-button benefit-remove-button" onclick="removerVr()">
-      Remover VR
-    </button>
+      <div class="benefit-action-column">
+        <button type="button" class="remove-button benefit-remove-button" onclick="removerVr()">
+          Remover VR
+        </button>
+      </div>
+    </div>
   </div>
 
   <div id="vaEditorBlock" class="benefit-removable-block hidden">
-  <div class="edit-grid edit-grid-2">
+    <div class="edit-grid benefit-grid-with-action">
       <div class="edit-field">
         <label for="editValorVa">VA</label>
         <input type="number" id="editValorVa" step="0.01" placeholder="Ex: 817">
@@ -185,11 +187,13 @@
           <option value="outro">Outro</option>
         </select>
       </div>
-    </div>
 
-    <button type="button" class="remove-button benefit-remove-button" onclick="removerVa()">
-      Remover VA
-    </button>
+      <div class="benefit-action-column">
+        <button type="button" class="remove-button benefit-remove-button" onclick="removerVa()">
+          Remover VA
+        </button>
+      </div>
+    </div>
   </div>
 
   <div id="vtEditorBlock" class="benefit-removable-block hidden">
@@ -221,21 +225,21 @@
       </div>
     </div>
 
-    <div class="edit-grid edit-grid-2">
+    <div class="edit-grid benefit-grid-vt-action">
       <div class="edit-field">
         <label for="editFornecedorVt">Cartão de transporte</label>
         <select id="editFornecedorVt">
           <option value="outro">Outro</option>
         </select>
       </div>
+
+      <div class="benefit-action-column">
+        <button type="button" class="remove-button benefit-remove-button" onclick="removerVt()">
+          Remover VT
+        </button>
+      </div>
     </div>
-
-    <button type="button" class="remove-button benefit-remove-button" onclick="removerVt()">
-      Remover VT
-    </button>
-
   </div>
-</div>
 
   <div class="edit-block">
   <h3>Outros benefícios</h3>
