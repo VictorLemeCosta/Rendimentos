@@ -276,7 +276,6 @@ window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex(
 
   window.fecharEditorFinanceiro();
 
-  alert("Dados atualizados com sucesso!");
 };
 
 async function salvarBeneficiosExtrasIndex(userId) {
@@ -435,3 +434,10 @@ function normalizarValorSelect(texto) {
     .replace(/\s+/g, "_")
     .replace(/[^a-z0-9_]/g, "");
 }
+
+console.log("profileEditor carregado:", {
+  abrirEditorFinanceiro: typeof window.abrirEditorFinanceiro,
+  mostrarCampoVt: typeof window.mostrarCampoVt,
+  atualizarCidadesTransporte: typeof window.atualizarCidadesTransporte,
+  salvarDadosFinanceirosIndex: typeof window.salvarDadosFinanceirosIndex
+});
