@@ -34,13 +34,29 @@ window.fecharEditorFinanceiro = function fecharEditorFinanceiro() {
 };
 
 window.mostrarCampoVr = function mostrarCampoVr() {
-  document.getElementById("vrEditorBlock")?.classList.remove("hidden");
-  document.getElementById("btnAdicionarVr")?.classList.add("hidden");
+  const blocoVr = document.getElementById("vrEditorBlock");
+  const botaoVr = document.getElementById("btnAdicionarVr");
+
+  if (blocoVr) {
+    blocoVr.classList.remove("hidden");
+  }
+
+  if (botaoVr) {
+    botaoVr.classList.add("hidden");
+  }
 };
 
 window.mostrarCampoVa = function mostrarCampoVa() {
-  document.getElementById("vaEditorBlock")?.classList.remove("hidden");
-  document.getElementById("btnAdicionarVa")?.classList.add("hidden");
+  const blocoVa = document.getElementById("vaEditorBlock");
+  const botaoVa = document.getElementById("btnAdicionarVa");
+
+  if (blocoVa) {
+    blocoVa.classList.remove("hidden");
+  }
+
+  if (botaoVa) {
+    botaoVa.classList.add("hidden");
+  }
 };
 
 window.adicionarBeneficioIndex = function adicionarBeneficioIndex(nome = "", valor = "") {
@@ -74,8 +90,8 @@ function preencherEditorFinanceiro(dados) {
   setValueIfExists("editFornecedorVa", financeiro.fornecedor_va || "outro");
 
   setValueIfExists("editValeTransportePercentual", financeiro.vale_transporte_percentual || 0);
-  setValueIfExists("editHoraInicio", financeiro.hora_inicio || "09:00");
-  setValueIfExists("editHoraFim", financeiro.hora_fim || "18:00");
+  setValueIfExists("editHoraInicio", normalizarHorario(financeiro.hora_inicio || "09:00"));
+  setValueIfExists("editHoraFim", normalizarHorario(financeiro.hora_fim || "18:00"));
 
   if (Number(financeiro.valor_vr || 0) > 0) {
     window.mostrarCampoVr();
@@ -86,6 +102,14 @@ function preencherEditorFinanceiro(dados) {
   }
 
   renderizarBeneficiosExtras(dados.benefits || []);
+}
+
+function normalizarHorario(valor) {
+  if (!valor) {
+    return "";
+  }
+
+  return String(valor).slice(0, 5);
 }
 
 function setValueIfExists(id, value) {
@@ -208,15 +232,16 @@ window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex(
 
   await carregarDadosUsuario();
 
-    const configAtualizada = obterConfiguracaoFinanceiraUsuario();
+  const configAtualizada = obterConfiguracaoFinanceiraUsuario();
 
-    if (configAtualizada && window.aplicarDadosUsuarioNoPainel) {
-      window.aplicarDadosUsuarioNoPainel(configAtualizada);
-    }
+  if (configAtualizada && window.aplicarDadosUsuarioNoPainel) {
+    window.aplicarDadosUsuarioNoPainel(configAtualizada);
+  }
 
-    window.fecharEditorFinanceiro();
+  window.fecharEditorFinanceiro();
 
-    alert("Dados atualizados com sucesso!");
+  alert("Dados atualizados com sucesso!");
+};
 
 async function salvarBeneficiosExtrasIndex(userId) {
   const beneficiosExtras = coletarBeneficiosExtrasIndex();
