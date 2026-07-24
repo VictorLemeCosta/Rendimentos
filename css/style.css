@@ -3096,3 +3096,15 @@ body.login-body .auth-card {
   margin-top: 4px;
   display: inline-flex;
 }
+
+.benefit-removable-block {
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+.benefit-remove-button {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -7,6 +7,8 @@ window.abrirEditorFinanceiro = function abrirEditorFinanceiro(campoFoco = null) 
 
   editor.classList.remove("hidden");
 
+  garantirBotoesRemoverBeneficios();
+
   setTimeout(() => {
     editor.scrollIntoView({
       behavior: "smooth",
@@ -209,6 +211,7 @@ function preencherEditorFinanceiro(dados) {
   }
 
   renderizarBeneficiosExtras(dados.benefits || []);
+  garantirBotoesRemoverBeneficios();
 }
 
 function getNumberFromInput(id) {
@@ -502,3 +505,36 @@ console.log("profileEditor carregado:", {
   atualizarCidadesTransporte: typeof window.atualizarCidadesTransporte,
   salvarDadosFinanceirosIndex: typeof window.salvarDadosFinanceirosIndex
 });
+
+function garantirBotoesRemoverBeneficios() {
+  const vrBlock = document.getElementById("vrEditorBlock");
+  const vaBlock = document.getElementById("vaEditorBlock");
+  const vtBlock = document.getElementById("vtEditorBlock");
+
+  if (vrBlock && !vrBlock.querySelector(".benefit-remove-button")) {
+    const btnVr = document.createElement("button");
+    btnVr.type = "button";
+    btnVr.className = "remove-button benefit-remove-button";
+    btnVr.textContent = "Remover VR";
+    btnVr.onclick = window.removerVr;
+    vrBlock.appendChild(btnVr);
+  }
+
+  if (vaBlock && !vaBlock.querySelector(".benefit-remove-button")) {
+    const btnVa = document.createElement("button");
+    btnVa.type = "button";
+    btnVa.className = "remove-button benefit-remove-button";
+    btnVa.textContent = "Remover VA";
+    btnVa.onclick = window.removerVa;
+    vaBlock.appendChild(btnVa);
+  }
+
+  if (vtBlock && !vtBlock.querySelector(".benefit-remove-button")) {
+    const btnVt = document.createElement("button");
+    btnVt.type = "button";
+    btnVt.className = "remove-button benefit-remove-button";
+    btnVt.textContent = "Remover VT";
+    btnVt.onclick = window.removerVt;
+    vtBlock.appendChild(btnVt);
+  }
+}

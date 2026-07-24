@@ -143,29 +143,29 @@
   </div>
 
   <div id="vrEditorBlock" class="benefit-removable-block hidden">
-  <div class="edit-grid edit-grid-2">
-    <div class="edit-field">
-      <label for="editValorVr">VR</label>
-      <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
+    <div class="edit-grid edit-grid-2">
+      <div class="edit-field">
+        <label for="editValorVr">VR</label>
+        <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
+      </div>
+
+      <div class="edit-field">
+        <label for="editFornecedorVr">Fornecedor do VR</label>
+        <select id="editFornecedorVr">
+          <option value="caju">Caju</option>
+          <option value="sodexo">Sodexo</option>
+          <option value="alelo">Alelo</option>
+          <option value="ticket">Ticket</option>
+          <option value="vr">VR Benefícios</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
     </div>
 
-    <div class="edit-field">
-      <label for="editFornecedorVr">Fornecedor do VR</label>
-      <select id="editFornecedorVr">
-        <option value="caju">Caju</option>
-        <option value="sodexo">Sodexo</option>
-        <option value="alelo">Alelo</option>
-        <option value="ticket">Ticket</option>
-        <option value="vr">VR Benefícios</option>
-        <option value="outro">Outro</option>
-      </select>
-    </div>
+    <button type="button" class="remove-button benefit-remove-button" onclick="removerVr()">
+      Remover VR
+    </button>
   </div>
-
-  <button type="button" class="remove-button benefit-remove-button" onclick="removerVr()">
-    Remover VR
-  </button>
-</div>
 
   <div id="vaEditorBlock" class="benefit-removable-block hidden">
   <div class="edit-grid edit-grid-2">
@@ -475,9 +475,9 @@
     </footer>
 
   </div>
-  <script src="js/rendimentos.js"></script>
   <script src="js/userData.js"></script>
   <script src="js/profileEditor.js"></script>
+  <script src="js/rendimentos.js"></script>
 
   <script>
     verificarLogin();
