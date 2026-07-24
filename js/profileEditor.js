@@ -78,6 +78,22 @@ window.adicionarBeneficioIndex = function adicionarBeneficioIndex(nome = "", val
   container.appendChild(row);
 };
 
+function normalizarHorario(valor) {
+  if (!valor) {
+    return "";
+  }
+
+  return String(valor).slice(0, 5);
+}
+
+function setValueIfExists(id, value) {
+  const element = document.getElementById(id);
+
+  if (element) {
+    element.value = value;
+  }
+}
+
 function preencherEditorFinanceiro(dados) {
   const financeiro = dados.financialProfile || {};
 
@@ -102,22 +118,6 @@ function preencherEditorFinanceiro(dados) {
   }
 
   renderizarBeneficiosExtras(dados.benefits || []);
-}
-
-function normalizarHorario(valor) {
-  if (!valor) {
-    return "";
-  }
-
-  return String(valor).slice(0, 5);
-}
-
-function setValueIfExists(id, value) {
-  const element = document.getElementById(id);
-
-  if (element) {
-    element.value = value;
-  }
 }
 
 function getNumberFromInput(id) {
