@@ -59,6 +59,19 @@ window.mostrarCampoVa = function mostrarCampoVa() {
   }
 };
 
+window.mostrarCampoVt = function mostrarCampoVt() {
+  const blocoVt = document.getElementById("vtEditorBlock");
+  const botaoVt = document.getElementById("btnAdicionarVt");
+
+  if (blocoVt) {
+    blocoVt.classList.remove("hidden");
+  }
+
+  if (botaoVt) {
+    botaoVt.classList.add("hidden");
+  }
+};
+
 window.adicionarBeneficioIndex = function adicionarBeneficioIndex(nome = "", valor = "") {
   const container = document.getElementById("outrosBeneficiosEditor");
 
@@ -108,6 +121,23 @@ function preencherEditorFinanceiro(dados) {
   setValueIfExists("editValeTransportePercentual", financeiro.vale_transporte_percentual || 0);
   setValueIfExists("editHoraInicio", normalizarHorario(financeiro.hora_inicio || "09:00"));
   setValueIfExists("editHoraFim", normalizarHorario(financeiro.hora_fim || "18:00"));
+
+  setValueIfExists("editValorVt", financeiro.valor_vt || "");
+  setValueIfExists("editEstadoTransporte", financeiro.estado_transporte || "");
+
+  if (financeiro.estado_transporte) {
+  window.atualizarCidadesTransporte();
+  setValueIfExists("editCidadeTransporte", financeiro.cidade_transporte || "");
+  }
+
+  if (financeiro.cidade_transporte) {
+    window.atualizarCartoesTransporte();
+    setValueIfExists("editFornecedorVt", financeiro.fornecedor_vt || "outro");
+  }
+
+  if (Number(financeiro.valor_vt || 0) > 0) {
+    window.mostrarCampoVt();
+  }
 
   if (Number(financeiro.valor_vr || 0) > 0) {
     window.mostrarCampoVr();
@@ -193,6 +223,7 @@ window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex(
 
   const valorVr = getNumberFromInput("editValorVr");
   const valorVa = getNumberFromInput("editValorVa");
+  const valorVt = getNumberFromInput("editValorVt");
 
   const payload = {
     user_id: user.id,
@@ -202,11 +233,16 @@ window.salvarDadosFinanceirosIndex = async function salvarDadosFinanceirosIndex(
 
     valor_vr: valorVr,
     valor_va: valorVa,
+    valor_vt: valorVt,
     valor_vr_va: valorVr + valorVa,
 
     banco_salario: document.getElementById("editBancoSalario")?.value || "outro",
     fornecedor_vr: document.getElementById("editFornecedorVr")?.value || "outro",
     fornecedor_va: document.getElementById("editFornecedorVa")?.value || "outro",
+    fornecedor_vt: document.getElementById("editFornecedorVt")?.value || "outro",
+
+    estado_transporte: document.getElementById("editEstadoTransporte")?.value || null,
+    cidade_transporte: document.getElementById("editCidadeTransporte")?.value || null,
 
     vale_transporte_percentual: getNumberFromInput("editValeTransportePercentual"),
 
@@ -307,3 +343,95 @@ function calcularSalarioLiquidoEstimadoIndex() {
 window.addEventListener("financeHubDataLoaded", function (event) {
   preencherEditorFinanceiro(event.detail);
 });
+
+const transportePorRegiao = {
+  SP: {
+    "São Paulo": ["Bilhete Único", "TOP", "Outro"],
+    "Grande São Paulo": ["TOP", "Bilhete Único", "Outro"],
+    "Campinas": ["Bilhete Único Campinas", "Outro"],
+    "Santos": ["Cartão BR Mobilidade", "Outro"],
+    "Outra cidade": ["Outro"]
+  },
+  RJ: {
+    "Rio de Janeiro": ["Riocard Mais", "Outro"],
+    "Niterói": ["Riocard Mais", "Outro"],
+    "Outra cidade": ["Outro"]
+  },
+  MG: {
+    "Belo Horizonte": ["Cartão BHBUS", "Ótimo", "Outro"],
+    "Outra cidade": ["Outro"]
+  },
+  PR: {
+    "Curitiba": ["Cartão Transporte URBS", "Outro"],
+    "Outra cidade": ["Outro"]
+  },
+  SC: {
+    "Florianópolis": ["Cartão Passe Rápido", "Outro"],
+    "Outra cidade": ["Outro"]
+  },
+  RS: {
+    "Porto Alegre": ["Cartão TRI", "Outro"],
+    "Outra cidade": ["Outro"]
+  },
+  OUTRO: {
+    "Outra cidade": ["Outro"]
+  }
+};
+
+window.atualizarCidadesTransporte = function atualizarCidadesTransporte() {
+  const estado = document.getElementById("editEstadoTransporte")?.value || "";
+  const cidadeSelect = document.getElementById("editCidadeTransporte");
+  const fornecedorSelect = document.getElementById("editFornecedorVt");
+
+  if (!cidadeSelect || !fornecedorSelect) {
+    return;
+  }
+
+  cidadeSelect.innerHTML = `<option value="">Selecione a cidade</option>`;
+  fornecedorSelect.innerHTML = `<option value="outro">Outro</option>`;
+
+  const cidades = transportePorRegiao[estado];
+
+  if (!cidades) {
+    return;
+  }
+
+  Object.keys(cidades).forEach((cidade) => {
+    const option = document.createElement("option");
+    option.value = cidade;
+    option.textContent = cidade;
+    cidadeSelect.appendChild(option);
+  });
+};
+
+window.atualizarCartoesTransporte = function atualizarCartoesTransporte() {
+  const estado = document.getElementById("editEstadoTransporte")?.value || "";
+  const cidade = document.getElementById("editCidadeTransporte")?.value || "";
+  const fornecedorSelect = document.getElementById("editFornecedorVt");
+
+  if (!fornecedorSelect) {
+    return;
+  }
+
+  fornecedorSelect.innerHTML = `<option value="outro">Outro</option>`;
+
+  const cartoes = transportePorRegiao[estado]?.[cidade] || ["Outro"];
+
+  cartoes.forEach((cartao) => {
+    const value = normalizarValorSelect(cartao);
+
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = cartao;
+    fornecedorSelect.appendChild(option);
+  });
+};
+
+function normalizarValorSelect(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+}

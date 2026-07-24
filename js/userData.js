@@ -111,6 +111,11 @@ function obterConfiguracaoFinanceiraUsuario() {
     horaInicio: financeiro.hora_inicio || "09:00",
     horaFim: financeiro.hora_fim || "18:00",
     diasTrabalho: financeiro.dias_trabalho || [1, 2, 3, 4, 5],
-    folgaSemanal: financeiro.folga_semanal
+    folgaSemanal: financeiro.folga_semanal,
+
+    valorVt: Number(financeiro.valor_vt || 0),
+    fornecedorVt: financeiro.fornecedor_vt || "outro",
+    estadoTransporte: financeiro.estado_transporte || "",
+    cidadeTransporte: financeiro.cidade_transporte || ""
   };
 }

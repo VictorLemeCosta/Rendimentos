@@ -126,6 +126,101 @@
   <!-- demais blocos de Benefícios, Outros benefícios e Jornada ficam aqui -->
 
   <div class="edit-block">
+  <h3>Benefícios</h3>
+
+  <div class="benefit-action-row">
+    <button type="button" id="btnAdicionarVr" class="secondary-pill-button" onclick="mostrarCampoVr()">
+      Adicionar VR
+    </button>
+
+    <button type="button" id="btnAdicionarVa" class="secondary-pill-button" onclick="mostrarCampoVa()">
+      Adicionar VA
+    </button>
+
+    <button type="button" id="btnAdicionarVt" class="secondary-pill-button" onclick="mostrarCampoVt()">
+      Adicionar VT
+    </button>
+  </div>
+
+  <div id="vrEditorBlock" class="edit-grid edit-grid-2 hidden">
+    <div class="edit-field">
+      <label for="editValorVr">VR</label>
+      <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
+    </div>
+
+    <div class="edit-field">
+      <label for="editFornecedorVr">Fornecedor do VR</label>
+      <select id="editFornecedorVr">
+        <option value="caju">Caju</option>
+        <option value="sodexo">Sodexo</option>
+        <option value="alelo">Alelo</option>
+        <option value="ticket">Ticket</option>
+        <option value="vr">VR Benefícios</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="vaEditorBlock" class="edit-grid edit-grid-2 hidden">
+    <div class="edit-field">
+      <label for="editValorVa">VA</label>
+      <input type="number" id="editValorVa" step="0.01" placeholder="Ex: 817">
+    </div>
+
+    <div class="edit-field">
+      <label for="editFornecedorVa">Fornecedor do VA</label>
+      <select id="editFornecedorVa">
+        <option value="caju">Caju</option>
+        <option value="sodexo">Sodexo</option>
+        <option value="alelo">Alelo</option>
+        <option value="ticket">Ticket</option>
+        <option value="vr">VR Benefícios</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="vtEditorBlock" class="hidden">
+    <div class="edit-grid edit-grid-3">
+      <div class="edit-field">
+        <label for="editValorVt">VT</label>
+        <input type="number" id="editValorVt" step="0.01" placeholder="Ex: 300">
+      </div>
+
+      <div class="edit-field">
+        <label for="editEstadoTransporte">Estado</label>
+        <select id="editEstadoTransporte" onchange="atualizarCidadesTransporte()">
+          <option value="">Selecione o estado</option>
+          <option value="SP">São Paulo</option>
+          <option value="RJ">Rio de Janeiro</option>
+          <option value="MG">Minas Gerais</option>
+          <option value="PR">Paraná</option>
+          <option value="SC">Santa Catarina</option>
+          <option value="RS">Rio Grande do Sul</option>
+          <option value="OUTRO">Outro</option>
+        </select>
+      </div>
+
+      <div class="edit-field">
+        <label for="editCidadeTransporte">Cidade / Região</label>
+        <select id="editCidadeTransporte" onchange="atualizarCartoesTransporte()">
+          <option value="">Selecione a cidade</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="edit-grid edit-grid-2">
+      <div class="edit-field">
+        <label for="editFornecedorVt">Cartão de transporte</label>
+        <select id="editFornecedorVt">
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="edit-block">
   <h3>Outros benefícios</h3>
 
   <div id="outrosBeneficiosEditor"></div>

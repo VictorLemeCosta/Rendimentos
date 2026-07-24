@@ -51,48 +51,6 @@ function isWorkDay(date) {
 
 function getCardClassByProvider(provider) {
   const classes = {
-    nubank: "nubank",
-    itau: "itau",
-    santander: "santander",
-    bradesco: "bradesco",
-    bb: "bb",
-    caixa: "caixa",
-
-    caju: "caju",
-    sodexo: "sodexo",
-    alelo: "alelo",
-    ticket: "ticket",
-    vr: "vr-beneficios",
-
-    outro: "outro"
-  };
-
-  return classes[provider] || "outro";
-}
-
-function getProviderEmoji(provider, type = "default") {
-  const emojis = {
-    nubank: "💜",
-    itau: "🟧",
-    santander: "🔴",
-    bradesco: "🔺",
-    bb: "🟡",
-    caixa: "🔵",
-
-    caju: "🍊",
-    sodexo: "🍽️",
-    alelo: "🟢",
-    ticket: "🎟️",
-    vr: "🛒",
-
-    outro: type === "salary" ? "🏦" : "💳"
-  };
-
-  return emojis[provider] || emojis.outro;
-}
-
-function getCardClassByProvider(provider) {
-  const classes = {
     nubank: "provider-nubank",
     itau: "provider-itau",
     santander: "provider-santander",
@@ -105,6 +63,16 @@ function getCardClassByProvider(provider) {
     alelo: "provider-alelo",
     ticket: "provider-ticket",
     vr: "provider-vr",
+
+    bilhete_unico: "provider-vt-sp",
+    top: "provider-top",
+    riocard_mais: "provider-riocard",
+    cartao_bhbus: "provider-vt",
+    otimo: "provider-vt",
+    cartao_tri: "provider-vt",
+    cartao_passe_rapido: "provider-vt",
+    cartao_transporte_urbs: "provider-vt",
+    cartao_br_mobilidade: "provider-vt",
 
     outro: "provider-outro"
   };
@@ -126,6 +94,16 @@ function getProviderEmoji(provider, type = "default") {
     alelo: "🟢",
     ticket: "🎟️",
     vr: "🛒",
+
+    bilhete_unico: "🚌",
+    top: "🚇",
+    riocard_mais: "🚌",
+    cartao_bhbus: "🚌",
+    otimo: "🚌",
+    cartao_tri: "🚌",
+    cartao_passe_rapido: "🚌",
+    cartao_transporte_urbs: "🚌",
+    cartao_br_mobilidade: "🚌",
 
     outro: type === "salary" ? "🏦" : "💳"
   };
@@ -164,6 +142,17 @@ function montarIncomeItemsFromConfig(config) {
       method: "Benefício cadastrado",
       className: getCardClassByProvider(config.fornecedorVa),
       emoji: getProviderEmoji(config.fornecedorVa, "benefit")
+    });
+  }
+
+  if (toNumber(config.valorVt) > 0) {
+    items.push({
+      id: "vt",
+      name: "VT",
+      amount: toNumber(config.valorVt),
+      method: "Benefício de transporte",
+      className: getCardClassByProvider(config.fornecedorVt),
+      emoji: getProviderEmoji(config.fornecedorVt, "benefit")
     });
   }
 
@@ -222,6 +211,10 @@ window.aplicarDadosUsuarioNoPainel = function aplicarDadosUsuarioNoPainel(config
     salarioLiquido: toNumber(config.salarioLiquido),
     valorVr: toNumber(config.valorVr),
     valorVa: toNumber(config.valorVa),
+    valorVt: toNumber(config.valorVt),
+    fornecedorVt: config.fornecedorVt || "outro",
+    estadoTransporte: config.estadoTransporte || "",
+    cidadeTransporte: config.cidadeTransporte || "",
     bancoSalario: config.bancoSalario || "outro",
     fornecedorVr: config.fornecedorVr || "outro",
     fornecedorVa: config.fornecedorVa || "outro",
@@ -818,6 +811,12 @@ function editarItemFinanceiro(itemId) {
   if (itemId === "va") {
     mostrarCampoVa();
     abrirEditorFinanceiro("editValorVa");
+    return;
+  }
+
+  if (itemId === "vt") {
+    mostrarCampoVt();
+    abrirEditorFinanceiro("editValorVt");
     return;
   }
 

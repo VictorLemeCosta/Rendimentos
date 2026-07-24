@@ -3019,3 +3019,70 @@ body.login-body .auth-card {
     grid-template-columns: 1fr;
   }
 }
+
+.income-card.provider-vt-sp {
+  border-top-color: #111827;
+}
+
+.income-card.provider-vt-sp .income-title {
+  color: #111827;
+}
+
+.income-card.provider-vt-sp .rate-box {
+  background: #eef2f7;
+}
+
+.income-card.provider-vt-sp::after {
+  background: rgba(17, 24, 39, 0.10);
+}
+
+
+.income-card.provider-top {
+  border-top-color: #00a3e0;
+}
+
+.income-card.provider-top .income-title {
+  color: #0077a8;
+}
+
+.income-card.provider-top .rate-box {
+  background: #e2f5fd;
+}
+
+.income-card.provider-top::after {
+  background: rgba(0, 163, 224, 0.12);
+}
+
+
+.income-card.provider-riocard {
+  border-top-color: #f58220;
+}
+
+.income-card.provider-riocard .income-title {
+  color: #f58220;
+}
+
+.income-card.provider-riocard .rate-box {
+  background: #fff0e2;
+}
+
+.income-card.provider-riocard::after {
+  background: rgba(245, 130, 32, 0.12);
+}
+
+
+.income-card.provider-vt {
+  border-top-color: #2563eb;
+}
+
+.income-card.provider-vt .income-title {
+  color: #2563eb;
+}
+
+.income-card.provider-vt .rate-box {
+  background: #eaf0ff;
+}
+
+.income-card.provider-vt::after {
+  background: rgba(37, 99, 235, 0.12);
+}
