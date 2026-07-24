@@ -3086,3 +3086,13 @@ body.login-body .auth-card {
 .income-card.provider-vt::after {
   background: rgba(37, 99, 235, 0.12);
 }
+
+.benefit-removable-block {
+  margin-top: 16px;
+  margin-bottom: 18px;
+}
+
+.benefit-remove-button {
+  margin-top: 4px;
+  display: inline-flex;
+}

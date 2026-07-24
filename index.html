@@ -142,7 +142,8 @@
     </button>
   </div>
 
-  <div id="vrEditorBlock" class="edit-grid edit-grid-2 hidden">
+  <div id="vrEditorBlock" class="benefit-removable-block hidden">
+  <div class="edit-grid edit-grid-2">
     <div class="edit-field">
       <label for="editValorVr">VR</label>
       <input type="number" id="editValorVr" step="0.01" placeholder="Ex: 800">
@@ -161,26 +162,37 @@
     </div>
   </div>
 
-  <div id="vaEditorBlock" class="edit-grid edit-grid-2 hidden">
-    <div class="edit-field">
-      <label for="editValorVa">VA</label>
-      <input type="number" id="editValorVa" step="0.01" placeholder="Ex: 817">
+  <button type="button" class="remove-button benefit-remove-button" onclick="removerVr()">
+    Remover VR
+  </button>
+</div>
+
+  <div id="vaEditorBlock" class="benefit-removable-block hidden">
+  <div class="edit-grid edit-grid-2">
+      <div class="edit-field">
+        <label for="editValorVa">VA</label>
+        <input type="number" id="editValorVa" step="0.01" placeholder="Ex: 817">
+      </div>
+
+      <div class="edit-field">
+        <label for="editFornecedorVa">Fornecedor do VA</label>
+        <select id="editFornecedorVa">
+          <option value="caju">Caju</option>
+          <option value="sodexo">Sodexo</option>
+          <option value="alelo">Alelo</option>
+          <option value="ticket">Ticket</option>
+          <option value="vr">VR Benefícios</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
     </div>
 
-    <div class="edit-field">
-      <label for="editFornecedorVa">Fornecedor do VA</label>
-      <select id="editFornecedorVa">
-        <option value="caju">Caju</option>
-        <option value="sodexo">Sodexo</option>
-        <option value="alelo">Alelo</option>
-        <option value="ticket">Ticket</option>
-        <option value="vr">VR Benefícios</option>
-        <option value="outro">Outro</option>
-      </select>
-    </div>
+    <button type="button" class="remove-button benefit-remove-button" onclick="removerVa()">
+      Remover VA
+    </button>
   </div>
 
-  <div id="vtEditorBlock" class="hidden">
+  <div id="vtEditorBlock" class="benefit-removable-block hidden">
     <div class="edit-grid edit-grid-3">
       <div class="edit-field">
         <label for="editValorVt">VT</label>
@@ -217,6 +229,11 @@
         </select>
       </div>
     </div>
+
+    <button type="button" class="remove-button benefit-remove-button" onclick="removerVt()">
+      Remover VT
+    </button>
+
   </div>
 </div>
 

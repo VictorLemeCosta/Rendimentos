@@ -72,6 +72,67 @@ window.mostrarCampoVt = function mostrarCampoVt() {
   }
 };
 
+window.removerVr = function removerVr() {
+  const blocoVr = document.getElementById("vrEditorBlock");
+  const botaoVr = document.getElementById("btnAdicionarVr");
+
+  setValueIfExists("editValorVr", "");
+  setValueIfExists("editFornecedorVr", "outro");
+
+  if (blocoVr) {
+    blocoVr.classList.add("hidden");
+  }
+
+  if (botaoVr) {
+    botaoVr.classList.remove("hidden");
+  }
+};
+
+window.removerVa = function removerVa() {
+  const blocoVa = document.getElementById("vaEditorBlock");
+  const botaoVa = document.getElementById("btnAdicionarVa");
+
+  setValueIfExists("editValorVa", "");
+  setValueIfExists("editFornecedorVa", "outro");
+
+  if (blocoVa) {
+    blocoVa.classList.add("hidden");
+  }
+
+  if (botaoVa) {
+    botaoVa.classList.remove("hidden");
+  }
+};
+
+window.removerVt = function removerVt() {
+  const blocoVt = document.getElementById("vtEditorBlock");
+  const botaoVt = document.getElementById("btnAdicionarVt");
+
+  setValueIfExists("editValorVt", "");
+  setValueIfExists("editEstadoTransporte", "");
+  setValueIfExists("editCidadeTransporte", "");
+  setValueIfExists("editFornecedorVt", "outro");
+
+  const cidadeSelect = document.getElementById("editCidadeTransporte");
+  const fornecedorSelect = document.getElementById("editFornecedorVt");
+
+  if (cidadeSelect) {
+    cidadeSelect.innerHTML = `<option value="">Selecione a cidade</option>`;
+  }
+
+  if (fornecedorSelect) {
+    fornecedorSelect.innerHTML = `<option value="outro">Outro</option>`;
+  }
+
+  if (blocoVt) {
+    blocoVt.classList.add("hidden");
+  }
+
+  if (botaoVt) {
+    botaoVt.classList.remove("hidden");
+  }
+};
+
 window.adicionarBeneficioIndex = function adicionarBeneficioIndex(nome = "", valor = "") {
   const container = document.getElementById("outrosBeneficiosEditor");
 
