@@ -69,6 +69,7 @@
       <option value="SEG_SEX">Segunda a sexta</option>
       <option value="SEG_SAB">Segunda a sábado</option>
       <option value="6X1">Escala 6x1</option>
+      <option value="12X36">Escala 12x36</option>
       <option value="TODOS_DIAS">Todos os dias</option>
       <option value="PERSONALIZADO">Personalizado</option>
     </select>
@@ -98,6 +99,25 @@
     <option value="5">Sexta-feira</option>
     <option value="6">Sábado</option>
   </select>
+</div>
+
+<div id="campo12x36" class="conditional-fields hidden">
+  <h2>Configuração da escala 12x36</h2>
+
+  <div class="form-grid-2">
+    <div>
+      <label for="dataReferencia12x36">Primeiro dia trabalhado da escala</label>
+      <input type="date" id="dataReferencia12x36">
+    </div>
+
+    <div>
+      <label for="turno12x36">Turno</label>
+      <select id="turno12x36">
+        <option value="DIURNO">Diurno</option>
+        <option value="NOTURNO">Noturno</option>
+      </select>
+    </div>
+  </div>
 </div>
 
 <div id="campoJornadaPersonalizada" class="conditional-fields hidden">
@@ -350,19 +370,29 @@
   }
 
   function alternarCamposJornada() {
-    const tipo = document.getElementById("jornadaTipo").value;
+  const tipo = document.getElementById("jornadaTipo").value;
 
-    document.getElementById("campoFolga6x1").classList.add("hidden");
-    document.getElementById("campoJornadaPersonalizada").classList.add("hidden");
+  document.getElementById("campoFolga6x1").classList.add("hidden");
+  document.getElementById("campoJornadaPersonalizada").classList.add("hidden");
 
-    if (tipo === "6X1") {
-      document.getElementById("campoFolga6x1").classList.remove("hidden");
-    }
+  const campo12x36 = document.getElementById("campo12x36");
 
-    if (tipo === "PERSONALIZADO") {
-      document.getElementById("campoJornadaPersonalizada").classList.remove("hidden");
-    }
+  if (campo12x36) {
+    campo12x36.classList.add("hidden");
   }
+
+  if (tipo === "6X1") {
+    document.getElementById("campoFolga6x1").classList.remove("hidden");
+  }
+
+  if (tipo === "12X36" && campo12x36) {
+    campo12x36.classList.remove("hidden");
+  }
+
+  if (tipo === "PERSONALIZADO") {
+    document.getElementById("campoJornadaPersonalizada").classList.remove("hidden");
+  }
+}
 
   function obterDiasTrabalho() {
     const tipo = document.getElementById("jornadaTipo").value;
@@ -795,6 +825,8 @@ if (error) {
         folga_semanal: document.getElementById("jornadaTipo").value === "6X1"
           ? Number(document.getElementById("folgaSemanal").value)
           : null,
+        data_referencia_12x36: document.getElementById("dataReferencia12x36")?.value || null,
+        turno_12x36: document.getElementById("turno12x36")?.value || null,
 
         aluguel: 0,
         energia: 0,

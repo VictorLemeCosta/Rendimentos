@@ -3418,6 +3418,10 @@ body.login-body .auth-card {
   margin-bottom: 0;
 }
 
+/* ============================
+   AJUSTE VISUAL DA SETA DE MINIMIZAR
+============================ */
+
 .collapse-toggle-button {
   border: none;
   background: transparent;
@@ -3426,11 +3430,59 @@ body.login-body .auth-card {
   width: 54px;
   height: 54px;
   border-radius: 999px;
-  display: flex;
+
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: 0.2s ease;
+
+  padding: 0;
+  line-height: 1;
   flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.collapse-toggle-button:hover {
+  background: rgba(0, 59, 113, 0.08);
+}
+
+.collapse-arrow {
+  width: 16px;
+  height: 16px;
+
+  border-right: 4px solid var(--hughes-blue);
+  border-bottom: 4px solid var(--hughes-blue);
+
+  transform: rotate(45deg);
+  transition: transform 0.25s ease;
+
+  display: block;
+  margin-top: -4px;
+}
+
+/* seção aberta: seta para cima */
+.collapsible-section:not(.collapsed) .collapse-arrow {
+  transform: rotate(225deg);
+  margin-top: 6px;
+}
+
+/* seção fechada: seta para baixo */
+.collapsible-section.collapsed .collapse-arrow {
+  transform: rotate(45deg);
+  margin-top: -4px;
+}
+
+@media (max-width: 700px) {
+  .collapse-toggle-button {
+    width: 46px;
+    height: 46px;
+  }
+
+  .collapse-arrow {
+    width: 14px;
+    height: 14px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+  }
 }
 
 .collapse-toggle-button:hover {
@@ -3480,5 +3532,895 @@ body.login-body .auth-card {
 
   .collapse-arrow {
     font-size: 34px;
+  }
+}
+
+/* ============================
+   AJUSTE DO BLOCO DINAMICO DA HERO
+============================ */
+
+.hero-info-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.hero-info-row .hero-small {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.work-badge {
+  display: inline-flex;
+  width: auto;
+  max-width: fit-content;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .work-badge {
+    white-space: normal;
+    max-width: 100%;
+  }
+}
+
+/* ============================
+   BOTAO LOGOFF
+============================ */
+
+.nav-logout-button {
+  border: 2px solid #dc2626;
+  background: #ffffff;
+  color: #dc2626;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nav-logout-button:hover {
+  background: #dc2626;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .nav-logout-button {
+    white-space: nowrap;
+  }
+}
+
+/* ============================
+   PADRONIZACAO DA FAIXA SUPERIOR DOS CARDS
+   Deixa a faixa laranja com cantos arredondados
+============================ */
+
+/* Cards de resumo */
+.summary-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+/* Remove o comportamento antigo da barra reta */
+.summary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 8px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+/* Cards genéricos do dashboard financeiro/investimentos */
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+/* Se algum card genérico usar barra superior, aplica o mesmo padrão */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 8px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+/* Evita conflito visual com cards que usam border-left */
+.card {
+  border-left: none;
+  padding-top: 26px;
+}
+
+/* ============================
+   PADRAO GLOBAL DE FAIXA SUPERIOR ARREDONDADA
+   FinanceHub
+============================ */
+
+/* Seções principais */
+.section,
+.hero,
+.accumulator-section,
+.clt-section,
+.history-section,
+.edit-profile-section {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border-top: none !important;
+}
+
+/* Faixa superior global das seções */
+.section::before,
+.hero::before,
+.accumulator-section::before,
+.clt-section::before,
+.history-section::before,
+.edit-profile-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 8px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+
+  z-index: 0;
+}
+
+/* Garante que o conteúdo fique acima da faixa */
+.section > *,
+.hero > *,
+.accumulator-section > *,
+.clt-section > *,
+.history-section > *,
+.edit-profile-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Cards de resumo */
+.summary-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+}
+
+/* Faixa superior dos cards de resumo */
+.summary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 8px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+
+  z-index: 0;
+}
+
+.summary-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Cards genéricos do dashboard financeiro e investimentos */
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  border-left: none !important;
+  padding-top: 28px;
+}
+
+/* Faixa superior dos cards genéricos */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 8px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+
+  z-index: 0;
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Cards pequenos do cálculo CLT */
+.clt-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  border-left: none !important;
+  padding-top: 24px;
+}
+
+/* Faixa superior dos cards CLT */
+.clt-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 7px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+
+  z-index: 0;
+}
+
+.clt-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mantém cores especiais nos cards de desconto e líquido */
+.clt-card.discount::before {
+  background: var(--red);
+}
+
+.clt-card.net::before {
+  background: var(--green);
+}
+
+
+/* Cards de breakdown do acumulador */
+.breakdown-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  padding-top: 24px;
+}
+
+.breakdown-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 7px;
+
+  background: var(--hughes-orange);
+
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+
+  z-index: 0;
+}
+
+.breakdown-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================
+   PADRAO CORRETO DE TOPO ARREDONDADO
+   Usa border-top real, acompanhando o border-radius
+============================ */
+
+/* Remove barras artificiais criadas com ::before */
+.section::before,
+.hero::before,
+.accumulator-section::before,
+.clt-section::before,
+.history-section::before,
+.edit-profile-section::before,
+.summary-card::before,
+.card::before,
+.clt-card::before,
+.breakdown-card::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Seções principais */
+.section,
+.hero,
+.accumulator-section,
+.clt-section,
+.history-section,
+.edit-profile-section {
+  border-radius: 28px !important;
+  overflow: hidden;
+  border-top: 8px solid var(--hughes-orange) !important;
+}
+
+/* Cards de resumo */
+.summary-card {
+  border-radius: 20px !important;
+  overflow: hidden;
+  border-top: 8px solid var(--hughes-orange) !important;
+}
+
+/* Cards genéricos */
+.card {
+  border-radius: 20px !important;
+  overflow: hidden;
+  border-left: none !important;
+  border-top: 8px solid var(--hughes-orange) !important;
+}
+
+/* Cards CLT */
+.clt-card {
+  border-radius: 18px !important;
+  overflow: hidden;
+  border-left: none !important;
+  border-top: 7px solid var(--hughes-orange) !important;
+}
+
+/* Cards CLT com cores específicas */
+.clt-card.discount {
+  border-top-color: var(--red) !important;
+}
+
+.clt-card.net {
+  border-top-color: var(--green) !important;
+}
+
+/* Cards do acumulador */
+.breakdown-card {
+  border-radius: 18px !important;
+  overflow: hidden;
+  border-top: 7px solid var(--hughes-orange) !important;
+}
+
+/* Garante que o conteúdo não fique colado na borda superior */
+.summary-card,
+.card,
+.clt-card,
+.breakdown-card {
+  padding-top: 24px;
+}
+
+/* Mantém cards de bancos/benefícios com as próprias cores */
+.income-card {
+  overflow: hidden;
+  border-radius: 24px !important;
+}
+
+/* Providers continuam mandando na cor */
+.income-card.provider-nubank {
+  border-top: 8px solid #820ad1 !important;
+}
+
+.income-card.provider-itau {
+  border-top: 8px solid #ff7900 !important;
+}
+
+.income-card.provider-santander {
+  border-top: 8px solid #e30613 !important;
+}
+
+.income-card.provider-bradesco {
+  border-top: 8px solid #cc092f !important;
+}
+
+.income-card.provider-bb {
+  border-top: 8px solid #f7d117 !important;
+}
+
+.income-card.provider-caixa {
+  border-top: 8px solid #005ca9 !important;
+}
+
+.income-card.provider-caju {
+  border-top: 8px solid #ff6b00 !important;
+}
+
+.income-card.provider-sodexo {
+  border-top: 8px solid #2a52be !important;
+}
+
+.income-card.provider-alelo {
+  border-top: 8px solid #79c000 !important;
+}
+
+.income-card.provider-ticket {
+  border-top: 8px solid #e60012 !important;
+}
+
+.income-card.provider-vr {
+  border-top: 8px solid #00a859 !important;
+}
+
+.income-card.provider-vt {
+  border-top: 8px solid #2563eb !important;
+}
+
+.income-card.provider-vt-sp {
+  border-top: 8px solid #111827 !important;
+}
+
+.income-card.provider-top {
+  border-top: 8px solid #00a3e0 !important;
+}
+
+.income-card.provider-riocard {
+  border-top: 8px solid #f58220 !important;
+}
+
+.income-card.provider-outro {
+  border-top: 8px solid #7a869a !important;
+}
+
+/* ============================
+   PERFIL - AVATAR CENTRALIZADO
+============================ */
+
+.profile-personal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.profile-avatar-center-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-avatar-preview {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: #eef2f7;
+  border: 4px solid #d7dee8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.profile-avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.default-avatar-icon {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(135deg, #edf2f7, #dbe5ef);
+}
+
+.default-avatar-head {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #8ca0b6;
+  position: absolute;
+  top: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.default-avatar-body {
+  width: 96px;
+  height: 56px;
+  border-radius: 60px 60px 0 0;
+  background: #8ca0b6;
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.profile-avatar-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.upload-avatar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-remove-avatar-button {
+  height: 48px;
+}
+
+.predefined-avatar-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.predefined-avatar-option {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.predefined-avatar-option:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.avatar-blue {
+  background: linear-gradient(135deg, #003865, #0077b6);
+}
+
+.avatar-orange {
+  background: linear-gradient(135deg, #ff8200, #ffb703);
+}
+
+.avatar-green {
+  background: linear-gradient(135deg, #047857, #22c55e);
+}
+
+.avatar-purple {
+  background: linear-gradient(135deg, #6d28d9, #a855f7);
+}
+
+.avatar-graphite {
+  background: linear-gradient(135deg, #111827, #64748b);
+}
+
+.profile-form-full {
+  width: 100%;
+}
+
+.profile-form-full .input-box {
+  width: 100%;
+}
+
+.profile-form-full .action-box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.profile-form-full .action-box .btn {
+  min-width: 220px;
+}
+
+@media (max-width: 700px) {
+  .profile-avatar-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-avatar-actions button,
+  .profile-avatar-actions label {
+    width: 100%;
+  }
+
+  .profile-form-full .action-box .btn {
+    width: 100%;
+  }
+}
+
+.preset-avatar-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.profile-avatar-preview .avatar-blue,
+.preset-avatar-preview.avatar-blue {
+  background: linear-gradient(135deg, #003865, #0077b6);
+}
+
+.profile-avatar-preview .avatar-orange,
+.preset-avatar-preview.avatar-orange {
+  background: linear-gradient(135deg, #ff8200, #ffb703);
+}
+
+.profile-avatar-preview .avatar-green,
+.preset-avatar-preview.avatar-green {
+  background: linear-gradient(135deg, #047857, #22c55e);
+}
+
+.profile-avatar-preview .avatar-purple,
+.preset-avatar-preview.avatar-purple {
+  background: linear-gradient(135deg, #6d28d9, #a855f7);
+}
+
+.profile-avatar-preview .avatar-graphite,
+.preset-avatar-preview.avatar-graphite {
+  background: linear-gradient(135deg, #111827, #64748b);
+}
+
+/* ============================
+   AVATARES PRE-DEFINIDOS
+============================ */
+
+.predefined-avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(90px, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 680px;
+  margin: 18px auto 0;
+}
+
+.preset-avatar-option {
+  border: 2px solid #d7dee8;
+  border-radius: 20px;
+  padding: 14px 10px;
+  min-height: 110px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.preset-avatar-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+  border-color: var(--hughes-orange);
+}
+
+.preset-avatar-option span {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.preset-avatar-option small {
+  font-weight: 900;
+  color: var(--hughes-blue);
+}
+
+.preset-tucano span,
+.preset-avatar-preview.preset-tucano {
+  background: linear-gradient(135deg, #003865, #00a3e0);
+}
+
+.preset-leao span,
+.preset-avatar-preview.preset-leao {
+  background: linear-gradient(135deg, #ff8200, #ffb703);
+}
+
+.preset-praia span,
+.preset-avatar-preview.preset-praia {
+  background: linear-gradient(135deg, #0077b6, #90e0ef);
+}
+
+.preset-montanha span,
+.preset-avatar-preview.preset-montanha {
+  background: linear-gradient(135deg, #047857, #22c55e);
+}
+
+.preset-foguete span,
+.preset-avatar-preview.preset-foguete {
+  background: linear-gradient(135deg, #6d28d9, #003865);
+}
+
+.preset-avatar-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.preset-avatar-preview span {
+  font-size: 64px;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.22));
+}
+
+@media (max-width: 800px) {
+  .predefined-avatar-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ============================
+   AJUSTE DOS CAMPOS DE DADOS PESSOAIS
+============================ */
+
+.profile-form-full {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.profile-form-full .input-box {
+  width: 100%;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+}
+
+.profile-form-full .input-box label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: var(--hughes-dark);
+}
+
+.profile-form-full .input-box input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: #ffffff;
+  font-size: 16px;
+}
+
+/* Card apenas do botão */
+.profile-form-full .action-box {
+  min-height: auto;
+  padding: 18px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Botão menor e no canto direito */
+.profile-form-full .action-box .btn {
+  width: auto;
+  min-width: 180px;
+  max-width: 240px;
+  padding: 12px 22px;
+  align-self: flex-end;
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+  .profile-form-full .action-box {
+    justify-content: stretch;
+  }
+
+  .profile-form-full .action-box .btn {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* ============================
+   PERFIL - GRID DE DADOS PESSOAIS 3 COLUNAS
+============================ */
+
+.profile-form-3-cols {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 24px;
+  align-items: stretch;
+}
+
+.profile-form-3-cols .input-box {
+  min-height: 118px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.profile-form-3-cols .input-box label {
+  min-height: 22px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: var(--hughes-dark);
+}
+
+.profile-form-3-cols .input-box input,
+.profile-form-3-cols .input-box select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: #ffffff;
+  font-size: 16px;
+  margin-top: auto;
+}
+
+.profile-save-box {
+  grid-column: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.profile-save-button {
+  width: auto;
+  min-width: 180px;
+  max-width: 230px;
+  padding: 12px 22px;
+  align-self: flex-end;
+}
+
+@media (max-width: 1100px) {
+  .profile-form-3-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-save-box {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .profile-form-3-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-save-button {
+    width: 100%;
+    max-width: none;
   }
 }

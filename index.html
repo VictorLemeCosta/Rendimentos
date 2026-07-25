@@ -34,6 +34,14 @@
               Investimentos
           </a>
 
+          <a href="perfil.html">
+              Perfil
+          </a>
+
+          <button type="button" class="nav-logout-button" onclick="logout()">
+            Sair
+          </button>
+
       </div>
 
   </nav>
@@ -50,26 +58,23 @@
             Olá
           </div>
 
-          <p>
-            Este painel transforma seus rendimentos mensais em uma visão prática por segundo, minuto,
-            hora, dia útil e mês. Ele também possui um acumulador em tempo real que calcula quanto você
-            já acumulou no expediente, considerando apenas dias úteis, das 09:00 às 18:00.
+          <p id="dynamicHeroDescription">
+            Carregando informações da sua jornada...
           </p>
 
           <p>
-            O acumulador agora é calculado com base na data e hora atual, não em uma contagem salva no navegador.
-            Isso significa que, mesmo se o arquivo ficar fechado, em segundo plano ou for aberto em outro computador,
-            ele recalcula automaticamente o valor correspondente ao momento atual.
+            O acumulador é calculado com base na data e hora atual. Mesmo que o site fique fechado ou seja aberto em outro dispositivo,
+            os valores são recalculados automaticamente conforme os dados cadastrados.
           </p>
 
-          <div class="hero-small">
-            Para que dois computadores exibam os mesmos valores, ambos precisam estar com data e hora corretas
-            e com os mesmos inputs manuais preenchidos, como coparticipação médica, dependentes e percentual de vale-transporte.
+          <div class="hero-info-row">
+          <div class="hero-small" id="dynamicHeroNote">
+            Carregando resumo da configuração...
           </div>
-        </div>
 
-        <div class="badge">
-          Tema Hughes | Jornada 09h às 18h
+          <div class="badge work-badge" id="dynamicWorkBadge">
+            Jornada configurada
+          </div>
         </div>
       </div>
     </section>
@@ -442,7 +447,7 @@
     </section>
 
     <footer>
-      Painel pessoal de acompanhamento financeiro estimado | Valores informados manualmente | Tema Hughes
+      Painel pessoal de acompanhamento financeiro estimado | Valores informados manualmente | FinanceHub
     </footer>
 
   </div>

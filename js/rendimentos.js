@@ -9,6 +9,8 @@ let financeRuntimeConfig = {
   jornadaTipo: "SEG_SEX",
   horaInicio: "09:00",
   horaFim: "18:00",
+  dataReferencia12x36: null,
+  turno12x36: null,
   diasTrabalho: [1, 2, 3, 4, 5]
 };
 
@@ -43,10 +45,37 @@ function getWorkHoursPerDay() {
 }
 
 function isWorkDay(date) {
+  const jornadaTipo = financeRuntimeConfig.jornadaTipo || "SEG_SEX";
+
+  if (jornadaTipo === "12X36") {
+    return isWorkDay12x36(date);
+  }
+
   const day = date.getDay();
   const diasTrabalho = financeRuntimeConfig.diasTrabalho || [1, 2, 3, 4, 5];
 
   return diasTrabalho.includes(day);
+}
+
+function isWorkDay12x36(date) {
+  const referencia = financeRuntimeConfig.dataReferencia12x36;
+
+  if (!referencia) {
+    return false;
+  }
+
+  const dataReferencia = new Date(referencia + "T00:00:00");
+  const dataAtual = new Date(date);
+  dataAtual.setHours(0, 0, 0, 0);
+
+  const diffMs = dataAtual - dataReferencia;
+  const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDias < 0) {
+    return false;
+  }
+
+  return diffDias % 2 === 0;
 }
 
 function getCardClassByProvider(provider) {
@@ -219,6 +248,8 @@ window.aplicarDadosUsuarioNoPainel = function aplicarDadosUsuarioNoPainel(config
     fornecedorVr: config.fornecedorVr || "outro",
     fornecedorVa: config.fornecedorVa || "outro",
     diasTrabalho: config.diasTrabalho || [1, 2, 3, 4, 5],
+    dataReferencia12x36: config.dataReferencia12x36 || null,
+    turno12x36: config.turno12x36 || null,
     horaInicio: config.horaInicio || "09:00",
     horaFim: config.horaFim || "18:00"
   };

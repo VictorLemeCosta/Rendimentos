@@ -58,6 +58,7 @@ async function carregarDadosUsuario() {
   window.financeHubUserData = dados;
 
   preencherSaudacaoUsuario(dados);
+  preencherTextosDinamicosHero(dados);
 
   window.dispatchEvent(
     new CustomEvent("financeHubDataLoaded", {
@@ -113,9 +114,79 @@ function obterConfiguracaoFinanceiraUsuario() {
     diasTrabalho: financeiro.dias_trabalho || [1, 2, 3, 4, 5],
     folgaSemanal: financeiro.folga_semanal,
 
+    dataReferencia12x36: financeiro.data_referencia_12x36 || null,
+    turno12x36: financeiro.turno_12x36 || null,
+
+
     valorVt: Number(financeiro.valor_vt || 0),
     fornecedorVt: financeiro.fornecedor_vt || "outro",
     estadoTransporte: financeiro.estado_transporte || "",
     cidadeTransporte: financeiro.cidade_transporte || ""
   };
+}
+
+function preencherTextosDinamicosHero(dados) {
+  const financeiro = dados.financialProfile || {};
+
+  const descricao = document.getElementById("dynamicHeroDescription");
+  const nota = document.getElementById("dynamicHeroNote");
+  const badge = document.getElementById("dynamicWorkBadge");
+
+  if (!descricao || !nota || !badge) {
+    return;
+  }
+
+  const jornadaTipo = financeiro.jornada_tipo || "SEG_SEX";
+  const horaInicio = normalizarHoraTexto(financeiro.hora_inicio || "09:00");
+  const horaFim = normalizarHoraTexto(financeiro.hora_fim || "18:00");
+
+  const textoJornada = obterTextoJornada(financeiro);
+
+  descricao.textContent =
+    `Este painel transforma seus rendimentos mensais em uma visão prática por segundo, minuto, hora, dia de trabalho e mês. ` +
+    `O acumulador em tempo real considera sua jornada cadastrada: ${textoJornada}, das ${horaInicio} às ${horaFim}.`;
+
+  nota.textContent =
+    `Para manter os valores consistentes entre dispositivos, mantenha os dados financeiros e a jornada sempre atualizados. ` +
+    `O cálculo respeita os dias e horários configurados no seu perfil.`;
+
+  badge.textContent = `${textoJornada} | ${horaInicio} às ${horaFim}`;
+}
+
+function normalizarHoraTexto(hora) {
+  if (!hora) {
+    return "--:--";
+  }
+
+  return String(hora).slice(0, 5);
+}
+
+function obterTextoJornada(financeiro) {
+  const jornadaTipo = financeiro.jornada_tipo || "SEG_SEX";
+
+  if (jornadaTipo === "SEG_SEX") {
+    return "Segunda a sexta";
+  }
+
+  if (jornadaTipo === "SEG_SAB") {
+    return "Segunda a sábado";
+  }
+
+  if (jornadaTipo === "6X1") {
+    return "Escala 6x1";
+  }
+
+  if (jornadaTipo === "12X36") {
+    return "Escala 12x36";
+  }
+
+  if (jornadaTipo === "TODOS_DIAS") {
+    return "Todos os dias";
+  }
+
+  if (jornadaTipo === "PERSONALIZADO") {
+    return "Jornada personalizada";
+  }
+
+  return "Jornada configurada";
 }

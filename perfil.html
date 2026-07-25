@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Perfil - FinanceHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/auth.js"></script>
+</head>
+
+<body>
+
+  <nav class="main-nav">
+    <div class="nav-logo">
+      FinanceHub
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html">
+        Rendimentos
+      </a>
+
+      <a href="financeiro.html">
+        Dashboard Financeiro
+      </a>
+
+      <a href="investimentos.html">
+        Investimentos
+      </a>
+
+      <a href="perfil.html" class="active">
+              Perfil
+      </a>
+
+      <button type="button" class="nav-logout-button" onclick="logout()">
+        Sair
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <section class="section">
+      <h2>Perfil e Configurações</h2>
+
+      <p>
+        Gerencie seus dados pessoais, segurança da conta, jornada de trabalho, preferências visuais e configurações financeiras.
+      </p>
+    </section>
+
+    <section class="section collapsible-section" id="profilePersonalSection">
+      <div class="collapsible-header" onclick="toggleCollapsibleSection('profilePersonalSection')">
+        <div>
+          <h2>Dados pessoais</h2>
+          <p>
+            Atualize seu nome, foto de perfil e informações básicas da conta.
+          </p>
+        </div>
+
+        <button type="button" class="collapse-toggle-button" aria-label="Abrir ou fechar seção">
+          <span class="collapse-arrow"></span>
+        </button>
+      </div>
+
+      <div class="collapsible-content">
+        <div class="profile-layout">
+
+          <div class="profile-avatar-card">
+            <div class="profile-avatar-center-card">
+                <div class="profile-avatar-preview" id="profileAvatarPreview">
+                    <div class="default-avatar-icon">
+                    <div class="default-avatar-head"></div>
+                    <div class="default-avatar-body"></div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="profileAvatarUrl">
+
+                <div class="profile-avatar-actions">
+                    <button type="button" class="secondary-pill-button" onclick="togglePredefinedAvatars()">
+                    Escolher foto
+                    </button>
+
+                    <label class="secondary-pill-button upload-avatar-button" for="profileAvatarUpload" onclick="fecharGaleriaAvatares()">
+                        Fazer upload
+                    </label>
+
+                    <input
+                    type="file"
+                    id="profileAvatarUpload"
+                    accept="image/*"
+                    class="hidden"
+                    onchange="handleAvatarUpload(this)"
+                    >
+
+                    <button type="button" class="remove-button profile-remove-avatar-button" onclick="removerAvatarPerfil()">
+                    Remover imagem
+                    </button>
+                </div>
+
+                <div class="predefined-avatar-grid hidden" id="predefinedAvatarGrid">
+
+                    <button type="button" class="preset-avatar-option preset-tucano" onclick="escolherAvatarPredefinido('preset-tucano')">
+                        <span>🦜</span>
+                        <small>Tucano</small>
+                    </button>
+
+                    <button type="button" class="preset-avatar-option preset-leao" onclick="escolherAvatarPredefinido('preset-leao')">
+                        <span>🦁</span>
+                        <small>Leão</small>
+                    </button>
+
+                    <button type="button" class="preset-avatar-option preset-praia" onclick="escolherAvatarPredefinido('preset-praia')">
+                        <span>🏖️</span>
+                        <small>Praia</small>
+                    </button>
+
+                    <button type="button" class="preset-avatar-option preset-montanha" onclick="escolherAvatarPredefinido('preset-montanha')">
+                        <span>⛰️</span>
+                        <small>Montanha</small>
+                    </button>
+
+                    <button type="button" class="preset-avatar-option preset-foguete" onclick="escolherAvatarPredefinido('preset-foguete')">
+                        <span>🚀</span>
+                        <small>Foguete</small>
+                    </button>
+
+                </div>
+
+                <p class="profile-helper-text">
+                    Escolha uma imagem padrão, faça upload de uma foto ou remova para voltar ao avatar padrão.
+                </p>
+            </div>
+
+          <div class="collapsible-content">
+                <div class="profile-personal-content">
+
+                    <div class="profile-avatar-center-card">
+                        <!-- bloco da imagem que passei acima -->
+                    </div>
+
+                        <div class="profile-form-grid profile-form-3-cols">
+
+                            <div class="input-box">
+                                <label for="profileFullName">Nome completo</label>
+                                <input type="text" id="profileFullName" placeholder="Seu nome completo">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileEmail">E-mail atual</label>
+                                <input type="email" id="profileEmail" placeholder="seuemail@exemplo.com">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profilePhone">Celular</label>
+                                <input type="tel" id="profilePhone" placeholder="Ex: +55 11 99999-9999">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileCountry">País</label>
+                                <select id="profileCountry">
+                                    <option value="">Selecione o país</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileCep">CEP / Código postal</label>
+                                <input type="text" id="profileCep" placeholder="Ex: 00000-000">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileAddress">Endereço</label>
+                                <input type="text" id="profileAddress" placeholder="Rua, avenida, estrada...">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileNumber">Número</label>
+                                <input type="text" id="profileNumber" placeholder="Ex: 123">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileComplement">Complemento</label>
+                                <input type="text" id="profileComplement" placeholder="Apartamento, bloco, casa...">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileNeighborhood">Bairro</label>
+                                <input type="text" id="profileNeighborhood" placeholder="Ex: Centro">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileCity">Cidade</label>
+                                <input type="text" id="profileCity" placeholder="Ex: São Paulo">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileState">Estado</label>
+                                <input type="text" id="profileState" placeholder="Ex: SP">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileCompany">Empresa em que trabalha</label>
+                                <input type="text" id="profileCompany" placeholder="Ex: Nome da empresa">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileBusinessSector">Ramo da empresa</label>
+                                <select id="profileBusinessSector">
+                                <option value="">Selecione o ramo</option>
+                                <option value="Tecnologia">Tecnologia</option>
+                                <option value="Telecomunicações">Telecomunicações</option>
+                                <option value="Financeiro">Financeiro</option>
+                                <option value="Educação">Educação</option>
+                                <option value="Saúde">Saúde</option>
+                                <option value="Varejo">Varejo</option>
+                                <option value="Indústria">Indústria</option>
+                                <option value="Construção">Construção</option>
+                                <option value="Logística">Logística</option>
+                                <option value="Serviços">Serviços</option>
+                                <option value="Setor público">Setor público</option>
+                                <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileJobTitle">Cargo / função</label>
+                                <input type="text" id="profileJobTitle" placeholder="Ex: Analista, PM, Gerente...">
+                            </div>
+
+                            <div class="input-box">
+                                <label for="profileType">Tipo de perfil</label>
+                                <select id="profileType">
+                                <option value="pessoal">Pessoal</option>
+                                <option value="profissional">Profissional</option>
+                                <option value="familia">Família</option>
+                                <option value="empresa">Empresa</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box action-box profile-save-box">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn profile-save-button" onclick="salvarDadosPessoaisPerfil()">
+                                Salvar dados pessoais
+                                </button>
+                            </div>
+
+                            </div>
+
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section collapsible-section collapsed" id="profileSecuritySection">
+      <div class="collapsible-header" onclick="toggleCollapsibleSection('profileSecuritySection')">
+        <div>
+          <h2>Segurança</h2>
+          <p>
+            Altere sua senha de acesso quando necessário.
+          </p>
+        </div>
+
+        <button type="button" class="collapse-toggle-button" aria-label="Abrir ou fechar seção">
+          <span class="collapse-arrow"></span>
+        </button>
+      </div>
+
+      <div class="collapsible-content">
+        <div class="form-grid">
+          <div class="input-box">
+            <label for="newPasswordInput">Nova senha</label>
+            <input type="password" id="newPasswordInput" placeholder="Digite uma nova senha">
+          </div>
+
+          <div class="input-box">
+            <label for="confirmNewPasswordInput">Confirmar nova senha</label>
+            <input type="password" id="confirmNewPasswordInput" placeholder="Confirme a nova senha">
+          </div>
+
+          <div class="input-box action-box">
+            <label>&nbsp;</label>
+            <button type="button" class="btn" onclick="alterarSenhaPerfil()">
+              Alterar senha
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section collapsible-section collapsed" id="profileWorkSection">
+      <div class="collapsible-header" onclick="toggleCollapsibleSection('profileWorkSection')">
+        <div>
+          <h2>Jornada de trabalho</h2>
+          <p>
+            Configure sua escala, horários e regras de expediente.
+          </p>
+        </div>
+
+        <button type="button" class="collapse-toggle-button" aria-label="Abrir ou fechar seção">
+          <span class="collapse-arrow"></span>
+        </button>
+      </div>
+
+      <div class="collapsible-content">
+        <div class="form-grid">
+          <div class="input-box">
+            <label for="profileJornadaTipo">Modelo de jornada</label>
+            <select id="profileJornadaTipo" onchange="alternarCamposJornadaPerfil()">
+              <option value="SEG_SEX">Segunda a sexta</option>
+              <option value="SEG_SAB">Segunda a sábado</option>
+              <option value="6X1">Escala 6x1</option>
+              <option value="12X36">Escala 12x36</option>
+              <option value="TODOS_DIAS">Todos os dias</option>
+              <option value="PERSONALIZADO">Personalizado</option>
+            </select>
+          </div>
+
+          <div class="input-box">
+            <label for="profileHoraInicio">Hora de início</label>
+            <input type="time" id="profileHoraInicio">
+          </div>
+
+          <div class="input-box">
+            <label for="profileHoraFim">Hora de fim</label>
+            <input type="time" id="profileHoraFim">
+          </div>
+
+          <div class="input-box" id="profileFolga6x1Box">
+            <label for="profileFolgaSemanal">Folga semanal 6x1</label>
+            <select id="profileFolgaSemanal">
+              <option value="0">Domingo</option>
+              <option value="1">Segunda-feira</option>
+              <option value="2">Terça-feira</option>
+              <option value="3">Quarta-feira</option>
+              <option value="4">Quinta-feira</option>
+              <option value="5">Sexta-feira</option>
+              <option value="6">Sábado</option>
+            </select>
+          </div>
+
+          <div class="input-box" id="profileReferencia12x36Box">
+            <label for="profileDataReferencia12x36">Primeiro dia trabalhado 12x36</label>
+            <input type="date" id="profileDataReferencia12x36">
+          </div>
+
+          <div class="input-box" id="profileTurno12x36Box">
+            <label for="profileTurno12x36">Turno 12x36</label>
+            <select id="profileTurno12x36">
+              <option value="DIURNO">Diurno</option>
+              <option value="NOTURNO">Noturno</option>
+            </select>
+          </div>
+
+          <div class="input-box action-box">
+            <label>&nbsp;</label>
+            <button type="button" class="btn" onclick="salvarJornadaPerfil()">
+              Salvar jornada
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section collapsible-section collapsed" id="profileThemeSection">
+      <div class="collapsible-header" onclick="toggleCollapsibleSection('profileThemeSection')">
+        <div>
+          <h2>Tema e aparência</h2>
+          <p>
+            Escolha modo claro ou escuro e selecione uma paleta de cores para o FinanceHub.
+          </p>
+        </div>
+
+        <button type="button" class="collapse-toggle-button" aria-label="Abrir ou fechar seção">
+          <span class="collapse-arrow"></span>
+        </button>
+      </div>
+
+      <div class="collapsible-content">
+        <div class="form-grid">
+          <div class="input-box">
+            <label for="profileThemeMode">Modo</label>
+            <select id="profileThemeMode">
+              <option value="light">Claro</option>
+              <option value="dark">Escuro</option>
+            </select>
+          </div>
+
+          <div class="input-box">
+            <label for="profileColorPalette">Paleta de cores</label>
+            <select id="profileColorPalette">
+              <option value="financehub">FinanceHub azul/laranja</option>
+              <option value="emerald">Emerald</option>
+              <option value="violet">Violet</option>
+              <option value="graphite">Graphite</option>
+              <option value="sunset">Sunset</option>
+            </select>
+          </div>
+
+          <div class="input-box action-box">
+            <label>&nbsp;</label>
+            <button type="button" class="btn" onclick="salvarTemaPerfil()">
+              Salvar aparência
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/profileSettings.js"></script>
+  <script>
+    async function iniciarPerfil() {
+      await verificarLogin();
+      await carregarConfiguracoesPerfil();
+    }
+
+    iniciarPerfil();
+  </script>
+
+</body>
+</html>
