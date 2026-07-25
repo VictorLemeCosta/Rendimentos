@@ -103,14 +103,6 @@ NAVBAR
         0 10px 30px rgba(0,0,0,.12);
 }
 
-.nav-logo {
-
-    font-size: 1.5rem;
-
-    font-weight: 900;
-
-    color: var(--hughes-blue);
-}
 
 .nav-links {
 
@@ -5330,4 +5322,655 @@ body.login-body .auth-card {
     width: 36px;
     height: 36px;
   }
+}
+
+/* ============================
+   MOBILE - NAVBAR COM AVATAR NO TOPO
+============================ */
+
+@media (max-width: 768px) {
+  .main-nav {
+    position: relative;
+    align-items: flex-start;
+    padding: 22px 22px 26px;
+    gap: 18px;
+  }
+
+
+
+  .nav-profile-link {
+    position: absolute;
+    top: 22px;
+    right: 88px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .nav-logout-button {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    min-height: 48px;
+  }
+
+  .nav-links {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    padding-top: 2px;
+  }
+
+  .nav-links a:not(.nav-profile-link) {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .nav-profile-link {
+    flex-shrink: 0;
+  }
+}
+
+/* ============================
+   MOBILE - PEEK DO PROXIMO CARD NO SCROLL
+============================ */
+
+@media (max-width: 768px) {
+  .cards-grid,
+  .dashboard-grid,
+  .breakdown-grid,
+  .clt-grid {
+    display: flex !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    margin-left: -18px;
+    margin-right: -18px;
+
+    padding-left: 18px;
+    padding-right: 72px;
+    padding-bottom: 12px;
+
+    scroll-padding-left: 18px;
+  }
+
+  .cards-grid .income-card {
+    min-width: calc(100vw - 76px);
+    max-width: calc(100vw - 76px);
+    flex: 0 0 calc(100vw - 76px);
+    scroll-snap-align: start;
+  }
+
+  .dashboard-grid .card {
+    min-width: calc(100vw - 92px);
+    max-width: calc(100vw - 92px);
+    flex: 0 0 calc(100vw - 92px);
+    scroll-snap-align: start;
+  }
+
+  .breakdown-grid .breakdown-card {
+    min-width: calc(100vw - 110px);
+    max-width: calc(100vw - 110px);
+    flex: 0 0 calc(100vw - 110px);
+    scroll-snap-align: start;
+  }
+
+  .clt-grid .clt-card {
+    min-width: calc(100vw - 96px);
+    max-width: calc(100vw - 96px);
+    flex: 0 0 calc(100vw - 96px);
+    scroll-snap-align: start;
+  }
+
+  .cards-grid::-webkit-scrollbar,
+  .dashboard-grid::-webkit-scrollbar,
+  .breakdown-grid::-webkit-scrollbar,
+  .clt-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .cards-grid::-webkit-scrollbar-thumb,
+  .dashboard-grid::-webkit-scrollbar-thumb,
+  .breakdown-grid::-webkit-scrollbar-thumb,
+  .clt-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+  }
+}
+
+/* ============================
+   MOBILE - AJUSTE FINAL NAV + CARDS
+============================ */
+
+@media (max-width: 768px) {
+  /* NAV MOBILE */
+  .main-nav {
+    position: relative;
+    align-items: flex-start;
+    padding: 22px 22px 24px;
+    gap: 18px;
+  }
+
+
+
+  /* Avatar mais afastado do botão Sair */
+  .nav-profile-link {
+    position: absolute;
+    top: 22px;
+    right: 105px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .nav-logout-button {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    min-height: 48px;
+    padding: 10px 20px;
+  }
+
+  .nav-links {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-top: 2px;
+    padding-bottom: 4px;
+  }
+
+  .nav-links a:not(.nav-profile-link) {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* SCROLL LATERAL DOS CARDS COM PEEK */
+  .cards-grid {
+    display: flex !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    margin-left: -18px;
+    margin-right: -18px;
+
+    padding-left: 24px;
+    padding-right: 78px;
+    padding-bottom: 12px;
+
+    scroll-padding-left: 24px;
+  }
+
+  .cards-grid .income-card {
+    flex: 0 0 calc(100vw - 92px);
+    min-width: calc(100vw - 92px);
+    max-width: calc(100vw - 92px);
+    scroll-snap-align: start;
+
+    padding: 26px 24px;
+  }
+
+  /* Evita conteúdo cortado dentro dos cards */
+  .income-card .rates {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .income-card .rate-box {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .income-card .rate-value {
+    word-break: normal;
+    overflow-wrap: normal;
+    white-space: nowrap;
+    font-size: 0.92rem;
+  }
+
+  .income-card .rate-label {
+    white-space: nowrap;
+  }
+
+  .income-card .monthly-value {
+    white-space: normal;
+    text-align: left;
+  }
+
+  .card-top {
+    align-items: flex-start;
+  }
+}
+
+/* ============================
+   NAVBAR - LOGOTIPO TEXTO FINANCEHUB
+============================ */
+
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--hughes-blue), var(--hughes-light-blue));
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  box-shadow: 0 8px 18px rgba(0, 59, 113, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-brand-mark::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--hughes-orange);
+  opacity: 0.95;
+}
+
+.nav-brand-mark {
+  isolation: isolate;
+}
+
+.nav-brand-text {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 1.55rem;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.nav-brand-finance {
+  color: var(--hughes-blue);
+}
+
+.nav-brand-hub {
+  color: var(--hughes-orange);
+}
+
+.nav-brand:hover .nav-brand-mark {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 59, 113, 0.28);
+}
+
+.nav-brand:hover .nav-brand-text {
+  filter: brightness(1.04);
+}
+
+@media (max-width: 768px) {
+  .nav-brand {
+    height: 48px;
+  }
+
+  .nav-brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    font-size: 14px;
+  }
+
+  .nav-brand-text {
+    font-size: 1.45rem;
+  }
+}
+
+/* Remove apenas a linha interna do ícone FH */
+.nav-brand-mark::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* ============================
+   MOBILE PEQUENO - AJUSTE LOGO + PERFIL + SAIR
+   iPhone SE / telas estreitas
+============================ */
+
+@media (max-width: 430px) {
+  .main-nav {
+    position: relative;
+    padding: 20px 18px 24px;
+  }
+
+  .nav-brand {
+    max-width: calc(100% - 150px);
+    gap: 8px;
+  }
+
+  .nav-brand-mark {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 13px;
+    font-size: 13px;
+  }
+
+  .nav-brand-text {
+    font-size: 1.18rem;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+
+  .nav-profile-link {
+    position: absolute;
+    top: 20px;
+    right: 94px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .nav-profile-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nav-logout-button {
+    position: absolute;
+    top: 20px;
+    right: 18px;
+    min-height: 46px;
+    padding: 9px 17px;
+  }
+
+  .nav-links {
+    width: 100%;
+    margin-top: 12px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding-bottom: 6px;
+  }
+
+  .nav-links a:not(.nav-profile-link) {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+/* ============================
+   NAV RESPONSIVA - LOGO + PERFIL + SAIR NA MESMA LINHA
+   Tablet / Surface / Mobile
+============================ */
+
+@media (max-width: 1150px) {
+  .main-nav {
+    position: relative !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    padding: 20px 22px 24px !important;
+    gap: 0 !important;
+  }
+
+  /* Logo no topo, com espaço reservado para avatar + sair */
+  .nav-brand,
+  .nav-logo {
+    order: 1 !important;
+    max-width: calc(100% - 185px) !important;
+    min-height: 48px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+  }
+
+  .nav-brand-text {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Avatar sempre no topo junto com o logo */
+  .nav-profile-link {
+    position: absolute !important;
+    top: 20px !important;
+    right: 104px !important;
+    width: 48px !important;
+    height: 48px !important;
+    z-index: 5 !important;
+  }
+
+  .nav-profile-avatar {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  /* Botão sair sempre no topo junto com o logo */
+  .nav-logout-button {
+    position: absolute !important;
+    top: 20px !important;
+    right: 22px !important;
+    min-height: 48px !important;
+    padding: 9px 18px !important;
+    z-index: 5 !important;
+  }
+
+  /* Links ficam na segunda linha */
+  .nav-links {
+    order: 2 !important;
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    padding-top: 0 !important;
+    padding-bottom: 6px !important;
+  }
+
+  .nav-links a:not(.nav-profile-link) {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .nav-brand,
+  .nav-logo {
+    max-width: calc(100% - 165px) !important;
+  }
+
+  .nav-brand-text {
+    font-size: 1.08rem !important;
+  }
+
+  .nav-profile-link {
+    right: 96px !important;
+  }
+
+  .nav-logout-button {
+    right: 18px !important;
+    padding: 9px 16px !important;
+  }
+}
+
+/* ============================
+   NAV RESPONSIVA - AJUSTE FINAL
+   iPhone SE + Surface Pro
+============================ */
+
+/* Tablets e telas onde o menu quebra em duas linhas */
+@media (max-width: 1150px) {
+  .main-nav {
+    position: relative !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    padding: 20px 22px 24px !important;
+    gap: 0 !important;
+  }
+
+  .nav-brand {
+    order: 1 !important;
+    max-width: calc(100% - 190px) !important;
+    min-height: 48px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+  }
+
+  .nav-brand-text {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .nav-profile-link {
+    position: absolute !important;
+    top: 20px !important;
+    right: 108px !important;
+    width: 48px !important;
+    height: 48px !important;
+    z-index: 5 !important;
+  }
+
+  .nav-profile-avatar {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .nav-logout-button {
+    position: absolute !important;
+    top: 20px !important;
+    right: 22px !important;
+    min-height: 48px !important;
+    padding: 9px 18px !important;
+    z-index: 5 !important;
+  }
+
+  .nav-links {
+    order: 2 !important;
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+
+    justify-content: center !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    padding-top: 0 !important;
+    padding-bottom: 6px !important;
+  }
+
+  .nav-links a:not(.nav-profile-link) {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* Celulares pequenos, como iPhone SE */
+@media (max-width: 430px) {
+  .main-nav {
+    padding: 20px 18px 24px !important;
+  }
+
+  .nav-brand {
+    max-width: calc(100% - 165px) !important;
+    gap: 7px !important;
+  }
+
+  .nav-brand-mark {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    border-radius: 13px !important;
+    font-size: 13px !important;
+  }
+
+  .nav-brand-text {
+    font-size: 1rem !important;
+    letter-spacing: -0.055em !important;
+    max-width: 100px !important;
+  }
+
+  .nav-profile-link {
+    top: 20px !important;
+    right: 92px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+
+  .nav-profile-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .nav-logout-button {
+    top: 20px !important;
+    right: 18px !important;
+    min-height: 46px !important;
+    padding: 9px 16px !important;
+  }
+
+  .nav-links {
+    justify-content: flex-start !important;
+    margin-top: 14px !important;
+  }
+}
+
+/* Remove sombra do ícone do logo FinanceHub */
+.nav-brand-mark {
+  box-shadow: none !important;
+}
+
+.nav-brand:hover .nav-brand-mark {
+  box-shadow: none !important;
+}
+
+/* ============================
+   INVESTIMENTOS - GANHO/PERDA
+============================ */
+
+.investment-positive {
+  color: var(--green) !important;
+}
+
+.investment-negative {
+  color: var(--red) !important;
+}
+
+.investment-neutral {
+  color: var(--hughes-blue) !important;
+}
+
+.investment-positive small,
+.investment-negative small,
+.investment-neutral small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 900;
 }

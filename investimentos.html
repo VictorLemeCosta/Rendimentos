@@ -1,112 +1,507 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investimentos - FinanceHub</title>
-<link rel="stylesheet" href="css/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseClient.js"></script>
-<script src="js/auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Investimentos - FinanceHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/auth.js"></script>
 </head>
+
 <body>
-<nav class="main-nav">
-<div class="nav-logo">FinanceHub</div>
-<div class="nav-links">
-<a href="index.html">Rendimentos</a>
-<a href="financeiro.html">Dashboard Financeiro</a>
-<a href="investimentos.html" class="active">Investimentos</a>
-<a href="perfil.html" class="nav-profile-link" id="navProfileLink" title="Perfil">
-  <span class="nav-profile-avatar" id="navProfileAvatar">
-    <span class="nav-default-avatar">
-      <span class="nav-default-avatar-head"></span>
-      <span class="nav-default-avatar-body"></span>
-    </span>
-  </span>
-</a>
-<button type="button" class="nav-logout-button" onclick="logout()">
-  Sair
-</button>
-</div>
-</nav>
-<div class="container">
-<section class="section">
-<h2>Carteira de Investimentos</h2>
-<p>Controle de Bitcoin, FIIs, ETFs, ações e outros ativos.</p>
-</section>
-<section class="section">
-<h2>Bitcoin</h2>
-<div class="btc-price-row">
 
-    <div class="breakdown-card btc-card">
+  <nav class="main-nav">
+    <a href="index.html" class="nav-brand" aria-label="FinanceHub">
+      <span class="nav-brand-mark">
+        FH
+      </span>
 
-        <div class="breakdown-title">
+      <span class="nav-brand-text">
+        <span class="nav-brand-finance">Finance</span><span class="nav-brand-hub">Hub</span>
+      </span>
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html">
+        Rendimentos
+      </a>
+
+      <a href="financeiro.html">
+        Dashboard Financeiro
+      </a>
+
+      <a href="investimentos.html" class="active">
+        Investimentos
+      </a>
+
+      <a href="perfil.html" class="nav-profile-link" id="navProfileLink" title="Perfil">
+        <span class="nav-profile-avatar" id="navProfileAvatar">
+          <span class="nav-default-avatar">
+            <span class="nav-default-avatar-head"></span>
+            <span class="nav-default-avatar-body"></span>
+          </span>
+        </span>
+      </a>
+
+      <button type="button" class="nav-logout-button" onclick="logout()">
+        Sair
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- RESUMO GERAL -->
+    <section class="section">
+      <h2>Carteira de Investimentos</h2>
+
+      <p>
+        Acompanhe quanto você investiu, quanto seus investimentos valem agora e como sua carteira está distribuída.
+      </p>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3>Total investido</h3>
+          <div class="value" id="investmentTotalInvested">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Valor estimado agora</h3>
+          <div class="value" id="investmentEstimatedValue">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Ganho/Perda</h3>
+          <div class="value" id="investmentGainLoss">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+            <h3>Maior categoria</h3>
+            <div class="value" id="investmentMainCategory">-</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid" style="margin-top: 18px;">
+        <div class="card">
+          <h3>Aportes do mês</h3>
+          <div class="value" id="investmentMonthContributions">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Ativos cadastrados</h3>
+          <div class="value" id="investmentAssetCount">0</div>
+        </div>
+
+        <div class="card">
+          <h3>Patrimônio cripto</h3>
+          <div class="value" id="investmentCryptoValue">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Renda variável</h3>
+          <div class="value" id="investmentVariableIncomeValue">R$ 0,00</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULARIO UNIFICADO -->
+    <section class="section">
+      <h2>Adicionar ou movimentar investimento</h2>
+
+      <p>
+        Use esta seção para cadastrar novos investimentos, adicionar valores, remover valores ou atualizar informações da carteira.
+      </p>
+
+      <div class="form-grid">
+
+        <div class="input-box">
+          <label for="investmentOperation">Operação</label>
+          <select id="investmentOperation" onchange="atualizarCamposInvestimento()">
+            <option value="adicionar">Adicionar / Comprar</option>
+            <option value="remover">Remover / Vender</option>
+            <option value="atualizar_valor">Atualizar valor estimado</option>
+            <option value="rendimento">Registrar rendimento</option>
+          </select>
+        </div>
+
+        <div class="input-box">
+          <label for="investmentType">Tipo de investimento</label>
+          <select id="investmentType" onchange="atualizarCamposInvestimento()">
+            <option value="Bitcoin">Bitcoin</option>
+            <option value="Cripto">Outra cripto</option>
+            <option value="Renda fixa">Renda fixa</option>
+            <option value="FII">FII</option>
+            <option value="Ação">Ação</option>
+            <option value="ETF">ETF</option>
+            <option value="BDR">BDR</option>
+            <option value="Fundo">Fundo</option>
+            <option value="Previdência">Previdência</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+
+        <div class="input-box investment-field investment-existing-field">
+          <label for="investmentExistingAsset">Investimento existente</label>
+          <select id="investmentExistingAsset">
+            <option value="">Selecione um investimento</option>
+          </select>
+        </div>
+
+        <div class="input-box investment-field investment-name-field">
+          <label for="investmentName">Nome do investimento</label>
+          <input type="text" id="investmentName" placeholder="Ex: Bitcoin, Tesouro Selic, MXRF11">
+        </div>
+
+        <div class="input-box investment-field investment-ticker-field">
+          <label for="investmentTicker">Ticker / Código</label>
+          <input type="text" id="investmentTicker" placeholder="Ex: BTC, MXRF11, AAPL34">
+        </div>
+
+        <div class="input-box investment-field investment-institution-field">
+          <label for="investmentInstitution">Instituição / Corretora</label>
+          <input type="text" id="investmentInstitution" placeholder="Ex: Nubank, XP, Binance">
+        </div>
+
+        <div class="input-box investment-field investment-quantity-field">
+          <label for="investmentQuantity">Quantidade</label>
+          <input type="number" id="investmentQuantity" step="0.00000001" placeholder="Ex: 0.00341412">
+        </div>
+
+        <div class="input-box investment-field investment-invested-value-field">
+          <label for="investmentInvestedValue">Valor investido</label>
+          <input type="number" id="investmentInvestedValue" step="0.01" placeholder="Ex: 1000.00">
+        </div>
+
+        <div class="input-box investment-field investment-estimated-value-field">
+          <label for="investmentEstimatedManualValue">Valor estimado agora</label>
+          <input type="number" id="investmentEstimatedManualValue" step="0.01" placeholder="Ex: 1050.00">
+        </div>
+
+        <div class="input-box investment-field investment-date-field">
+          <label for="investmentMovementDate">Data</label>
+          <input type="date" id="investmentMovementDate">
+        </div>
+
+        <div class="input-box investment-field investment-note-field">
+          <label for="investmentNote">Observação</label>
+          <input type="text" id="investmentNote" placeholder="Ex: compra mensal, atualização manual">
+        </div>
+
+        <div class="input-box action-box">
+          <label>&nbsp;</label>
+          <button type="button" class="btn" onclick="salvarMovimentoInvestimento()">
+            Salvar movimentação
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BITCOIN -->
+    <section class="section">
+      <h2>Bitcoin</h2>
+
+      <p>
+        Acompanhe o saldo de Bitcoin e o valor estimado com base na cotação atual.
+      </p>
+
+      <div class="btc-price-row">
+        <div class="breakdown-card btc-card">
+          <div class="breakdown-title">
             BTC/USD
-        </div>
+          </div>
 
-        <div
-            class="breakdown-value"
-            id="btcPriceUSD">
+          <div class="breakdown-value" id="btcPriceUSD">
             --
+          </div>
         </div>
 
-    </div>
+        <div class="breakdown-card btc-card">
+          <div class="breakdown-title">
+            BTC/BRL
+          </div>
 
-    <div class="breakdown-card btc-card">
-
-        <div class="breakdown-title">BTC/BRL</div>
-
-        <div
-            class="breakdown-value"
-            id="btcPriceBRL">
+          <div class="breakdown-value" id="btcPriceBRL">
             --
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3>Saldo BTC</h3>
+          <div class="value" id="btcBalance">0.00000000 BTC</div>
         </div>
 
-    </div>
+        <div class="card">
+          <h3>Valor em BRL</h3>
+          <div class="value" id="btcBRL">R$ 0,00</div>
+        </div>
 
-</div>
-<div class="dashboard-grid">
-<div class="card"><h3>Saldo BTC</h3><div class="value" id="btcBalance">0.00341412 BTC</div></div>
-<div class="card"><h3>Valor em BRL</h3><div class="value" id="btcBRL">Carregando...</div></div>
-<div class="card"><h3>Valor em USD</h3><div class="value" id="btcUSD">Carregando...</div></div>
-<div class="card"><h3>Patrimônio Cripto</h3><div class="value" id="cryptoPatrimony">Carregando...</div></div>
-</div>
-<div class="form-grid">
-<div class="input-box"><label>Adicionar BTC</label><input type="number" step="0.00000001" id="btcAdd"></div>
-<div class="input-box"><label>Remover BTC</label><input type="number" step="0.00000001" id="btcRemove"></div>
-<div class="input-box"><label>&nbsp;</label><button class="btn" onclick="addBTC()">Adicionar</button></div>
-<div class="input-box"><label>&nbsp;</label><button class="btn" onclick="removeBTC()">Remover</button></div>
-</div>
-</section>
-<section class="section">
-<h2>Renda Variável</h2>
-<div class="dashboard-grid">
-<div class="card"><h3>Patrimônio Atual</h3><div class="value" id="equityPatrimony">R$ 151,36</div></div>
-<div class="card"><h3>Ativos</h3><div class="value" id="assetCount">3</div></div>
-</div>
-<div class="table-wrapper"><table class="table"><thead><tr><th>Ticker</th><th>Tipo</th><th>Cotas</th><th>Valor</th></tr></thead><tbody id="investmentTable"></tbody></table></div>
-</section>
-<section class="section">
-<h2>Adicionar Investimento</h2>
-<div class="form-grid">
-<div class="input-box"><label>Ticker</label><input type="text" id="newTicker"></div>
-<div class="input-box"><label>Tipo</label><select id="newType"><option>FII</option><option>Ação</option><option>ETF</option><option>BDR</option><option>Cripto</option></select></div>
-<div class="input-box"><label>Cotas</label><input type="number" id="newQuantity"></div>
-<div class="input-box"><label>Valor Investido</label><input type="number" step="0.01" id="newAmount"></div>
-</div>
-<p style="margin-top:20px"><button class="btn" onclick="addInvestment()">Adicionar Investimento</button></p>
-</section>
-<section class="section">
-<h2>Distribuição da Carteira</h2>
-<div class="chart-container"><canvas id="investmentPieChart"></canvas></div>
-</section>
-</div>
-<script src="js/shared.js"></script>
-<script src="js/investimentos.js"></script>
-<script>
-verificarLogin();
-carregarAvatarMenu();
-</script>
+        <div class="card">
+          <h3>Valor em USD</h3>
+          <div class="value" id="btcUSD">$0.00</div>
+        </div>
+
+        <div class="card">
+          <h3>Patrimônio cripto</h3>
+          <div class="value" id="cryptoPatrimony">R$ 0,00</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RENDA VARIAVEL -->
+    <section class="section">
+      <h2>Renda variável</h2>
+
+      <p>
+        Visualização separada de ações, FIIs, ETFs e BDRs cadastrados.
+      </p>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3>Valor investido</h3>
+          <div class="value" id="variableIncomeInvested">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Valor estimado</h3>
+          <div class="value" id="variableIncomeEstimated">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Ganho/Perda</h3>
+          <div class="value" id="variableIncomeGainLoss">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Ativos</h3>
+          <div class="value" id="variableIncomeAssetCount">0</div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Tipo</th>
+              <th>Quantidade</th>
+              <th>Valor investido</th>
+              <th>Valor estimado</th>
+              <th>Ganho/Perda</th>
+            </tr>
+          </thead>
+
+          <tbody id="variableIncomeTableBody">
+            <tr>
+              <td colspan="6">Nenhum ativo de renda variável cadastrado.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- RENDA FIXA -->
+    <section class="section">
+      <h2>Renda fixa</h2>
+
+      <p>
+        Visualização separada de aplicações de renda fixa, como CDBs, Tesouro Direto, caixinhas e produtos similares.
+      </p>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3>Valor investido</h3>
+          <div class="value" id="fixedIncomeInvested">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Valor estimado</h3>
+          <div class="value" id="fixedIncomeEstimated">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Ganho/Perda</h3>
+          <div class="value" id="fixedIncomeGainLoss">R$ 0,00</div>
+        </div>
+
+        <div class="card">
+          <h3>Aplicações</h3>
+          <div class="value" id="fixedIncomeAssetCount">0</div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Instituição</th>
+              <th>Valor investido</th>
+              <th>Valor estimado</th>
+              <th>Data</th>
+              <th>Ganho/Perda</th>
+            </tr>
+          </thead>
+
+          <tbody id="fixedIncomeTableBody">
+            <tr>
+              <td colspan="6">Nenhuma aplicação de renda fixa cadastrada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- OUTROS INVESTIMENTOS -->
+    <section class="section">
+      <h2>Outros investimentos</h2>
+
+      <p>
+        Fundos, previdência, outras criptos e demais investimentos cadastrados.
+      </p>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Tipo</th>
+              <th>Instituição</th>
+              <th>Quantidade</th>
+              <th>Valor investido</th>
+              <th>Valor estimado</th>
+              <th>Ganho/Perda</th>
+            </tr>
+          </thead>
+
+          <tbody id="otherInvestmentsTableBody">
+            <tr>
+              <td colspan="7">Nenhum outro investimento cadastrado.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TODOS OS INVESTIMENTOS -->
+    <section class="section">
+      <h2>Todos os investimentos cadastrados</h2>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Tipo</th>
+              <th>Instituição</th>
+              <th>Ticker</th>
+              <th>Quantidade</th>
+              <th>Valor investido</th>
+              <th>Valor estimado</th>
+              <th>Ganho/Perda</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+
+          <tbody id="investmentAssetsTableBody">
+            <tr>
+              <td colspan="9">Carregando investimentos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GRAFICOS -->
+    <section class="section">
+      <h2>Gráficos da carteira</h2>
+
+      <p>
+        Visualizações para entender melhor a distribuição, evolução e resultado dos seus investimentos.
+      </p>
+
+      <div class="dashboard-grid">
+        <div class="card card-chart" style="grid-column: span 2;">
+          <h3>Distribuição por tipo</h3>
+
+          <div class="chart-container">
+            <canvas id="investmentTypePieChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card card-chart" style="grid-column: span 2;">
+          <h3>Ganho/Perda por ativo</h3>
+
+          <div class="chart-container">
+            <canvas id="investmentGainLossChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVOLUCAO PATRIMONIAL -->
+    <section class="section">
+      <h2>Evolução patrimonial</h2>
+
+      <p>
+        Histórico do valor estimado da sua carteira ao longo do tempo.
+      </p>
+
+      <div class="card card-chart">
+        <div class="chart-container">
+          <canvas id="investmentEvolutionChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORICO DE MOVIMENTACOES -->
+    <section class="section">
+      <h2>Histórico de movimentações</h2>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Investimento</th>
+              <th>Tipo</th>
+              <th>Operação</th>
+              <th>Quantidade</th>
+              <th>Valor</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+
+          <tbody id="investmentTransactionsTableBody">
+            <tr>
+              <td colspan="7">Carregando movimentações...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/investimentosData.js"></script>
+
+  <script>
+    async function iniciarInvestimentos() {
+      await verificarLogin();
+      await carregarAvatarMenu();
+      await carregarInvestimentos();
+    }
+
+    iniciarInvestimentos();
+  </script>
+
 </body>
 </html>
