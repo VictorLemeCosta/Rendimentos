@@ -4424,3 +4424,910 @@ body.login-body .auth-card {
     max-width: none;
   }
 }
+
+/* ============================
+   BANDEIRAS REAIS NO SELECT CUSTOMIZADO
+============================ */
+
+.country-flag,
+.country-flag-placeholder {
+  width: 32px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.country-flag-img {
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.country-select-button {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.country-select-arrow {
+  margin-left: auto;
+  font-weight: 900;
+  color: var(--hughes-blue);
+}
+
+.country-selector-box {
+  position: relative;
+}
+
+.country-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.country-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--hughes-dark);
+  font-size: 15px;
+  text-align: left;
+}
+
+.country-option:hover {
+  background: #eef6fb;
+}
+
+.country-world-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* ============================
+   PERFIL - SELECTS E CAMPO PAIS
+   Bloco definitivo e limpo
+============================ */
+
+/* Selects nativos do perfil */
+.profile-form-3-cols .input-box select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 46px 10px 14px;
+  background-color: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Cria o "v" usando background simples, sem SVG */
+.profile-form-3-cols .input-box select {
+  background-position:
+    calc(100% - 22px) 50%,
+    calc(100% - 16px) 50%;
+  background-size:
+    6px 6px,
+    6px 6px;
+  background-repeat: no-repeat;
+}
+
+.profile-form-3-cols .input-box select:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+.profile-form-3-cols .input-box select::-ms-expand {
+  display: none;
+}
+
+
+/* Campo País customizado */
+.country-selector-box {
+  position: relative;
+}
+
+.profile-form-3-cols .country-selector-box {
+  min-height: 118px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form-3-cols .country-selector-box label {
+  min-height: 22px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: var(--hughes-dark);
+}
+
+.country-select-button {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 46px 10px 14px;
+  background-color: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  cursor: pointer;
+  text-align: left;
+  margin-top: auto;
+  position: relative;
+}
+
+.country-select-button:hover {
+  border-color: var(--hughes-light-blue);
+}
+
+.country-select-button:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+/* Seta do campo País no mesmo padrão visual dos selects */
+.country-select-arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.country-select-arrow::before,
+.country-select-arrow::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 8px;
+  height: 2px;
+  background: var(--hughes-dark);
+  border-radius: 999px;
+}
+
+.country-select-arrow::before {
+  left: 0;
+  transform: rotate(45deg);
+}
+
+.country-select-arrow::after {
+  right: 0;
+  transform: rotate(-45deg);
+}
+
+
+/* Bandeiras */
+.country-flag-placeholder,
+.country-flag {
+  width: 32px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.country-flag-img {
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.country-world-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+
+/* Dropdown de países */
+.country-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 18px;
+  right: 18px;
+  z-index: 200;
+
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.country-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  cursor: pointer;
+  color: var(--hughes-dark);
+  font-size: 15px;
+  text-align: left;
+}
+
+.country-option:hover {
+  background: #eef6fb;
+}
+
+/* ============================
+   PERFIL - SELECT COM SETA EM V
+   Mesmo estilo do campo País
+============================ */
+
+.profile-select-control {
+  position: relative;
+  width: 100%;
+  margin-top: auto;
+}
+
+.profile-select-control select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 46px 10px 14px;
+  background: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.profile-select-control select:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+.profile-select-control select::-ms-expand {
+  display: none;
+}
+
+.profile-select-arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.profile-select-arrow::before,
+.profile-select-arrow::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 8px;
+  height: 2px;
+  background: var(--hughes-dark);
+  border-radius: 999px;
+}
+
+.profile-select-arrow::before {
+  left: 0;
+  transform: rotate(45deg);
+}
+
+.profile-select-arrow::after {
+  right: 0;
+  transform: rotate(-45deg);
+}
+
+/* ============================
+   PERFIL - CELULAR COM DDI
+============================ */
+
+.phone-number-input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background-color: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+}
+
+.phone-ddi-select:focus,
+.phone-number-input:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+@media (max-width: 700px) {
+  .phone-composite-field {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================
+   PERFIL - CELULAR COM DDI E BANDEIRA
+============================ */
+
+.phone-composite-field {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 10px;
+  margin-top: auto;
+}
+
+.phone-ddi-selector-box {
+  position: relative;
+  width: 100%;
+}
+
+.phone-ddi-button {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 34px 10px 10px;
+  background: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 15px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  text-align: left;
+  position: relative;
+}
+
+.phone-ddi-button:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+.phone-ddi-flag,
+.phone-ddi-option-flag {
+  width: 28px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.phone-ddi-flag-img {
+  width: 28px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.phone-ddi-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.phone-ddi-arrow::before,
+.phone-ddi-arrow::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 7px;
+  height: 2px;
+  background: var(--hughes-dark);
+  border-radius: 999px;
+}
+
+.phone-ddi-arrow::before {
+  left: 0;
+  transform: rotate(45deg);
+}
+
+.phone-ddi-arrow::after {
+  right: 0;
+  transform: rotate(-45deg);
+}
+
+.phone-ddi-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 150px;
+  z-index: 250;
+
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.phone-ddi-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+  color: var(--hughes-dark);
+  font-size: 15px;
+  text-align: left;
+}
+
+.phone-ddi-option:hover {
+  background: #eef6fb;
+}
+
+.phone-number-input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+}
+
+.phone-number-input:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+@media (max-width: 700px) {
+  .phone-composite-field {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-ddi-dropdown {
+    width: 100%;
+  }
+}
+
+/* ============================
+   PERFIL - CELULAR COM DDI E BANDEIRA
+============================ */
+
+.phone-composite-field {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 10px;
+  margin-top: auto;
+}
+
+.phone-ddi-selector-box {
+  position: relative;
+  width: 100%;
+}
+
+.phone-ddi-button {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 34px 10px 10px;
+  background: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 15px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  text-align: left;
+  position: relative;
+}
+
+.phone-ddi-button:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+.phone-ddi-flag,
+.phone-ddi-option-flag {
+  width: 28px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.phone-ddi-flag-img {
+  width: 28px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.phone-ddi-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.phone-ddi-arrow::before,
+.phone-ddi-arrow::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 7px;
+  height: 2px;
+  background: var(--hughes-dark);
+  border-radius: 999px;
+}
+
+.phone-ddi-arrow::before {
+  left: 0;
+  transform: rotate(45deg);
+}
+
+.phone-ddi-arrow::after {
+  right: 0;
+  transform: rotate(-45deg);
+}
+
+.phone-ddi-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 150px;
+  z-index: 250;
+
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.phone-ddi-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+  color: var(--hughes-dark);
+  font-size: 15px;
+  text-align: left;
+}
+
+.phone-ddi-option:hover {
+  background: #eef6fb;
+}
+
+.phone-number-input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: #ffffff;
+  color: var(--hughes-dark);
+  font-size: 16px;
+}
+
+.phone-number-input:focus {
+  outline: none;
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+@media (max-width: 700px) {
+  .phone-composite-field {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-ddi-dropdown {
+    width: 100%;
+  }
+}
+
+/* ============================
+   DDI - SIGLA DO PAIS AO LADO DA BANDEIRA
+============================ */
+
+.phone-ddi-country-code {
+  min-width: 24px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--hughes-blue);
+  text-transform: uppercase;
+}
+
+.phone-ddi-option-text {
+  font-size: 15px;
+  color: var(--hughes-dark);
+  font-weight: 700;
+}
+
+.phone-ddi-option {
+  gap: 8px;
+}
+
+.phone-ddi-button {
+  gap: 7px;
+}
+
+#selectedPhoneDdiText {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ============================
+   AJUSTE FINAL - LARGURA DO DDI DO CELULAR
+============================ */
+
+.phone-composite-field {
+  grid-template-columns: 155px minmax(0, 1fr) !important;
+  gap: 10px;
+}
+
+.phone-ddi-button {
+  min-width: 155px;
+  padding: 10px 34px 10px 10px;
+  white-space: nowrap;
+}
+
+.phone-ddi-dropdown {
+  width: 210px !important;
+  min-width: 210px;
+}
+
+.phone-ddi-option {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phone-ddi-option-flag {
+  flex-shrink: 0;
+}
+
+.phone-ddi-country-code {
+  min-width: 26px;
+  flex-shrink: 0;
+}
+
+.phone-ddi-option-text {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#selectedPhoneDdiText {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .phone-composite-field {
+    grid-template-columns: 1fr !important;
+  }
+
+  .phone-ddi-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .phone-ddi-dropdown {
+    width: 100% !important;
+    min-width: 0;
+  }
+}
+
+/* ============================
+   NAVBAR - BOTAO PERFIL COM AVATAR
+============================ */
+
+.nav-profile-link {
+  width: 48px;
+  height: 48px;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  background: #f4f7fb !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: 0.2s ease;
+}
+
+.nav-profile-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--hughes-light-blue);
+  box-shadow: 0 8px 18px rgba(0, 59, 113, 0.18);
+}
+
+.nav-profile-link.active {
+  background: linear-gradient(135deg, var(--hughes-blue), var(--hughes-light-blue)) !important;
+  border-color: var(--hughes-orange);
+}
+
+.nav-profile-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8eef5;
+}
+
+.nav-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Avatar padrão pequeno */
+.nav-default-avatar {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: block;
+  background: linear-gradient(135deg, #eef2f7, #dbe5ef);
+}
+
+.nav-default-avatar-head {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #8ca0b6;
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-default-avatar-body {
+  width: 24px;
+  height: 14px;
+  border-radius: 18px 18px 0 0;
+  background: #8ca0b6;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Avatares predefinidos no menu */
+.nav-preset-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.nav-preset-avatar.preset-tucano {
+  background: linear-gradient(135deg, #003865, #00a3e0);
+}
+
+.nav-preset-avatar.preset-leao {
+  background: linear-gradient(135deg, #ff8200, #ffb703);
+}
+
+.nav-preset-avatar.preset-praia {
+  background: linear-gradient(135deg, #0077b6, #90e0ef);
+}
+
+.nav-preset-avatar.preset-montanha {
+  background: linear-gradient(135deg, #047857, #22c55e);
+}
+
+.nav-preset-avatar.preset-foguete {
+  background: linear-gradient(135deg, #6d28d9, #003865);
+}
+
+@media (max-width: 768px) {
+  .nav-profile-link {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+  }
+
+  .nav-profile-avatar {
+    width: 36px;
+    height: 36px;
+  }
+}

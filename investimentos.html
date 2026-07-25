@@ -17,7 +17,14 @@
 <a href="index.html">Rendimentos</a>
 <a href="financeiro.html">Dashboard Financeiro</a>
 <a href="investimentos.html" class="active">Investimentos</a>
-<a href="perfil.html">Perfil</a>
+<a href="perfil.html" class="nav-profile-link" id="navProfileLink" title="Perfil">
+  <span class="nav-profile-avatar" id="navProfileAvatar">
+    <span class="nav-default-avatar">
+      <span class="nav-default-avatar-head"></span>
+      <span class="nav-default-avatar-body"></span>
+    </span>
+  </span>
+</a>
 <button type="button" class="nav-logout-button" onclick="logout()">
   Sair
 </button>
@@ -99,6 +106,7 @@
 <script src="js/investimentos.js"></script>
 <script>
 verificarLogin();
+carregarAvatarMenu();
 </script>
 </body>
 </html>

@@ -33,9 +33,14 @@
         Investimentos
       </a>
 
-      <a href="perfil.html" class="active">
-              Perfil
-      </a>
+    <a href="perfil.html" class="nav-profile-link active" id="navProfileLink" title="Perfil">
+    <span class="nav-profile-avatar" id="navProfileAvatar">
+        <span class="nav-default-avatar">
+        <span class="nav-default-avatar-head"></span>
+        <span class="nav-default-avatar-body"></span>
+        </span>
+    </span>
+    </a>
 
       <button type="button" class="nav-logout-button" onclick="logout()">
         Sair
@@ -157,15 +162,42 @@
                             </div>
 
                             <div class="input-box">
-                                <label for="profilePhone">Celular</label>
-                                <input type="tel" id="profilePhone" placeholder="Ex: +55 11 99999-9999">
+                                <label for="profilePhoneNumber">Celular</label>
+
+                                <div class="phone-composite-field">
+                                    <div class="phone-ddi-selector-box">
+                                        <input type="hidden" id="profilePhoneDdi">
+
+                                        <button type="button" class="phone-ddi-button" onclick="togglePhoneDdiDropdown()">
+                                            <span id="selectedPhoneDdiFlag" class="phone-ddi-flag"></span>
+                                            <span id="selectedPhoneDdiText">+55</span>
+                                            <span class="phone-ddi-arrow"></span>
+                                        </button>
+
+                                        <div id="phoneDdiDropdown" class="phone-ddi-dropdown hidden"></div>
+                                    </div>
+
+                                    <input
+                                    type="tel"
+                                    id="profilePhoneNumber"
+                                    class="phone-number-input"
+                                    placeholder="Ex: 11 99999-9999"
+                                    >
+                                </div>
                             </div>
 
-                            <div class="input-box">
+                            <div class="input-box country-selector-box">
                                 <label for="profileCountry">País</label>
-                                <select id="profileCountry">
-                                    <option value="">Selecione o país</option>
-                                </select>
+
+                                <input type="hidden" id="profileCountry">
+
+                                <button type="button" class="country-select-button" onclick="toggleCountryDropdown()">
+                                    <span id="selectedCountryFlag" class="country-flag-placeholder"></span>
+                                    <span id="selectedCountryText">Selecione o país</span>
+                                    <span class="country-select-arrow"></span>
+                                </button>
+
+                                <div id="countryDropdown" class="country-dropdown hidden"></div>
                             </div>
 
                             <div class="input-box">
@@ -210,21 +242,25 @@
 
                             <div class="input-box">
                                 <label for="profileBusinessSector">Ramo da empresa</label>
-                                <select id="profileBusinessSector">
-                                <option value="">Selecione o ramo</option>
-                                <option value="Tecnologia">Tecnologia</option>
-                                <option value="Telecomunicações">Telecomunicações</option>
-                                <option value="Financeiro">Financeiro</option>
-                                <option value="Educação">Educação</option>
-                                <option value="Saúde">Saúde</option>
-                                <option value="Varejo">Varejo</option>
-                                <option value="Indústria">Indústria</option>
-                                <option value="Construção">Construção</option>
-                                <option value="Logística">Logística</option>
-                                <option value="Serviços">Serviços</option>
-                                <option value="Setor público">Setor público</option>
-                                <option value="Outro">Outro</option>
-                                </select>
+                                <div class="profile-select-control">
+                                    <select id="profileBusinessSector">
+                                        <option value="">Selecione o ramo</option>
+                                        <option value="Tecnologia">Tecnologia</option>
+                                        <option value="Telecomunicações">Telecomunicações</option>
+                                        <option value="Financeiro">Financeiro</option>
+                                        <option value="Educação">Educação</option>
+                                        <option value="Saúde">Saúde</option>
+                                        <option value="Varejo">Varejo</option>
+                                        <option value="Indústria">Indústria</option>
+                                        <option value="Construção">Construção</option>
+                                        <option value="Logística">Logística</option>
+                                        <option value="Serviços">Serviços</option>
+                                        <option value="Setor público">Setor público</option>
+                                        <option value="Outro">Outro</option>
+                                    </select>
+
+                                    <span class="profile-select-arrow"></span>
+                                </div>
                             </div>
 
                             <div class="input-box">
@@ -234,12 +270,16 @@
 
                             <div class="input-box">
                                 <label for="profileType">Tipo de perfil</label>
-                                <select id="profileType">
-                                <option value="pessoal">Pessoal</option>
-                                <option value="profissional">Profissional</option>
-                                <option value="familia">Família</option>
-                                <option value="empresa">Empresa</option>
-                                </select>
+                                <div class="profile-select-control">
+                                    <select id="profileType">
+                                        <option value="pessoal">Pessoal</option>
+                                        <option value="profissional">Profissional</option>
+                                        <option value="familia">Família</option>
+                                        <option value="empresa">Empresa</option>
+                                    </select>
+
+                                    <span class="profile-select-arrow"></span>
+                                </div>
                             </div>
 
                             <div class="input-box action-box profile-save-box">
@@ -419,6 +459,7 @@
   <script>
     async function iniciarPerfil() {
       await verificarLogin();
+      carregarAvatarMenu();
       await carregarConfiguracoesPerfil();
     }
 

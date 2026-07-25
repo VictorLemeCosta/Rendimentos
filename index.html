@@ -34,8 +34,13 @@
               Investimentos
           </a>
 
-          <a href="perfil.html">
-              Perfil
+          <a href="perfil.html" class="nav-profile-link" id="navProfileLink" title="Perfil">
+            <span class="nav-profile-avatar" id="navProfileAvatar">
+              <span class="nav-default-avatar">
+                <span class="nav-default-avatar-head"></span>
+                <span class="nav-default-avatar-body"></span>
+              </span>
+            </span>
           </a>
 
           <button type="button" class="nav-logout-button" onclick="logout()">
@@ -457,6 +462,7 @@
 
   <script>
     verificarLogin();
+    carregarAvatarMenu();
     carregarDadosUsuario();
   </script>
 </body>
