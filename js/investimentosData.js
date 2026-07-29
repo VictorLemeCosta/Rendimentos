@@ -134,6 +134,7 @@ function preencherDatasPadraoInvestimentos() {
 window.atualizarCamposInvestimento = function atualizarCamposInvestimento() {
   const operation = document.getElementById("investmentOperation")?.value || "adicionar";
   const type = document.getElementById("investmentType")?.value || "Bitcoin";
+  const moneySourceField = document.querySelector(".investment-money-source-field");
 
   const allFields = document.querySelectorAll(".investment-field");
 
@@ -150,6 +151,26 @@ window.atualizarCamposInvestimento = function atualizarCamposInvestimento() {
   const estimatedValueField = document.querySelector(".investment-estimated-value-field");
   const dateField = document.querySelector(".investment-date-field");
   const noteField = document.querySelector(".investment-note-field");
+
+const moneySourceLabel = document.getElementById("investmentMoneySourceLabel");
+
+if (moneySourceField) {
+  if (operation === "adicionar") {
+    moneySourceField.classList.remove("hidden");
+
+    if (moneySourceLabel) {
+      moneySourceLabel.textContent = "Origem do dinheiro";
+    }
+  } else if (operation === "remover") {
+    moneySourceField.classList.remove("hidden");
+
+    if (moneySourceLabel) {
+      moneySourceLabel.textContent = "Destino do dinheiro";
+    }
+  } else {
+    moneySourceField.classList.add("hidden");
+  }
+}
 
   if (operation === "adicionar") {
     if (existingField) {
@@ -416,6 +437,7 @@ async function adicionarInvestimentoOuAporte(type) {
   const valorInvestido = Number(document.getElementById("investmentInvestedValue")?.value || 0);
   const data = document.getElementById("investmentMovementDate")?.value;
   const observacao = document.getElementById("investmentNote")?.value.trim() || "";
+  const origemDinheiro = document.getElementById("investmentMoneySource")?.value || "Carteira";
 
   if (type === "Bitcoin") {
     nome = "Bitcoin";
@@ -504,14 +526,35 @@ async function adicionarInvestimentoOuAporte(type) {
     }
   }
 
-  await registrarMovimentacao({
-    assetId: asset.id,
-    tipo: "aporte",
+  const movimentacao = await registrarMovimentacao({
+  assetId: asset.id,
+  tipo: "aporte",
+  valor: valorInvestido,
+  quantidade,
+  data,
+  observacao,
+  origemDinheiro
+});
+
+if (movimentacao) {
+  const saidaFinanceira = await registrarSaidaFinanceiraPorInvestimento({
+    investmentTransactionId: movimentacao.id,
+    nomeInvestimento: asset.nome,
+    tipoInvestimento: asset.tipo,
     valor: valorInvestido,
-    quantidade,
     data,
-    observacao
+    origemDinheiro
   });
+
+  if (saidaFinanceira) {
+    await window.supabaseClient
+      .from("investment_transactions")
+      .update({
+        financeiro_transaction_id: saidaFinanceira.id
+      })
+      .eq("id", movimentacao.id);
+  }
+}
 
   limparFormularioInvestimentos();
   await carregarInvestimentos();
@@ -523,6 +566,7 @@ async function removerOuVenderInvestimento() {
   const valor = Number(document.getElementById("investmentInvestedValue")?.value || 0);
   const data = document.getElementById("investmentMovementDate")?.value;
   const observacao = document.getElementById("investmentNote")?.value.trim() || "";
+  const destinoDinheiro = document.getElementById("investmentMoneySource")?.value || "Carteira";
 
   if (!assetId) {
     alert("Selecione um investimento existente.");
@@ -534,10 +578,15 @@ async function removerOuVenderInvestimento() {
     return;
   }
 
-  if (quantidade <= 0 && valor <= 0) {
-    alert("Preencha a quantidade ou o valor a remover.");
-    return;
-  }
+if (quantidade <= 0 && valor <= 0) {
+  alert("Preencha a quantidade ou o valor a remover.");
+  return;
+}
+
+if (destinoDinheiro !== "nao_descontar" && valor <= 0) {
+  alert("Para enviar o resgate ao Dashboard Financeiro, informe o valor recebido na venda/resgate.");
+  return;
+}
 
   const asset = investmentAssets.find((item) => item.id === assetId);
 
@@ -569,17 +618,38 @@ async function removerOuVenderInvestimento() {
     return;
   }
 
-  await registrarMovimentacao({
-    assetId,
-    tipo: "resgate",
+const movimentacao = await registrarMovimentacao({
+  assetId,
+  tipo: "resgate",
+  valor,
+  quantidade,
+  data,
+  observacao,
+  origemDinheiro: destinoDinheiro
+});
+
+if (movimentacao) {
+  const entradaFinanceira = await registrarEntradaFinanceiraPorInvestimento({
+    investmentTransactionId: movimentacao.id,
+    nomeInvestimento: asset.nome,
+    tipoInvestimento: asset.tipo,
     valor,
-    quantidade,
     data,
-    observacao
+    destinoDinheiro
   });
 
-  limparFormularioInvestimentos();
-  await carregarInvestimentos();
+  if (entradaFinanceira) {
+    await window.supabaseClient
+      .from("investment_transactions")
+      .update({
+        financeiro_transaction_id: entradaFinanceira.id
+      })
+      .eq("id", movimentacao.id);
+  }
+}
+
+limparFormularioInvestimentos();
+await carregarInvestimentos();
 }
 
 async function atualizarValorEstimadoInvestimento() {
@@ -677,8 +747,8 @@ async function registrarRendimentoInvestimento() {
   await carregarInvestimentos();
 }
 
-async function registrarMovimentacao({ assetId, tipo, valor, quantidade, data, observacao }) {
-  const { error } = await window.supabaseClient
+async function registrarMovimentacao({ assetId, tipo, valor, quantidade, data, observacao, origemDinheiro }) {
+  const { data: transaction, error } = await window.supabaseClient
     .from("investment_transactions")
     .insert({
       user_id: investmentUser.id,
@@ -687,13 +757,19 @@ async function registrarMovimentacao({ assetId, tipo, valor, quantidade, data, o
       valor: Number(valor || 0),
       quantidade: Number(quantidade || 0),
       data_movimento: data || new Date().toISOString().slice(0, 10),
-      observacao
-    });
+      observacao,
+      origem_dinheiro: origemDinheiro || null
+    })
+    .select()
+    .single();
 
   if (error) {
     console.error("Erro ao registrar movimentação:", error);
     alert("Investimento salvo, mas houve erro ao registrar movimentação: " + error.message);
+    return null;
   }
+
+  return transaction;
 }
 
 function limparFormularioInvestimentos() {
@@ -918,7 +994,7 @@ function renderizarHistoricoMovimentacoes() {
   }
 
   if (!investmentTransactions.length) {
-    tbody.innerHTML = `<tr><td colspan="7">Nenhuma movimentação registrada.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8">Nenhuma movimentação registrada.</td></tr>`;
     return;
   }
 
@@ -933,6 +1009,7 @@ function renderizarHistoricoMovimentacoes() {
         <td>${capitalizarInvestment(item.tipo)}</td>
         <td>${Number(item.quantidade || 0).toLocaleString("pt-BR")}</td>
         <td>${formatBRLInvestment(item.valor)}</td>
+        <td>${item.origem_dinheiro || "-"}</td>
         <td>${item.observacao || "-"}</td>
       </tr>
     `;
@@ -1129,4 +1206,98 @@ function obterMaiorCategoriaInvestimentos() {
   }
 
   return maiorCategoria;
+}
+
+async function registrarSaidaFinanceiraPorInvestimento({
+  investmentTransactionId,
+  nomeInvestimento,
+  tipoInvestimento,
+  valor,
+  data,
+  origemDinheiro
+}) {
+  if (!origemDinheiro || origemDinheiro === "nao_descontar") {
+    return null;
+  }
+
+  if (!valor || valor <= 0) {
+    return null;
+  }
+
+  const descricao = `Compra de investimento: ${nomeInvestimento || tipoInvestimento || "Investimento"}`;
+
+  const { data: financialTransaction, error } = await window.supabaseClient
+    .from("financial_transactions")
+    .insert({
+      user_id: investmentUser.id,
+      tipo: "despesa",
+      categoria: "Investimentos",
+      descricao: descricao,
+      valor: Number(valor || 0),
+      data_lancamento: data || new Date().toISOString().slice(0, 10),
+      recorrente: false,
+      origem: "investimentos",
+      origem_dinheiro: origemDinheiro,
+      investment_transaction_id: investmentTransactionId || null
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Erro ao lançar saída no Dashboard Financeiro:", error);
+    alert(
+      "O investimento foi registrado, mas houve erro ao lançar a saída no Dashboard Financeiro: " +
+      error.message
+    );
+    return null;
+  }
+
+  return financialTransaction;
+}
+
+async function registrarEntradaFinanceiraPorInvestimento({
+  investmentTransactionId,
+  nomeInvestimento,
+  tipoInvestimento,
+  valor,
+  data,
+  destinoDinheiro
+}) {
+  if (!destinoDinheiro || destinoDinheiro === "nao_descontar") {
+    return null;
+  }
+
+  if (!valor || valor <= 0) {
+    return null;
+  }
+
+  const descricao = `Resgate de investimento: ${nomeInvestimento || tipoInvestimento || "Investimento"}`;
+
+  const { data: financialTransaction, error } = await window.supabaseClient
+    .from("financial_transactions")
+    .insert({
+      user_id: investmentUser.id,
+      tipo: "receita",
+      categoria: "Resgate de investimentos",
+      descricao: descricao,
+      valor: Number(valor || 0),
+      data_lancamento: data || new Date().toISOString().slice(0, 10),
+      recorrente: false,
+      origem: "investimentos",
+      origem_dinheiro: destinoDinheiro,
+      investment_transaction_id: investmentTransactionId || null
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Erro ao lançar entrada no Dashboard Financeiro:", error);
+    alert(
+      "O resgate foi registrado, mas houve erro ao lançar a entrada no Dashboard Financeiro: " +
+      error.message
+    );
+    return null;
+  }
+
+  return financialTransaction;
 }

@@ -715,34 +715,6 @@ async function gerarBeneficiosAutomaticosDoMes() {
   }
 }
 
-function capitalizarTexto(texto) {
-  if (!texto) {
-    return "";
-  }
-
-  return String(texto)
-    .toLowerCase()
-    .split(" ")
-    .map((palavra) => {
-      if (!palavra) {
-        return "";
-      }
-
-      return palavra.charAt(0).toUpperCase() + palavra.slice(1);
-    })
-    .join(" ");
-}
-
-function capitalizarPrimeiraLetra(texto) {
-  if (!texto) {
-    return "";
-  }
-
-  const valor = String(texto).trim();
-
-  return valor.charAt(0).toUpperCase() + valor.slice(1);
-}
-
 function atualizarPreviewLancamentosAutomaticos() {
   const salaryPreview = document.getElementById("salaryAutoPreview");
   const benefitsPreview = document.getElementById("benefitsAutoPreview");
@@ -987,3 +959,1134 @@ window.toggleCollapsibleSection = function toggleCollapsibleSection(sectionId) {
 
   section.classList.toggle("collapsed");
 };
+
+/* ==================================================
+   ASSISTENTE FINANCEIRO - IMPORTACAO DE EXTRATO CSV
+   FinanceHub
+================================================== */
+
+let movimentacoesImportadasTemporarias = [];
+let modoEdicaoImportacaoExtrato = false;
+
+function abrirSeletorExtrato() {
+    const inputExtrato = document.getElementById("extratoCsvInput");
+
+    if (!inputExtrato) {
+        console.error("Campo extratoCsvInput nao encontrado.");
+        return;
+    }
+
+    inputExtrato.click();
+}
+
+function processarCsv() {
+    const inputExtrato = document.getElementById("extratoCsvInput");
+    const nomeArquivoExtrato = document.getElementById("nomeArquivoExtrato");
+
+    if (!inputExtrato) {
+        console.error("Campo extratoCsvInput nao encontrado.");
+        return;
+    }
+
+    if (!nomeArquivoExtrato) {
+        console.error("Campo nomeArquivoExtrato nao encontrado.");
+        return;
+    }
+
+    const arquivo = inputExtrato.files[0];
+
+    if (!arquivo) {
+        nomeArquivoExtrato.textContent = "Nenhum arquivo selecionado";
+        return;
+    }
+
+    nomeArquivoExtrato.textContent = arquivo.name;
+
+    const leitor = new FileReader();
+
+    leitor.onload = async function(evento) {
+        const conteudoCsv = evento.target.result;
+        const movimentacoes = converterCsvParaMovimentacoes(conteudoCsv);
+
+        await marcarAvisosDuplicidadeSalario(movimentacoes);
+
+        movimentacoesImportadasTemporarias = movimentacoes;
+        modoEdicaoImportacaoExtrato = false;
+
+        abrirModalPreviewExtrato();
+        exibirPreviewExtrato();
+    };
+
+    leitor.onerror = function() {
+        alert("Nao foi possivel ler o arquivo CSV.");
+    };
+
+    leitor.readAsText(arquivo, "UTF-8");
+}
+
+/* ==================================================
+   LEITURA E CONVERSAO DO CSV
+================================================== */
+
+function converterCsvParaMovimentacoes(conteudoCsv) {
+    const linhas = conteudoCsv
+        .split(/\r?\n/)
+        .map(function(linha) {
+            return linha.trim();
+        })
+        .filter(function(linha) {
+            return linha !== "";
+        });
+
+    if (linhas.length <= 1) {
+        return [];
+    }
+
+    const cabecalho = linhas[0];
+    const separador = identificarSeparadorCsv(cabecalho);
+    const movimentacoes = [];
+
+    for (let i = 1; i < linhas.length; i++) {
+        const colunas = dividirLinhaCsv(linhas[i], separador);
+
+        const data = colunas[0] ? colunas[0].trim() : "";
+        const descricao = colunas[1] ? colunas[1].trim() : "";
+        const valorTexto = colunas[2] ? colunas[2].trim() : "";
+        const tipoInformado = colunas[3] ? colunas[3].trim() : "";
+
+        if (!data && !descricao && !valorTexto) {
+            continue;
+        }
+
+        const valorNumerico = converterValorBrasileiroParaNumero(valorTexto);
+        const tipo = identificarTipoMovimentacao(valorNumerico, tipoInformado);
+        const categoria = sugerirCategoriaExtrato(descricao, tipo);
+
+        movimentacoes.push({
+            data: data,
+            descricao: descricao,
+            valor: valorNumerico,
+            tipo: tipo,
+            categoria: categoria
+        });
+    }
+
+    return movimentacoes;
+}
+
+function identificarSeparadorCsv(linhaCabecalho) {
+    if (linhaCabecalho.indexOf(";") >= 0) {
+        return ";";
+    }
+
+    if (linhaCabecalho.indexOf(",") >= 0) {
+        return ",";
+    }
+
+    return ";";
+}
+
+function dividirLinhaCsv(linha, separador) {
+    const resultado = [];
+    let valorAtual = "";
+    let dentroDeAspas = false;
+
+    for (let i = 0; i < linha.length; i++) {
+        const caractere = linha[i];
+
+        if (caractere === '"') {
+            dentroDeAspas = !dentroDeAspas;
+            continue;
+        }
+
+        if (caractere === separador && !dentroDeAspas) {
+            resultado.push(valorAtual);
+            valorAtual = "";
+            continue;
+        }
+
+        valorAtual += caractere;
+    }
+
+    resultado.push(valorAtual);
+    return resultado;
+}
+
+function converterValorBrasileiroParaNumero(valorTexto) {
+    if (!valorTexto) {
+        return 0;
+    }
+
+    let valorLimpo = valorTexto
+        .toString()
+        .replace("R$", "")
+        .replace(/\s/g, "")
+        .trim();
+
+    const possuiVirgula = valorLimpo.indexOf(",") >= 0;
+    const possuiPonto = valorLimpo.indexOf(".") >= 0;
+
+    if (possuiVirgula && possuiPonto) {
+        valorLimpo = valorLimpo.replace(/\./g, "").replace(",", ".");
+    } else if (possuiVirgula) {
+        valorLimpo = valorLimpo.replace(",", ".");
+    }
+
+    const valorNumerico = Number(valorLimpo);
+
+    if (isNaN(valorNumerico)) {
+        return 0;
+    }
+
+    return valorNumerico;
+}
+
+function identificarTipoMovimentacao(valor, tipoInformado) {
+    if (tipoInformado) {
+        const tipoNormalizado = normalizarTextoExtrato(tipoInformado);
+
+        if (tipoNormalizado.includes("RECEITA") || tipoNormalizado.includes("CREDITO")) {
+            return "Receita";
+        }
+
+        if (tipoNormalizado.includes("DESPESA") || tipoNormalizado.includes("DEBITO")) {
+            return "Despesa";
+        }
+    }
+
+    if (valor >= 0) {
+        return "Receita";
+    }
+
+    return "Despesa";
+}
+
+/* ==================================================
+   CATEGORIZACAO
+================================================== */
+
+function sugerirCategoriaExtrato(descricao, tipo) {
+    const texto = normalizarTextoExtrato(descricao);
+
+    const regrasCategoria = [
+        {
+            categoria: "Salario",
+            palavras: [
+                "SALARIO", "PAGAMENTO SALARIO", "PAGTO SALARIO", "CREDITO SALARIO",
+                "CRED SALARIO", "FOLHA PAGAMENTO", "REMUNERACAO", "ORDENADO",
+                "HUGHES", "HUGHES TELECOM", "HUGHES DO BRASIL"
+            ]
+        },
+        {
+            categoria: "PIX recebido",
+            palavras: [
+                "PIX RECEBIDO", "PIX REC", "RECEB PIX", "RECEBIMENTO PIX",
+                "CREDITO PIX", "PIX CREDITO", "PIX ENTRADA", "ENTRADA PIX",
+                "DEVOLUCAO PIX", "PIX DEVOLVIDO"
+            ]
+        },
+        {
+            categoria: "Reembolso",
+            palavras: [
+                "REEMBOLSO", "RESSARCIMENTO", "ESTORNO", "DEVOLUCAO",
+                "RESTITUICAO", "CASHBACK", "CASH BACK"
+            ]
+        },
+        {
+            categoria: "Investimentos",
+            palavras: [
+                "BINANCE", "COINBASE", "MERCADO BITCOIN", "FOXBIT", "BITSO",
+                "NOVA DAX", "RIPIO", "BIPA", "NUINVEST", "XP INVESTIMENTOS",
+                "RICO", "CLEAR", "BTG", "BTG PACTUAL", "INTER DTVM",
+                "TESOURO DIRETO", "TESOURO", "CDB", "LCI", "LCA",
+                "FUNDO INVEST", "APLICACAO", "RESGATE", "RENDA FIXA",
+                "RENDA VARIAVEL", "CORRETORA"
+            ]
+        },
+        {
+            categoria: "Transporte",
+            palavras: [
+                "UBER", "UBER TRIP", "99", "99POP", "99 PAY", "TAXI",
+                "CABIFY", "BUSER", "BLABLACAR", "METRO", "CPTM",
+                "BILHETE UNICO", "TOP TRANSPORTE", "SPTRANS", "ONIBUS",
+                "ESTACIONAMENTO", "ZONA AZUL", "SEM PARAR", "CONECTCAR",
+                "VELOE", "PEDAGIO"
+            ]
+        },
+        {
+            categoria: "Combustivel",
+            palavras: [
+                "POSTO", "POSTO DE GASOLINA", "AUTO POSTO", "SHELL", "IPIRANGA",
+                "PETROBRAS", "ALE", "RAIZEN", "GASOLINA", "ETANOL",
+                "DIESEL", "COMBUSTIVEL", "ABASTECIMENTO", "KMV", "PREMMIA"
+            ]
+        },
+        {
+            categoria: "Alimentacao",
+            palavras: [
+                "IFOOD", "AIQFOME", "RAPPI", "UBER EATS", "RESTAURANTE",
+                "LANCHONETE", "PADARIA", "PIZZARIA", "HAMBURGUERIA", "BURGER",
+                "MCDONALDS", "MC DONALDS", "BURGER KING", "SUBWAY", "BOBS",
+                "KFC", "GIRAFFAS", "HABIBS", "OUTBACK", "MADERO",
+                "STARBUCKS", "CAFETERIA", "CAFE", "LANCHES", "DELIVERY"
+            ]
+        },
+        {
+            categoria: "Mercado",
+            palavras: [
+                "MERCADO", "SUPERMERCADO", "HIPERMERCADO", "MINIMERCADO", "ATACADAO",
+                "ASSAI", "CARREFOUR", "EXTRA", "PAO DE ACUCAR", "DIA", "BIG",
+                "BOMPRECO", "NAGUMO", "SONDA", "ZAFFARI", "MUFFATO", "ANGELONI",
+                "TENDA", "ROLDAO", "SAMS CLUB", "OXXO", "HORTIFRUTI", "ACOGUE",
+                "SACOLAO", "FEIRA", "MERCEARIA"
+            ]
+        },
+        {
+            categoria: "Farmacia",
+            palavras: [
+                "FARMACIA", "DROGARIA", "DROGA", "DROGASIL", "DROGA RAIA",
+                "RAIA", "DROGARIA SAO PAULO", "PACHECO", "PAGUE MENOS",
+                "PANVEL", "ULTRAFARMA", "ONOFRE", "MEDICAMENTO", "REMEDIO",
+                "MANIPULACAO"
+            ]
+        },
+        {
+            categoria: "Assinaturas",
+            palavras: [
+                "NETFLIX", "SPOTIFY", "AMAZON PRIME", "PRIME VIDEO", "DISNEY",
+                "DISNEY PLUS", "DISNEY+", "STAR PLUS", "STAR+", "HBO", "MAX",
+                "GLOBOPLAY", "PARAMOUNT", "APPLE", "APPLE MUSIC", "ICLOUD",
+                "GOOGLE ONE", "YOUTUBE PREMIUM", "MICROSOFT 365", "OFFICE 365",
+                "XBOX", "GAME PASS", "PLAYSTATION", "ADOBE", "CANVA", "CHATGPT",
+                "OPENAI", "ASSINATURA", "SUBSCRIPTION"
+            ]
+        },
+        {
+            categoria: "Cartao de credito",
+            palavras: [
+                "FATURA", "CARTAO", "PAGAMENTO FATURA", "PAGTO FATURA",
+                "FATURA CARTAO", "MASTERCARD", "VISA", "ELO", "AMEX",
+                "NUBANK", "NU PAGAMENTOS", "ITAUCARD", "BRADESCO CARTOES",
+                "SANTANDER CARTOES", "C6 BANK CARTAO", "INTER CARTAO"
+            ]
+        },
+        {
+            categoria: "Contas e moradia",
+            palavras: [
+                "ALUGUEL", "CONDOMINIO", "IPTU", "SABESP", "ENEL", "CPFL",
+                "LIGHT", "CEMIG", "COPEL", "ENERGIA", "LUZ", "AGUA", "GAS",
+                "COMGAS", "ULTRAGAZ", "SUPERGASBRAS"
+            ]
+        },
+        {
+            categoria: "Internet e telefone",
+            palavras: [
+                "VIVO", "CLARO", "TIM", "OI", "NET", "SKY", "ALGAR", "INTERNET",
+                "BANDA LARGA", "TELEFONE", "CELULAR", "FIBRA", "TV ASSINATURA",
+                "TELECOM"
+            ]
+        },
+        {
+            categoria: "Saude",
+            palavras: [
+                "HOSPITAL", "CLINICA", "LABORATORIO", "EXAME", "CONSULTA", "MEDICO",
+                "DENTISTA", "ODONTO", "PSICOLOGO", "PSIQUIATRA", "FISIOTERAPIA",
+                "PLANO DE SAUDE", "UNIMED", "AMIL", "SULAMERICA", "BRADESCO SAUDE",
+                "HAPVIDA"
+            ]
+        },
+        {
+            categoria: "Educacao",
+            palavras: [
+                "ESCOLA", "FACULDADE", "UNIVERSIDADE", "CURSO", "MENSALIDADE",
+                "EDUCACAO", "ENSINO", "ALURA", "UDEMY", "COURSERA", "HOTMART",
+                "KIWIFY", "EDUZZ", "LIVRARIA", "LIVRO", "MATERIAL ESCOLAR"
+            ]
+        },
+        {
+            categoria: "Lazer",
+            palavras: [
+                "CINEMA", "INGRESSO", "TEATRO", "SHOW", "EVENTO", "EVENTIM",
+                "TICKETMASTER", "SYMPLA", "BAR", "ACADEMIA", "SMART FIT", "BLUEFIT",
+                "HOTEL", "POUSADA", "AIRBNB", "BOOKING"
+            ]
+        },
+        {
+            categoria: "Compras",
+            palavras: [
+                "AMAZON", "MERCADO LIVRE", "MERCADOLIVRE", "SHOPEE", "SHEIN",
+                "ALIEXPRESS", "MAGAZINE LUIZA", "MAGALU", "AMERICANAS", "SUBMARINO",
+                "CASAS BAHIA", "PONTO FRIO", "KABUM", "FAST SHOP", "SHOPTIME",
+                "CENTAURO", "DECATHLON", "RENNER", "RIACHUELO", "CEA", "C&A",
+                "ZARA", "NETSHOES", "DAFITI", "COMPRA ONLINE"
+            ]
+        },
+        {
+            categoria: "Filha",
+            palavras: [
+                "FRALDA", "FRALDAS", "BEBE", "INFANTIL", "PEDIATRA", "PAMPERS",
+                "HUGGIES", "JOHNSON", "APTAMIL", "NAN", "LEITE INFANTIL",
+                "ROUPA INFANTIL", "BRINQUEDO"
+            ]
+        },
+        {
+            categoria: "Transferencias",
+            palavras: [
+                "PIX ENVIADO", "PIX TRANSFERENCIA", "TRANSFERENCIA", "TED", "DOC",
+                "TEF", "TRANSF", "ENVIO PIX", "PAGAMENTO PIX", "DEBITO PIX",
+                "PIX DEBITO", "TRANSFERIDO PARA", "TRANSFERENCIA PARA"
+            ]
+        },
+        {
+            categoria: "Tarifas bancarias",
+            palavras: [
+                "TARIFA", "TARIFA BANCARIA", "CESTA", "CESTA SERVICOS", "ANUIDADE",
+                "JUROS", "MULTA", "IOF", "ENCARGO", "SAQUE", "TARIFA SAQUE",
+                "MANUTENCAO CONTA", "PACOTE SERVICOS"
+            ]
+        }
+    ];
+
+    for (let i = 0; i < regrasCategoria.length; i++) {
+        const regra = regrasCategoria[i];
+
+        for (let j = 0; j < regra.palavras.length; j++) {
+            const palavraNormalizada = normalizarTextoExtrato(regra.palavras[j]);
+
+            if (texto.includes(palavraNormalizada)) {
+                return regra.categoria;
+            }
+        }
+    }
+
+    if (tipo === "Receita") {
+        return "Outros";
+    }
+
+    return "Outros";
+}
+
+function normalizarTextoExtrato(texto) {
+    if (!texto) {
+        return "";
+    }
+
+    return texto
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+/* ==================================================
+   MODAL DE PREVIA
+================================================== */
+
+function abrirModalPreviewExtrato() {
+    const modal = document.getElementById("modalPreviewExtrato");
+
+    if (!modal) {
+        console.error("Modal modalPreviewExtrato nao encontrado.");
+        return;
+    }
+
+    modal.classList.remove("hidden");
+}
+
+function fecharModalPreviewExtrato() {
+    const modal = document.getElementById("modalPreviewExtrato");
+
+    if (!modal) {
+        console.error("Modal modalPreviewExtrato nao encontrado.");
+        return;
+    }
+
+    modal.classList.add("hidden");
+}
+
+/* ==================================================
+   EXIBICAO DA TABELA
+================================================== */
+
+function exibirPreviewExtrato() {
+  const tbody = document.getElementById("previewExtratoTableBody");
+
+  if (!tbody) {
+    console.error("Tabela previewExtratoTableBody nao encontrada.");
+    return;
+  }
+
+  if (!movimentacoesImportadasTemporarias || movimentacoesImportadasTemporarias.length === 0) {
+    tbody.innerHTML = "";
+
+    const trVazio = document.createElement("tr");
+    const tdVazio = document.createElement("td");
+
+    tdVazio.colSpan = 6;
+    tdVazio.textContent = "Nenhuma movimentacao encontrada no arquivo.";
+
+    trVazio.appendChild(tdVazio);
+    tbody.appendChild(trVazio);
+
+    return;
+  }
+
+  const fragmento = document.createDocumentFragment();
+
+  try {
+    for (let i = 0; i < movimentacoesImportadasTemporarias.length; i++) {
+      const movimentacao = movimentacoesImportadasTemporarias[i];
+
+      const tr = document.createElement("tr");
+
+      if (movimentacao.salarioDuplicado) {
+        tr.classList.add("linha-alerta-importacao-forte");
+      }
+
+      if (modoEdicaoImportacaoExtrato) {
+        montarLinhaEditavelExtrato(tr, movimentacao, i);
+      } else {
+        montarLinhaVisualizacaoExtrato(tr, movimentacao, i);
+      }
+
+      fragmento.appendChild(tr);
+
+      if (movimentacao.salarioDuplicado) {
+        const trAviso = criarLinhaAvisoSalarioDuplicado(movimentacao);
+        fragmento.appendChild(trAviso);
+      }
+    }
+
+    tbody.innerHTML = "";
+    tbody.appendChild(fragmento);
+  } catch (erro) {
+    console.error("Erro ao renderizar preview do extrato:", erro);
+    alert("Erro ao renderizar a prévia do extrato. Veja o console.");
+  }
+}
+
+function montarLinhaVisualizacaoExtrato(tr, movimentacao, index) {
+  const tdData = document.createElement("td");
+  const tdDescricao = document.createElement("td");
+  const tdValor = document.createElement("td");
+  const tdTipo = document.createElement("td");
+  const tdCategoria = document.createElement("td");
+  const tdAcao = document.createElement("td");
+
+  tdData.textContent = movimentacao.data;
+  tdDescricao.textContent = movimentacao.descricao;
+  tdValor.textContent = formatarValorPreviewExtrato(movimentacao.valor);
+  tdTipo.textContent = movimentacao.tipo;
+  tdCategoria.textContent = movimentacao.categoria;
+
+  if (movimentacao.valor >= 0) {
+    tdValor.classList.add("valor-receita");
+  } else {
+    tdValor.classList.add("valor-despesa");
+  }
+
+  tdCategoria.classList.add("categoria-sugerida");
+
+  const botaoExcluir = document.createElement("button");
+  botaoExcluir.type = "button";
+  botaoExcluir.className = "btn-excluir-preview";
+  botaoExcluir.textContent = "Excluir";
+
+  botaoExcluir.addEventListener("click", function () {
+    excluirMovimentacaoImportada(index);
+  });
+
+  tdAcao.appendChild(botaoExcluir);
+
+  tr.appendChild(tdData);
+  tr.appendChild(tdDescricao);
+  tr.appendChild(tdValor);
+  tr.appendChild(tdTipo);
+  tr.appendChild(tdCategoria);
+  tr.appendChild(tdAcao);
+}
+
+function montarLinhaEditavelExtrato(tr, movimentacao, index) {
+  const tdData = document.createElement("td");
+  const tdDescricao = document.createElement("td");
+  const tdValor = document.createElement("td");
+  const tdTipo = document.createElement("td");
+  const tdCategoria = document.createElement("td");
+
+  const inputData = criarInputEdicaoExtrato(movimentacao.data);
+  inputData.addEventListener("change", function () {
+    atualizarCampoMovimentacaoImportada(index, "data", inputData.value);
+  });
+
+  const inputDescricao = criarInputEdicaoExtrato(movimentacao.descricao);
+  inputDescricao.addEventListener("change", function () {
+    atualizarCampoMovimentacaoImportada(index, "descricao", inputDescricao.value);
+  });
+
+  const inputValor = criarInputEdicaoExtrato(formatarNumeroParaInputExtrato(movimentacao.valor));
+  inputValor.addEventListener("change", function () {
+    atualizarCampoMovimentacaoImportada(index, "valor", inputValor.value);
+  });
+
+  const selectTipo = document.createElement("select");
+  selectTipo.className = "preview-edit-select";
+
+  adicionarOpcaoSelect(selectTipo, "Receita", "Receita");
+  adicionarOpcaoSelect(selectTipo, "Despesa", "Despesa");
+
+  selectTipo.value = movimentacao.tipo || "Despesa";
+
+  selectTipo.addEventListener("change", function () {
+    atualizarCampoMovimentacaoImportada(index, "tipo", selectTipo.value);
+  });
+
+  const selectCategoria = document.createElement("select");
+  selectCategoria.className = "preview-edit-select";
+
+  const categorias = obterCategoriasExtrato();
+
+  for (let i = 0; i < categorias.length; i++) {
+    adicionarOpcaoSelect(selectCategoria, categorias[i], categorias[i]);
+  }
+
+  selectCategoria.value = movimentacao.categoria || "Outros";
+
+  selectCategoria.addEventListener("change", function () {
+    atualizarCampoMovimentacaoImportada(index, "categoria", selectCategoria.value);
+  });
+
+  tdData.appendChild(inputData);
+  tdDescricao.appendChild(inputDescricao);
+  tdValor.appendChild(inputValor);
+  tdTipo.appendChild(selectTipo);
+  tdCategoria.appendChild(selectCategoria);
+
+
+const tdAcao = document.createElement("td");
+
+const botaoExcluir = document.createElement("button");
+botaoExcluir.type = "button";
+botaoExcluir.className = "btn-excluir-preview";
+botaoExcluir.textContent = "Excluir";
+
+botaoExcluir.addEventListener("click", function () {
+  sincronizarEdicoesVisiveis();
+  excluirMovimentacaoImportada(index);
+});
+
+tdAcao.appendChild(botaoExcluir);
+
+tr.appendChild(tdData);
+tr.appendChild(tdDescricao);
+tr.appendChild(tdValor);
+tr.appendChild(tdTipo);
+tr.appendChild(tdCategoria);
+tr.appendChild(tdAcao);
+}
+
+function criarInputEdicaoExtrato(valor) {
+  const input = document.createElement("input");
+
+  input.type = "text";
+  input.className = "preview-edit-input";
+  input.value = valor || "";
+
+  return input;
+}
+
+function adicionarOpcaoSelect(select, valor, texto) {
+  const option = document.createElement("option");
+
+  option.value = valor;
+  option.textContent = texto;
+
+  select.appendChild(option);
+}
+
+function formatarNumeroParaInputExtrato(valor) {
+  const numero = Number(valor || 0);
+
+  return numero.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function obterCategoriasExtrato() {
+  return [
+    "Salário",
+    "VR",
+    "VA",
+    "VT",
+    "Assinaturas",
+    "Aluguel",
+    "Água",
+    "Luz",
+    "Internet",
+    "Mercado",
+    "Farmácia",
+    "Combustível",
+    "Transporte",
+    "Cartão de crédito",
+    "Saúde",
+    "Lazer",
+    "Educação",
+    "Filha",
+    "Investimentos",
+    "Reembolso",
+    "PIX recebido",
+    "Transferências",
+    "Tarifas bancárias",
+    "Compras",
+    "Contas e moradia",
+    "Internet e telefone",
+    "Outros"
+  ];
+}
+
+function adicionarOpcaoSelect(select, valor, texto) {
+    const option = document.createElement("option");
+
+    option.value = valor;
+    option.textContent = texto;
+
+    select.appendChild(option);
+}
+
+/* ==================================================
+   EDICAO DOS DADOS IMPORTADOS
+================================================== */
+
+function atualizarCampoMovimentacaoImportada(index, campo, valor) {
+  if (!movimentacoesImportadasTemporarias[index]) {
+    return;
+  }
+
+  if (campo === "valor") {
+    const valorNumerico = converterValorBrasileiroParaNumero(valor);
+
+    movimentacoesImportadasTemporarias[index].valor = valorNumerico;
+    movimentacoesImportadasTemporarias[index].tipo = identificarTipoMovimentacao(
+      valorNumerico,
+      movimentacoesImportadasTemporarias[index].tipo
+    );
+
+    return;
+  }
+
+  movimentacoesImportadasTemporarias[index][campo] = valor;
+}
+
+function alternarEdicaoExtrato() {
+  if (!movimentacoesImportadasTemporarias || movimentacoesImportadasTemporarias.length === 0) {
+    alert("Nenhuma movimentacao disponivel para editar.");
+    return;
+  }
+
+  if (modoEdicaoImportacaoExtrato) {
+    sincronizarEdicoesVisiveis();
+    modoEdicaoImportacaoExtrato = false;
+    atualizarTextoBotaoEdicaoExtrato();
+    exibirPreviewExtrato();
+    return;
+  }
+
+  modoEdicaoImportacaoExtrato = true;
+  atualizarTextoBotaoEdicaoExtrato();
+  exibirPreviewExtrato();
+}
+
+function sincronizarEdicoesVisiveis() {
+  const linhas = document.querySelectorAll("#previewExtratoTableBody tr");
+
+  linhas.forEach(function(linha, index) {
+    const campos = linha.querySelectorAll("input, select");
+
+    if (!movimentacoesImportadasTemporarias[index]) {
+      return;
+    }
+
+    if (campos[0]) {
+      movimentacoesImportadasTemporarias[index].data = campos[0].value;
+    }
+
+    if (campos[1]) {
+      movimentacoesImportadasTemporarias[index].descricao = campos[1].value;
+    }
+
+    if (campos[2]) {
+      movimentacoesImportadasTemporarias[index].valor =
+        converterValorBrasileiroParaNumero(campos[2].value);
+    }
+
+    if (campos[3]) {
+      movimentacoesImportadasTemporarias[index].tipo = campos[3].value;
+    }
+
+    if (campos[4]) {
+      movimentacoesImportadasTemporarias[index].categoria = campos[4].value;
+    }
+  });
+}
+
+function atualizarTextoBotaoEdicaoExtrato() {
+  const botao = document.getElementById("botaoEditarExtrato");
+
+  if (!botao) {
+    return;
+  }
+
+  if (modoEdicaoImportacaoExtrato) {
+    botao.textContent = "Concluir edição";
+  } else {
+    botao.textContent = "Editar dados";
+  }
+}
+
+function recusarImportacaoExtrato() {
+    movimentacoesImportadasTemporarias = [];
+    modoEdicaoImportacaoExtrato = false;
+    atualizarTextoBotaoEdicaoExtrato();
+
+    const inputExtrato = document.getElementById("extratoCsvInput");
+    const nomeArquivoExtrato = document.getElementById("nomeArquivoExtrato");
+
+    if (inputExtrato) {
+        inputExtrato.value = "";
+    }
+
+    if (nomeArquivoExtrato) {
+        nomeArquivoExtrato.textContent = "Nenhum arquivo selecionado";
+    }
+
+    fecharModalPreviewExtrato();
+}
+
+async function confirmarImportacaoExtrato() {
+  if (!movimentacoesImportadasTemporarias || movimentacoesImportadasTemporarias.length === 0) {
+    alert("Nenhuma movimentação disponível para importar.");
+    return;
+  }
+
+  const user = await garantirUsuarioFinanceiro();
+
+  if (!user) {
+    alert("Sessão expirada. Faça login novamente.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  if (modoEdicaoImportacaoExtrato) {
+    sincronizarEdicoesVisiveis();
+  }
+
+  const salariosDuplicados = movimentacoesImportadasTemporarias.filter(function(movimentacao) {
+  return movimentacao.salarioDuplicado === true;
+});
+
+if (salariosDuplicados.length > 0) {
+  const meses = salariosDuplicados
+    .map(function(item) {
+      return obterAnoMesDaDataExtrato(item.data);
+    })
+    .filter(function(item, index, array) {
+      return item && array.indexOf(item) === index;
+    })
+    .join(", ");
+
+  const confirmarSalarioDuplicado = confirm(
+    "O salario do mes " +
+    meses +
+    " ja foi registrado automaticamente. Deseja importar esse valor mesmo assim?"
+  );
+
+  if (!confirmarSalarioDuplicado) {
+    return;
+  }
+}
+
+  const lancamentosParaInserir = movimentacoesImportadasTemporarias
+    .filter(function(movimentacao) {
+      return movimentacao.data && movimentacao.descricao && Number(movimentacao.valor) !== 0;
+    })
+    .map(function(movimentacao) {
+      const tipoNormalizado = movimentacao.tipo === "Receita" ? "receita" : "despesa";
+
+      return {
+        user_id: user.id,
+        tipo: tipoNormalizado,
+        categoria: movimentacao.categoria || "Outros",
+        descricao: movimentacao.descricao || movimentacao.categoria || "Lançamento importado",
+        valor: Math.abs(Number(movimentacao.valor || 0)),
+        data_lancamento: converterDataExtratoParaISO(movimentacao.data),
+        recorrente: false,
+        origem: "importado"
+      };
+    });
+
+  if (!lancamentosParaInserir.length) {
+    alert("Nenhum lançamento válido encontrado para importar.");
+    return;
+  }
+
+  const { error } = await window.supabaseClient
+    .from("financial_transactions")
+    .insert(lancamentosParaInserir);
+
+  if (error) {
+    console.error("Erro ao importar extrato:", error);
+    alert("Erro ao importar extrato: " + error.message);
+    return;
+  }
+
+  movimentacoesImportadasTemporarias = [];
+  modoEdicaoImportacaoExtrato = false;
+  atualizarTextoBotaoEdicaoExtrato();
+
+  const inputExtrato = document.getElementById("extratoCsvInput");
+  const nomeArquivoExtrato = document.getElementById("nomeArquivoExtrato");
+
+  if (inputExtrato) {
+    inputExtrato.value = "";
+  }
+
+  if (nomeArquivoExtrato) {
+    nomeArquivoExtrato.textContent = "Nenhum arquivo selecionado";
+  }
+
+  fecharModalPreviewExtrato();
+
+  await carregarDashboardFinanceiroReal();
+
+  alert(lancamentosParaInserir.length + " lançamentos importados com sucesso.");
+}
+/* ==================================================
+   FUNCOES AUXILIARES
+================================================== */
+
+function converterDataExtratoParaISO(dataTexto) {
+  if (!dataTexto) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  const dataLimpa = String(dataTexto).trim();
+
+  if (dataLimpa.includes("/")) {
+    const partes = dataLimpa.split("/");
+
+    const dia = partes[0];
+    const mes = partes[1];
+    const ano = partes[2];
+
+    if (dia && mes && ano) {
+      return `${ano}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
+    }
+  }
+
+  if (dataLimpa.includes("-")) {
+    return dataLimpa.slice(0, 10);
+  }
+
+  return new Date().toISOString().slice(0, 10);
+}
+
+function formatarValorPreviewExtrato(valor) {
+    return valor.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+
+function obterCategoriasExtrato() {
+    return [
+        "Salario",
+        "VR",
+        "VA",
+        "VT",
+        "Assinaturas",
+        "Aluguel",
+        "Agua",
+        "Luz",
+        "Internet",
+        "Mercado",
+        "Farmacia",
+        "Combustivel",
+        "Transporte",
+        "Cartao de credito",
+        "Saude",
+        "Lazer",
+        "Educacao",
+        "Filha",
+        "Investimentos",
+        "Reembolso",
+        "PIX recebido",
+        "Transferencias",
+        "Tarifas bancarias",
+        "Compras",
+        "Contas e moradia",
+        "Internet e telefone",
+        "Outros"
+    ];
+}
+
+
+async function marcarAvisosDuplicidadeSalario(movimentacoes) {
+  const user = await garantirUsuarioFinanceiro();
+
+  if (!user) {
+    return;
+  }
+
+  const mesesVerificados = {};
+
+  for (let i = 0; i < movimentacoes.length; i++) {
+    const movimentacao = movimentacoes[i];
+
+    const categoriaNormalizada = normalizarTextoExtrato(movimentacao.categoria);
+    const tipoNormalizado = normalizarTextoExtrato(movimentacao.tipo);
+
+    const ehSalario =
+      categoriaNormalizada === "SALARIO" &&
+      tipoNormalizado === "RECEITA";
+
+    if (!ehSalario) {
+      continue;
+    }
+
+    const anoMes = obterAnoMesDaDataExtrato(movimentacao.data);
+
+    if (!anoMes) {
+      continue;
+    }
+
+    if (mesesVerificados[anoMes] === undefined) {
+      mesesVerificados[anoMes] = await existeSalarioAutomaticoNoMes(user.id, anoMes);
+    }
+
+    if (mesesVerificados[anoMes]) {
+      movimentacao.salarioDuplicado = true;
+      movimentacao.avisoImportacao =
+        "Salário do mês " +
+        anoMes +
+        " ja foi registrado automaticamente. Confirme se deseja importar este valor novamente.";
+    }
+  }
+}
+
+async function existeSalarioAutomaticoNoMes(userId, anoMes) {
+  const inicioMes = anoMes + "-01";
+  const fimMes = obterUltimoDiaDoAnoMes(anoMes);
+
+  const { data, error } = await window.supabaseClient
+    .from("financial_transactions")
+    .select("id, categoria, origem, referencia_auto, data_lancamento")
+    .eq("user_id", userId)
+    .eq("tipo", "receita")
+    .eq("categoria", "Salário")
+    .gte("data_lancamento", inicioMes)
+    .lte("data_lancamento", fimMes);
+
+  if (error) {
+    console.error("Erro ao verificar salario automatico:", error);
+    return false;
+  }
+
+  if (!data || !data.length) {
+    return false;
+  }
+
+  return data.some(function(item) {
+    const referencia = item.referencia_auto || "";
+
+    return (
+      item.origem === "automatico" ||
+      referencia.includes("salario")
+    );
+  });
+}
+
+
+function obterAnoMesDaDataExtrato(dataTexto) {
+  if (!dataTexto) {
+    return "";
+  }
+
+  const dataLimpa = String(dataTexto).trim();
+
+  if (dataLimpa.includes("/")) {
+    const partes = dataLimpa.split("/");
+
+    const mes = partes[1];
+    const ano = partes[2];
+
+    if (mes && ano) {
+      return ano + "-" + String(mes).padStart(2, "0");
+    }
+  }
+
+  if (dataLimpa.includes("-")) {
+    return dataLimpa.slice(0, 7);
+  }
+
+  return "";
+}
+
+function obterUltimoDiaDoAnoMes(anoMes) {
+  const partes = anoMes.split("-");
+  const ano = Number(partes[0]);
+  const mes = Number(partes[1]);
+
+  const ultimoDia = new Date(ano, mes, 0).getDate();
+
+  return (
+    ano +
+    "-" +
+    String(mes).padStart(2, "0") +
+    "-" +
+    String(ultimoDia).padStart(2, "0")
+  );
+}
+
+
+function criarLinhaAvisoSalarioDuplicado(movimentacao) {
+  const trAviso = document.createElement("tr");
+  trAviso.className = "linha-aviso-salario-duplicado";
+
+  const tdAviso = document.createElement("td");
+  tdAviso.colSpan = 6;
+
+  const aviso = document.createElement("div");
+  aviso.className = "aviso-importacao-salario-full";
+
+  aviso.textContent =
+    movimentacao.avisoImportacao ||
+    "ATENCAO: O salario deste mes ja foi registrado automaticamente. Confirme se deseja importar este valor novamente.";
+
+  tdAviso.appendChild(aviso);
+  trAviso.appendChild(tdAviso);
+
+  return trAviso;
+}
+
+function excluirMovimentacaoImportada(index) {
+  if (!movimentacoesImportadasTemporarias[index]) {
+    return;
+  }
+
+  const confirmarExclusao = confirm("Deseja remover este item da importacao?");
+
+  if (!confirmarExclusao) {
+    return;
+  }
+
+  movimentacoesImportadasTemporarias.splice(index, 1);
+
+  if (movimentacoesImportadasTemporarias.length === 0) {
+    modoEdicaoImportacaoExtrato = false;
+    atualizarTextoBotaoEdicaoExtrato();
+  }
+
+  exibirPreviewExtrato();
+}

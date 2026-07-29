@@ -38,6 +38,7 @@
             Investimentos
         </a>
 
+
         <a href="perfil.html" class="nav-profile-link" id="navProfileLink" title="Perfil">
           <span class="nav-profile-avatar" id="navProfileAvatar">
             <span class="nav-default-avatar">
@@ -154,6 +155,49 @@
           <option value="true">Sim</option>
         </select>
       </div>
+
+<div class="input-box import-extrato-box" style="grid-column: span 2;">
+
+    <div class="input-box import-extrato-box">
+
+    <div class="import-extrato-left">
+
+        <label for="extratoCsvInput">
+            🤖 Importar Extrato
+        </label>
+
+        <small class="input-helper">
+            Importe um extrato CSV para criar lançamentos automaticamente.
+        </small>
+
+        <div id="nomeArquivoExtrato" class="arquivo-selecionado-texto">
+            Nenhum arquivo selecionado
+        </div>
+
+    </div>
+
+    <div class="import-extrato-right">
+
+        <input
+            type="file"
+            id="extratoCsvInput"
+            accept=".csv"
+            onchange="processarCsv()"
+            hidden
+        >
+
+        <button
+            type="button"
+            class="btn btn-importar-extrato"
+            onclick="abrirSeletorExtrato()">
+            Selecionar Extrato
+        </button>
+
+    </div>
+
+</div>
+
+</div>
 
       <div class="input-box action-box transaction-action-box">
         <label>&nbsp;</label>
@@ -429,15 +473,15 @@
 
             <div class="form-grid">
                 <div class="input-box">
-                <label for="closingDayInput">Dia de fechamento</label>
-                <select id="closingDayInput">
-                    <option value="5">Dia 5</option>
-                    <option value="10">Dia 10</option>
-                    <option value="15">Dia 15</option>
-                    <option value="20">Dia 20</option>
-                    <option value="25">Dia 25</option>
-                    <option value="31">Último dia do mês</option>
-                </select>
+                  <label for="closingDayInput">Dia de fechamento</label>
+                  <select id="closingDayInput">
+                      <option value="5">Dia 5</option>
+                      <option value="10">Dia 10</option>
+                      <option value="15">Dia 15</option>
+                      <option value="20">Dia 20</option>
+                      <option value="25">Dia 25</option>
+                      <option value="31">Último dia do mês</option>
+                  </select>
                 </div>
 
             <div class="input-box">
@@ -450,6 +494,83 @@
     </section>
 
 </div>
+
+<div id="modalPreviewExtrato" class="modal-extrato-overlay hidden">
+
+    <div class="modal-extrato">
+
+        <div class="modal-extrato-header">
+            <div>
+                <h2>Prévia do extrato importado</h2>
+
+                <p>
+                    Confira as movimentações identificadas antes de transformar em lançamentos financeiros.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close-button"
+                onclick="recusarImportacaoExtrato()">
+                ×
+            </button>
+        </div>
+
+        <div class="modal-extrato-body">
+
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                      <tr>
+                          <th>Data</th>
+                          <th>Descrição</th>
+                          <th>Valor</th>
+                          <th>Tipo</th>
+                          <th>Categoria sugerida</th>
+                          <th>Ação</th>
+                      </tr>
+                    </thead>
+
+                    <tbody id="previewExtratoTableBody">
+                        <tr>
+                            <td colspan="6">Nenhum extrato carregado.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="modal-extrato-footer">
+
+            <button
+                type="button"
+                class="secondary-pill-button"
+                onclick="recusarImportacaoExtrato()">
+                Recusar
+            </button>
+
+            <button
+                type="button"
+                id="botaoEditarExtrato"
+                class="secondary-pill-button"
+                onclick="alternarEdicaoExtrato()">
+                Editar dados
+            </button>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="confirmarImportacaoExtrato()">
+                Aceitar importação
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/financeiroData.js"></script>

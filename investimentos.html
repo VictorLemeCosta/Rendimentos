@@ -178,6 +178,21 @@
           <input type="number" id="investmentInvestedValue" step="0.01" placeholder="Ex: 1000.00">
         </div>
 
+          <div class="input-box investment-field investment-money-source-field">
+            <label for="investmentMoneySource" id="investmentMoneySourceLabel">
+              Origem do dinheiro
+            </label>
+
+            <select id="investmentMoneySource">
+              <option value="Carteira">Carteira</option>
+              <option value="Conta corrente">Conta corrente</option>
+              <option value="Salário">Salário</option>
+              <option value="Reserva">Reserva</option>
+              <option value="Outro">Outro</option>
+              <option value="nao_descontar">Não integrar com Dashboard</option>
+            </select>
+          </div>
+
         <div class="input-box investment-field investment-estimated-value-field">
           <label for="investmentEstimatedManualValue">Valor estimado agora</label>
           <input type="number" id="investmentEstimatedManualValue" step="0.01" placeholder="Ex: 1050.00">
@@ -476,13 +491,14 @@
               <th>Operação</th>
               <th>Quantidade</th>
               <th>Valor</th>
+              <th>Origem/Destino</th>
               <th>Observação</th>
             </tr>
           </thead>
 
           <tbody id="investmentTransactionsTableBody">
             <tr>
-              <td colspan="7">Carregando movimentações...</td>
+              <td colspan="8">Carregando movimentações...</td>
             </tr>
           </tbody>
         </table>
