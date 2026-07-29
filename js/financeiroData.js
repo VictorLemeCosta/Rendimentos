@@ -968,17 +968,6 @@ window.toggleCollapsibleSection = function toggleCollapsibleSection(sectionId) {
 let movimentacoesImportadasTemporarias = [];
 let modoEdicaoImportacaoExtrato = false;
 
-function abrirSeletorExtrato() {
-    const inputExtrato = document.getElementById("extratoCsvInput");
-
-    if (!inputExtrato) {
-        console.error("Campo extratoCsvInput nao encontrado.");
-        return;
-    }
-
-    inputExtrato.click();
-}
-
 function processarCsv() {
     const inputExtrato = document.getElementById("extratoCsvInput");
     const nomeArquivoExtrato = document.getElementById("nomeArquivoExtrato");
@@ -2090,3 +2079,14 @@ function excluirMovimentacaoImportada(index) {
 
   exibirPreviewExtrato();
 }
+
+window.abrirSeletorExtrato = function abrirSeletorExtrato() {
+  const inputExtrato = document.getElementById("extratoCsvInput");
+
+  if (!inputExtrato) {
+    console.error("Campo extratoCsvInput nao encontrado.");
+    return;
+  }
+
+  inputExtrato.click();
+};
