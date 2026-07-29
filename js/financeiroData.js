@@ -1018,49 +1018,155 @@ function processarCsv() {
 ================================================== */
 
 function converterCsvParaMovimentacoes(conteudoCsv) {
-    const linhas = conteudoCsv
-        .split(/\r?\n/)
-        .map(function(linha) {
-            return linha.trim();
-        })
-        .filter(function(linha) {
-            return linha !== "";
-        });
+  const linhas = conteudoCsv
+    .split(/\r?\n/)
+    .map(function(linha) {
+      return linha.trim();
+    })
+    .filter(function(linha) {
+      return linha !== "";
+    });
 
-    if (linhas.length <= 1) {
-        return [];
+  if (linhas.length <= 1) {
+    return [];
+  }
+
+  const separador = identificarSeparadorCsv(linhas[0]);
+  const cabecalho = dividirLinhaCsv(linhas[0], separador).map(normalizarTextoExtrato);
+
+  const indices = identificarColunasExtrato(cabecalho);
+  const movimentacoes = [];
+
+  for (let i = 1; i < linhas.length; i++) {
+    const colunas = dividirLinhaCsv(linhas[i], separador);
+
+    const data = obterValorColuna(colunas, indices.data);
+    const valorTexto = obterValorColuna(colunas, indices.valor);
+    const descricao = montarDescricaoExtrato(colunas, indices);
+    const tipoInformado = obterValorColuna(colunas, indices.tipo);
+
+    if (!data && !descricao && !valorTexto) {
+      continue;
     }
 
-    const cabecalho = linhas[0];
-    const separador = identificarSeparadorCsv(cabecalho);
-    const movimentacoes = [];
+    const valorNumerico = converterValorExtratoParaNumero(valorTexto);
 
-    for (let i = 1; i < linhas.length; i++) {
-        const colunas = dividirLinhaCsv(linhas[i], separador);
-
-        const data = colunas[0] ? colunas[0].trim() : "";
-        const descricao = colunas[1] ? colunas[1].trim() : "";
-        const valorTexto = colunas[2] ? colunas[2].trim() : "";
-        const tipoInformado = colunas[3] ? colunas[3].trim() : "";
-
-        if (!data && !descricao && !valorTexto) {
-            continue;
-        }
-
-        const valorNumerico = converterValorBrasileiroParaNumero(valorTexto);
-        const tipo = identificarTipoMovimentacao(valorNumerico, tipoInformado);
-        const categoria = sugerirCategoriaExtrato(descricao, tipo);
-
-        movimentacoes.push({
-            data: data,
-            descricao: descricao,
-            valor: valorNumerico,
-            tipo: tipo,
-            categoria: categoria
-        });
+    if (!data || !descricao || valorNumerico === 0) {
+      continue;
     }
 
-    return movimentacoes;
+    const tipo = identificarTipoMovimentacao(valorNumerico, tipoInformado);
+    const categoria = sugerirCategoriaExtrato(descricao, tipo);
+
+    movimentacoes.push({
+      data: normalizarDataExtrato(data),
+      descricao: limparDescricaoExtrato(descricao),
+      valor: valorNumerico,
+      tipo: tipo,
+      categoria: categoria
+    });
+  }
+
+  return movimentacoes;
+}
+
+function identificarColunasExtrato(cabecalho) {
+  return {
+    data: encontrarIndiceCabecalho(cabecalho, [
+      "DATA",
+      "DATA LANCAMENTO",
+      "DATA MOVIMENTO",
+      "DATA DA TRANSACAO",
+      "DATE"
+    ]),
+
+    valor: encontrarIndiceCabecalho(cabecalho, [
+      "VALOR",
+      "VALOR R$",
+      "AMOUNT",
+      "VALUE",
+      "QUANTIA",
+      "MONTANTE"
+    ]),
+
+    descricao: encontrarIndiceCabecalho(cabecalho, [
+      "DESCRICAO",
+      "DESCRIÇÃO",
+      "HISTORICO",
+      "HISTÓRICO",
+      "LANCAMENTO",
+      "LANÇAMENTO",
+      "DETALHES",
+      "DESCRIPTON",
+      "DESCRIPTION",
+      "NOME"
+    ]),
+
+    tipo: encontrarIndiceCabecalho(cabecalho, [
+      "TIPO",
+      "TYPE",
+      "CATEGORIA",
+      "OPERACAO",
+      "OPERAÇÃO"
+    ]),
+
+    identificador: encontrarIndiceCabecalho(cabecalho, [
+      "IDENTIFICADOR",
+      "ID",
+      "CODIGO",
+      "CÓDIGO",
+      "REFERENCE",
+      "REFERENCIA",
+      "REFERÊNCIA"
+    ])
+  };
+}
+
+function encontrarIndiceCabecalho(cabecalho, nomesPossiveis) {
+  for (let i = 0; i < cabecalho.length; i++) {
+    for (let j = 0; j < nomesPossiveis.length; j++) {
+      if (cabecalho[i] === normalizarTextoExtrato(nomesPossiveis[j])) {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+function obterValorColuna(colunas, indice) {
+  if (indice < 0 || indice >= colunas.length) {
+    return "";
+  }
+
+  return String(colunas[indice] || "").trim();
+}
+
+function montarDescricaoExtrato(colunas, indices) {
+  const descricaoPrincipal = obterValorColuna(colunas, indices.descricao);
+
+  if (descricaoPrincipal) {
+    return descricaoPrincipal;
+  }
+
+  const partesDescricao = [];
+
+  for (let i = 0; i < colunas.length; i++) {
+    if (
+      i !== indices.data &&
+      i !== indices.valor &&
+      i !== indices.tipo &&
+      i !== indices.identificador
+    ) {
+      const parte = String(colunas[i] || "").trim();
+
+      if (parte) {
+        partesDescricao.push(parte);
+      }
+    }
+  }
+
+  return partesDescricao.join(" ");
 }
 
 function identificarSeparadorCsv(linhaCabecalho) {
@@ -1102,32 +1208,47 @@ function dividirLinhaCsv(linha, separador) {
 }
 
 function converterValorBrasileiroParaNumero(valorTexto) {
-    if (!valorTexto) {
-        return 0;
+  return converterValorExtratoParaNumero(valorTexto);
+}
+
+function converterValorExtratoParaNumero(valorTexto) {
+  if (!valorTexto) {
+    return 0;
+  }
+
+  let valorLimpo = String(valorTexto)
+    .replace("R$", "")
+    .replace(/\s/g, "")
+    .replace(/[^\d.,-]/g, "")
+    .trim();
+
+  if (!valorLimpo) {
+    return 0;
+  }
+
+  const temVirgula = valorLimpo.includes(",");
+  const temPonto = valorLimpo.includes(".");
+
+  if (temVirgula && temPonto) {
+    const ultimoPonto = valorLimpo.lastIndexOf(".");
+    const ultimaVirgula = valorLimpo.lastIndexOf(",");
+
+    if (ultimaVirgula > ultimoPonto) {
+      valorLimpo = valorLimpo.replace(/\./g, "").replace(",", ".");
+    } else {
+      valorLimpo = valorLimpo.replace(/,/g, "");
     }
+  } else if (temVirgula) {
+    valorLimpo = valorLimpo.replace(",", ".");
+  }
 
-    let valorLimpo = valorTexto
-        .toString()
-        .replace("R$", "")
-        .replace(/\s/g, "")
-        .trim();
+  const numero = Number(valorLimpo);
 
-    const possuiVirgula = valorLimpo.indexOf(",") >= 0;
-    const possuiPonto = valorLimpo.indexOf(".") >= 0;
+  if (isNaN(numero)) {
+    return 0;
+  }
 
-    if (possuiVirgula && possuiPonto) {
-        valorLimpo = valorLimpo.replace(/\./g, "").replace(",", ".");
-    } else if (possuiVirgula) {
-        valorLimpo = valorLimpo.replace(",", ".");
-    }
-
-    const valorNumerico = Number(valorLimpo);
-
-    if (isNaN(valorNumerico)) {
-        return 0;
-    }
-
-    return valorNumerico;
+  return numero;
 }
 
 function identificarTipoMovimentacao(valor, tipoInformado) {
@@ -1159,7 +1280,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
 
     const regrasCategoria = [
         {
-            categoria: "Salario",
+            categoria: "Salário",
             palavras: [
                 "SALARIO", "PAGAMENTO SALARIO", "PAGTO SALARIO", "CREDITO SALARIO",
                 "CRED SALARIO", "FOLHA PAGAMENTO", "REMUNERACAO", "ORDENADO",
@@ -1203,7 +1324,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Combustivel",
+            categoria: "Combustível",
             palavras: [
                 "POSTO", "POSTO DE GASOLINA", "AUTO POSTO", "SHELL", "IPIRANGA",
                 "PETROBRAS", "ALE", "RAIZEN", "GASOLINA", "ETANOL",
@@ -1211,7 +1332,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Alimentacao",
+            categoria: "Alimentação",
             palavras: [
                 "IFOOD", "AIQFOME", "RAPPI", "UBER EATS", "RESTAURANTE",
                 "LANCHONETE", "PADARIA", "PIZZARIA", "HAMBURGUERIA", "BURGER",
@@ -1231,7 +1352,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Farmacia",
+            categoria: "Farmácia",
             palavras: [
                 "FARMACIA", "DROGARIA", "DROGA", "DROGASIL", "DROGA RAIA",
                 "RAIA", "DROGARIA SAO PAULO", "PACHECO", "PAGUE MENOS",
@@ -1251,11 +1372,11 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Cartao de credito",
+            categoria: "Cartão de crédito",
             palavras: [
                 "FATURA", "CARTAO", "PAGAMENTO FATURA", "PAGTO FATURA",
-                "FATURA CARTAO", "MASTERCARD", "VISA", "ELO", "AMEX",
-                "NUBANK", "NU PAGAMENTOS", "ITAUCARD", "BRADESCO CARTOES",
+                "FATURA CARTAO", "MASTERCARD", "VISA", "ELO", "AMEX", 
+                "ITAUCARD", "BRADESCO CARTOES",
                 "SANTANDER CARTOES", "C6 BANK CARTAO", "INTER CARTAO"
             ]
         },
@@ -1276,7 +1397,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Saude",
+            categoria: "Saúde",
             palavras: [
                 "HOSPITAL", "CLINICA", "LABORATORIO", "EXAME", "CONSULTA", "MEDICO",
                 "DENTISTA", "ODONTO", "PSICOLOGO", "PSIQUIATRA", "FISIOTERAPIA",
@@ -1285,7 +1406,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Educacao",
+            categoria: "Educação",
             palavras: [
                 "ESCOLA", "FACULDADE", "UNIVERSIDADE", "CURSO", "MENSALIDADE",
                 "EDUCACAO", "ENSINO", "ALURA", "UDEMY", "COURSERA", "HOTMART",
@@ -1311,15 +1432,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Filha",
-            palavras: [
-                "FRALDA", "FRALDAS", "BEBE", "INFANTIL", "PEDIATRA", "PAMPERS",
-                "HUGGIES", "JOHNSON", "APTAMIL", "NAN", "LEITE INFANTIL",
-                "ROUPA INFANTIL", "BRINQUEDO"
-            ]
-        },
-        {
-            categoria: "Transferencias",
+            categoria: "Transferâncias",
             palavras: [
                 "PIX ENVIADO", "PIX TRANSFERENCIA", "TRANSFERENCIA", "TED", "DOC",
                 "TEF", "TRANSF", "ENVIO PIX", "PAGAMENTO PIX", "DEBITO PIX",
@@ -1327,7 +1440,7 @@ function sugerirCategoriaExtrato(descricao, tipo) {
             ]
         },
         {
-            categoria: "Tarifas bancarias",
+            categoria: "Tarifas bancárias",
             palavras: [
                 "TARIFA", "TARIFA BANCARIA", "CESTA", "CESTA SERVICOS", "ANUIDADE",
                 "JUROS", "MULTA", "IOF", "ENCARGO", "SAQUE", "TARIFA SAQUE",
@@ -1369,6 +1482,16 @@ function normalizarTextoExtrato(texto) {
         .trim();
 }
 
+function limparDescricaoExtrato(texto) {
+  if (!texto) {
+    return "";
+  }
+
+  return String(texto)
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /* ==================================================
    MODAL DE PREVIA
 ================================================== */
@@ -1401,15 +1524,20 @@ function fecharModalPreviewExtrato() {
 
 function exibirPreviewExtrato() {
   const tbody = document.getElementById("previewExtratoTableBody");
+  const cardsContainer = document.getElementById("previewExtratoCards");
 
   if (!tbody) {
     console.error("Tabela previewExtratoTableBody nao encontrada.");
     return;
   }
 
-  if (!movimentacoesImportadasTemporarias || movimentacoesImportadasTemporarias.length === 0) {
-    tbody.innerHTML = "";
+  tbody.innerHTML = "";
 
+  if (cardsContainer) {
+    cardsContainer.innerHTML = "";
+  }
+
+  if (!movimentacoesImportadasTemporarias || movimentacoesImportadasTemporarias.length === 0) {
     const trVazio = document.createElement("tr");
     const tdVazio = document.createElement("td");
 
@@ -1419,41 +1547,116 @@ function exibirPreviewExtrato() {
     trVazio.appendChild(tdVazio);
     tbody.appendChild(trVazio);
 
+    if (cardsContainer) {
+      cardsContainer.textContent = "Nenhuma movimentação encontrada no arquivo.";
+    }
+
     return;
   }
 
-  const fragmento = document.createDocumentFragment();
+  
 
-  try {
-    for (let i = 0; i < movimentacoesImportadasTemporarias.length; i++) {
-      const movimentacao = movimentacoesImportadasTemporarias[i];
+  const fragmentoTabela = document.createDocumentFragment();
+  const fragmentoCards = document.createDocumentFragment();
 
-      const tr = document.createElement("tr");
+  for (let i = 0; i < movimentacoesImportadasTemporarias.length; i++) {
+    const movimentacao = movimentacoesImportadasTemporarias[i];
 
-      if (movimentacao.salarioDuplicado) {
-        tr.classList.add("linha-alerta-importacao-forte");
-      }
+    const tr = document.createElement("tr");
 
-      if (modoEdicaoImportacaoExtrato) {
-        montarLinhaEditavelExtrato(tr, movimentacao, i);
-      } else {
-        montarLinhaVisualizacaoExtrato(tr, movimentacao, i);
-      }
-
-      fragmento.appendChild(tr);
-
-      if (movimentacao.salarioDuplicado) {
-        const trAviso = criarLinhaAvisoSalarioDuplicado(movimentacao);
-        fragmento.appendChild(trAviso);
-      }
+    if (movimentacao.salarioDuplicado) {
+      tr.classList.add("linha-alerta-importacao-forte");
     }
 
-    tbody.innerHTML = "";
-    tbody.appendChild(fragmento);
-  } catch (erro) {
-    console.error("Erro ao renderizar preview do extrato:", erro);
-    alert("Erro ao renderizar a prévia do extrato. Veja o console.");
+    if (modoEdicaoImportacaoExtrato) {
+      montarLinhaEditavelExtrato(tr, movimentacao, i);
+    } else {
+      montarLinhaVisualizacaoExtrato(tr, movimentacao, i);
+    }
+
+    fragmentoTabela.appendChild(tr);
+
+    if (movimentacao.salarioDuplicado) {
+      fragmentoTabela.appendChild(criarLinhaAvisoSalarioDuplicado(movimentacao));
+    }
+
+    if (cardsContainer) {
+      fragmentoCards.appendChild(criarCardPreviewExtrato(movimentacao, i));
+    }
   }
+
+  tbody.appendChild(fragmentoTabela);
+
+  if (cardsContainer) {
+    cardsContainer.appendChild(fragmentoCards);
+  }
+}
+
+function criarCardPreviewExtrato(movimentacao, index) {
+  const card = document.createElement("div");
+  card.className = "preview-extrato-card";
+
+  if (movimentacao.salarioDuplicado) {
+    card.classList.add("preview-extrato-card-alerta");
+  }
+
+  const topo = document.createElement("div");
+  topo.className = "preview-extrato-card-topo";
+
+  const data = document.createElement("span");
+  data.textContent = movimentacao.data;
+
+  const valor = document.createElement("strong");
+  valor.textContent = formatarValorPreviewExtrato(movimentacao.valor);
+  valor.className = movimentacao.valor >= 0 ? "valor-receita" : "valor-despesa";
+
+  topo.appendChild(data);
+  topo.appendChild(valor);
+
+  const descricao = document.createElement("div");
+  descricao.className = "preview-extrato-card-descricao";
+  descricao.textContent =
+      resumirDescricaoExtrato(movimentacao.descricao);
+
+  const meta = document.createElement("div");
+  meta.className = "preview-extrato-card-meta";
+  meta.textContent = `${movimentacao.tipo} • ${movimentacao.categoria}`;
+
+  const botaoExcluir = document.createElement("button");
+  botaoExcluir.type = "button";
+  botaoExcluir.className = "btn-excluir-preview";
+  botaoExcluir.textContent = "Excluir";
+
+  botaoExcluir.addEventListener("click", function() {
+    excluirMovimentacaoImportada(index);
+  });
+
+  card.appendChild(topo);
+  card.appendChild(descricao);
+  card.appendChild(meta);
+  card.appendChild(botaoExcluir);
+
+  if (movimentacao.salarioDuplicado && movimentacao.avisoImportacao) {
+    const aviso = document.createElement("div");
+    aviso.className = "aviso-importacao-salario-full";
+    aviso.textContent = movimentacao.avisoImportacao;
+    card.appendChild(aviso);
+  }
+
+  return card;
+}
+
+function resumirDescricaoExtrato(texto) {
+
+    if (!texto) {
+        return "";
+    }
+
+    if (texto.length <= 80) {
+        return texto;
+    }
+
+    return texto.substring(0, 80) + "...";
 }
 
 function montarLinhaVisualizacaoExtrato(tr, movimentacao, index) {
@@ -1888,38 +2091,6 @@ function formatarValorPreviewExtrato(valor) {
     });
 }
 
-function obterCategoriasExtrato() {
-    return [
-        "Salario",
-        "VR",
-        "VA",
-        "VT",
-        "Assinaturas",
-        "Aluguel",
-        "Agua",
-        "Luz",
-        "Internet",
-        "Mercado",
-        "Farmacia",
-        "Combustivel",
-        "Transporte",
-        "Cartao de credito",
-        "Saude",
-        "Lazer",
-        "Educacao",
-        "Filha",
-        "Investimentos",
-        "Reembolso",
-        "PIX recebido",
-        "Transferencias",
-        "Tarifas bancarias",
-        "Compras",
-        "Contas e moradia",
-        "Internet e telefone",
-        "Outros"
-    ];
-}
-
 
 async function marcarAvisosDuplicidadeSalario(movimentacoes) {
   const user = await garantirUsuarioFinanceiro();
@@ -2090,3 +2261,37 @@ window.abrirSeletorExtrato = function abrirSeletorExtrato() {
 
   inputExtrato.click();
 };
+
+function normalizarDataExtrato(dataTexto) {
+  if (!dataTexto) {
+    return "";
+  }
+
+  const dataLimpa = String(dataTexto).trim();
+
+  if (dataLimpa.includes("/")) {
+    const partes = dataLimpa.split("/");
+
+    if (partes.length === 3) {
+      const dia = partes[0].padStart(2, "0");
+      const mes = partes[1].padStart(2, "0");
+      const ano = partes[2];
+
+      return `${dia}/${mes}/${ano}`;
+    }
+  }
+
+  if (dataLimpa.includes("-")) {
+    const partes = dataLimpa.split("-");
+
+    if (partes[0].length === 4) {
+      return `${partes[2].padStart(2, "0")}/${partes[1].padStart(2, "0")}/${partes[0]}`;
+    }
+
+    if (partes.length === 3) {
+      return `${partes[0].padStart(2, "0")}/${partes[1].padStart(2, "0")}/${partes[2]}`;
+    }
+  }
+
+  return dataLimpa;
+}
